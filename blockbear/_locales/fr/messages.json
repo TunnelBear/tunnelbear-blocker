@@ -1,0 +1,126 @@
+{
+	"extShortDesc": {
+		"message": "BlockBear description",
+		"description": ""
+	},
+	"back": {
+		"message": "Retour",
+		"description": ""
+	},
+	"on": {
+		"message": "ON",
+		"description": ""
+	},
+	"off": {
+		"message": "OFF",
+		"description": ""
+	},
+	"settingsTitle": {
+		"message": "BlockBear Paramètres",
+		"description": ""
+	},
+	"settingsBlockAds": {
+		"message": "Bloquer les pubs",
+		"description": ""
+	},
+	"settingsBlockFlash": {
+		"message": "Flash a besoin de mon autorisation",
+		"description": ""
+	},
+	"settingsBlockBrowserFingerprinting": {
+		"message": "Bloquer l'empreinte du navigateur",
+		"description": ""
+	},
+    "settingsBlockMicrophone": {
+		"message": "Bloquer le microphone",
+		"description": ""
+	},
+	"settingsBlockKeyboard": {
+		"message": "Bloquer le suivi du clavier",
+		"description": ""
+	},
+	"settingsBlockMouse": {
+		"message": "Bloquer le suivi de la souris",
+		"description": ""
+	},
+    "settingsBlockEmail": {
+		"message": "Bloquer les pixels espions (gmail)",
+		"description": ""
+	},
+    "settingsBlockwebRTC": {
+		"message": "Empêcher les fuites WebRTC",
+		"description": ""
+	},
+    "settingsBlockBlockAdBlock": {
+		"message": "***************Adblock",
+		"description": ""
+	},
+	"settingsBlockSocial": {
+		"message": "Bloquer les boutons sociaux",
+		"description": ""
+	},
+	"settingsAdditionalList": {
+		"message": "Listes additionnelles",
+		"description": ""
+	},
+	"settingsBlockPrivacy": {
+		"message": "Protection de votre Confidentialité (Recommandé)",
+		"description": ""
+	},
+	"settingsBlockMalware": {
+		"message": "Protection contre les malwares",
+		"description": ""
+	},
+	"settingsHelpTunnelBear": {
+		"message": "Aider TunnelBear",
+		"description": ""
+	},
+	"settingsShareStats": {
+		"message": "Partager anonymement mes stats avec TunnelBear",
+		"description": ""
+	},
+	"whitelist": {
+		"message": "liste blanche",
+		"description": ""
+	},
+	"blacklist": {
+		"message": "liste noire",
+		"description": ""
+	},
+	"popupBlocks": {
+		"message": "Blocks"
+	},
+	"popupBlock": {
+		"message": "Block"
+	},
+	"ads": {
+		"message": "Pubs"
+	},
+	"flash": {
+		"message": "Flash"
+	},
+	"fingerprinting": {
+		"message": "Empreinte"
+	},
+	"keyboard": {
+		"message": "Clavier"
+	},
+	"mouse": {
+		"message": "Souris"
+	},
+	"microphone": {
+		"message": "Ultrason"
+	},
+	"social": {
+		"message": "Social"
+	},
+	"privacy": {
+		"message": "Confidentialité"
+	},
+	"malware": {
+		"message": "Malware"
+	},
+	"email": {
+		"message": "Email"
+	}
+}

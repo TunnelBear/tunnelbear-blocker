@@ -1,0 +1,573 @@
+a,article,aside,body,caption,dd,dfn,div,div.hgroup,dl,dt,em,embed,fieldset,footer,form,h1,h2,h3,h4,h5,h6,header,html,iframe,img,label,legend,li,nav,object,ol,p,section,small,span,strong,sub,sup,table,tbody,td,tfoot,th,thead,tr,ul {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+strong {
+    font-weight: 700;
+}
+
+article,aside,div.hgroup,footer,header,nav,section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol {
+    list-style: decimal;
+}
+
+ul {
+    list-style: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+:active,:focus {
+    outline: 0;
+}
+
+.android:active,.android:focus {
+    -webkit-tap-highlight-color: rgba(255,255,255,0);
+}
+
+.android select {
+    -webkit-tap-highlight-color: transparent;
+}
+
+textarea {
+    resize: none;
+}
+
+.sliding-panel {
+  min-height: 100%;
+  width : 100%;
+  transform:translateX(258px);
+  position: absolute;
+  top: 0px;
+  background-color: #fcfaf7;
+}
+
+#settings-gear {
+  margin-left: 208px;
+  margin-top: -18px; 
+  cursor: pointer;
+}
+.img-top-settings {
+  width: 15px;
+  height: 15px;
+}
+#shortcuts-div {
+  transform:translateX(516px);
+}
+
+@font-face {
+  font-family: 'Rokkitt-Light';
+  src: url('../fonts/Rokkitt-Light.eot');
+  src: url('../fonts/Rokkitt-Light.eot?#iefix') format('embedded-opentype'),
+  url('../fonts/Rokkitt-Light.woff') format('woff'),
+  url('../fonts/Rokkitt-Light.ttf') format('truetype'),
+  url('../fonts/Rokkitt-Light.svg#Rokkitt-Light') format('svg');
+}
+
+@font-face {
+  font-family: 'Rokkitt';
+  src: url('../fonts/Rokkitt-Regular.eot');
+  src: url('../fonts/Rokkitt-Regular.eot?#iefix') format('embedded-opentype'),
+  url('../fonts/Rokkitt-Regular.woff') format('woff'),
+  url('../fonts/Rokkitt-Regular.ttf') format('truetype'),
+  url('../fonts/Rokkitt-Regular.svg#Rokkitt') format('svg');
+}
+
+@font-face {
+  font-family: 'Rokkitt-Bold';
+  src: url('../fonts/Rokkitt-Bold.eot');
+  src: url('../fonts/Rokkitt-Bold.eot?#iefix') format('embedded-opentype'),
+  url('../fonts/Rokkitt-Bold.woff') format('woff'),
+  url('../fonts/Rokkitt-Bold.ttf') format('truetype'),
+  url('../fonts/Rokkitt-Bold.svg#Rokkitt-Bold') format('svg');
+}
+
+@font-face {
+  font-family: OpenSans;
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/OpenSans-Regular.ttf');
+}
+
+@font-face {
+  font-family: OpenSans;
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/OpenSans-Semibold.ttf');
+}
+
+@font-face {
+  font-family: OpenSans;
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/OpenSans-Bold.ttf');
+}
+
+/* General setup */
+body {
+  background-color: white;
+  overflow: hidden; /* prevent from scrolling through plugin */
+  margin:0px !important;
+
+  font: 15px Helvetica, Arial, sans-serif;
+  color: #55534e;
+
+  -webkit-font-smoothing: antialiased;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+h1 {
+    cursor: default;
+    font-weight: bold;
+    padding: 12px 0;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+.loaded {
+  width: 258px;
+  animation-delay: 0.2s;
+  -webkit-animation: fadein 1s forwards; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 1s forwards; /* Firefox < 16 */
+  animation: fadein 1s forwards;
+}
+
+@keyframes fadein {
+    to   { opacity: 1; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+    to   { opacity: 1; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+    to   { opacity: 1; }
+}
+
+.container .settings-header .title-block {
+  padding-top: 14px;
+}
+
+.container .settings-header {
+  height: 44px;
+  text-align: center;
+}
+.container .navigation-button {
+  padding-top:14px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: absolute;
+  left: 0%;
+  cursor: pointer;
+}
+
+.container button:focus {
+  outline:0;
+}
+
+.container .settings-title {
+  font-weight: bold !important;
+}
+
+.container {
+  position: relative;
+  opacity: 0;
+  width: 100%;
+}
+
+.container button{
+  background-color: transparent;
+  border: none;
+  color: #e58d2f;
+  font-family: Helvetica;
+  font-size: 15px;
+  font-weight: normal;
+}
+
+.container span{
+  cursor: default;
+  font-family: Helvetica;
+  font-weight: normal;
+  color: #55534e;
+  font-size: 15px;
+}
+
+.container span.disabled {
+ color: #bdbbb6; 
+}
+
+.container .medium-row{
+  height: 44px;
+}
+
+.alernate-row-color {
+  /* Uncomment this for orangy color background-color: #faf1e6; */
+}
+
+.left-padding {
+  padding-left: 10px;
+}
+
+.section-border {
+  border-width: 1px;
+  border-top-color: #e5e2dc;
+  border-top-style: solid;
+}
+
+/* General Setup*/
+.default-cursor {
+  cursor: default !important;
+}
+
+/* General table things */
+
+.table {
+  width: 100%;
+  display:table;
+  border-collapse: collapse;
+}
+.table > .caption{
+  display:table-caption;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.table-row {
+  display:table-row;
+}
+
+.table-cell {
+  vertical-align: middle;
+  display:table-cell;
+}
+
+.table-cell.colspan > div {
+  width: 1px;
+}
+
+.table-cell.colspan > div > div {
+    position: relative;
+    overflow: hidden;
+}
+
+.container .button {
+    padding:8px;
+    text-align: center;
+    color: #E58D2F;
+    cursor: pointer;
+    border-color: #e5e2dc;
+    border-style: solid;
+    border-width: 1px;
+}
+.container .button:hover {
+  background-color: #f8f6ef;
+}
+
+.button-left {
+  margin-left:15%;
+  width: 25%;
+  float:left;
+}
+.button-right {
+  width: 25%;
+  margin-left: 54%;
+}
+
+/* End general table things */
+
+/* Popup Header */
+.container .img-top-logo {
+  padding-top: 12px;
+  width: 84px;
+}
+/* End of Popup Header */
+
+/* Connection component */
+
+/* Status label */
+.container .status-label {
+  /* In case a margin is needed, not the case now - don't change the width of the cell, edit the margin instead
+  margin-left: -8px;*/
+  padding-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 170px;
+}
+/* Status label end */
+
+/* settings-category label */
+.container .settings-category-label span {
+  font-weight: bold;
+}
+/* settings-category label end */
+
+.container .status-cell {
+  width: 175px;
+}
+
+.container .status-cell {
+  padding-left: 10px;
+}
+
+.div-status-icon {
+  margin-top: 2px;
+  margin-left: -2px;
+}
+/* Icon */
+
+.container .img-status {
+  /* padding-top: 2px; */
+  width:13px;
+  height:13px;
+}
+
+.arrow.open {
+  background: url('../images/arrow_open2x.png');
+  background-size: 14px 8px;
+  background-repeat: no-repeat;
+  height: 8px;
+  width: 14px;
+  margin-left: 41px;
+}
+
+.arrow.close {
+  background: url('../images/arrow_close2x.png');
+  background-size: 14px 8px;
+  background-repeat: no-repeat;
+  height: 8px;
+  width: 14px;
+  margin-left: 41px;
+}
+
+/* End of Status Icon */
+
+/* ProgressBar */
+
+.progress-bar {
+  height: 5px!important;
+  background: #e5e2dc;
+}
+.table-row.progress-bar .bar {
+  width: 258px;
+}
+
+.progress-bar .bar,
+.progress-bar .bar span {
+  height: 5px;
+}
+
+.progress-bar .bar span {
+    display: block;
+    width: 0%;
+    -webkit-transition: width 1s ease-in-out;
+    -moz-transition: width 1s ease-in-out;
+    -o-transition: width 1s ease-in-out;
+    transition: width 1s ease-in-out;
+}
+
+.progress-bar .bar.blocks > span {
+  background: #72c4d2;
+}
+
+.progress-bar .bar.privacy > span {
+  background: #a5ce4e;
+}
+
+.progress-bar .bar.fingerprinting > span {
+  background: #b979fb;
+}
+
+.progress-bar .bar.email > span {
+  background: #6473e5;
+}
+
+.progress-bar .bar.keyboard > span {
+  background: #de7045;
+}
+
+.progress-bar .bar.mouse > span {
+  background: #c2b523;
+}
+
+.progress-bar .bar.microphone > span {
+  background: #5fe197;
+}
+
+.progress-bar .bar.social > span {
+  background: #70db5c;
+}
+
+.progress-bar .bar.ads > span {
+  background: #65ade9;
+}
+
+.progress-bar .bar.flash > span {
+  background: #e9658d;
+}
+
+.progress-bar .bar.malware > span {
+  background: #ebaf38;
+}
+
+/* End of ProgressBar */
+
+/* Toggle switch from here: http://www.designcouch.com/home/why/2013/09/19/ios7-style-pure-css-toggle/*/
+
+input.toggle {
+  max-height: 0;
+  max-width: 0;
+  opacity: 0;
+}
+
+/* The following provides the "container" for our toggle in its default (off) state */
+
+input.toggle + label {
+  cursor: pointer;
+  margin-top: -16px;
+  display: block;
+  position: relative;
+  /*box-shadow: inset 0 0 0px 1px #d5d5d5;*/
+  height: 29px;
+  width: 60px;
+  border-radius: 15px;
+}
+/* The following provides the green background for the "on" state of our toggle - it is hidden when the switch is off */
+
+input.toggle + label:before {
+  content: "";
+  position: absolute;
+  display: block;
+  height: 29px;
+  width: 29px;
+  top: 0;
+  left: 0;
+  border-radius: 15px;
+  -webkit-transition: .25s ease-in-out;
+}
+
+/* The following provides the actual switch and its drop shadow */
+
+input.toggle + label:after {
+  content: "";
+  position: absolute;
+  display: block;
+  height: 25px;
+  width: 25px;
+  top: 2px;
+  left: 2px;
+  border-radius: 15px;
+  background: white;
+  /*box-shadow: inset 0 0 0 1px rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.2);*/
+  -webkit-transition: .25s ease-in-out;
+}
+
+/* The following defines the "on" state for the switch */
+input.toggle:not(checked) + label:before {
+  width: 60px;
+  background: #685538;
+}
+
+input.toggle:checked + label:before {
+	width: 60px;
+	background: #edaf19;
+}
+
+input.toggle:checked + label:after {
+	left: 33px;
+}
+
+.toggle-text {
+  cursor: pointer !important;
+  color: white !important;
+  font-size: 11px !important;
+}
+
+input.toggle.mini + label {
+  height: 12px;
+  width: 20px;
+}
+
+input.toggle.mini + label:before {
+  height: 12px;
+}
+
+input.toggle.mini+ label:after {
+  height: 10px;
+  width: 10px;
+  top: 1px;
+  left: 1px;
+}
+
+input.toggle.mini:not(checked) + label:before {
+  width: 20px;
+}
+
+input.toggle.mini:checked + label:before {
+  width: 20px;
+}
+
+input.toggle.mini:checked + label:after{
+  left: 9px;
+}
+
+/*
+.linux .toggle-box-checked {
+  margin-top: -21px !important;
+}
+.windows .toggle-box-checked {
+  margin-top: -20px !important;
+}
+*/
+
+.toggle-box-checked{
+  position: absolute;
+  margin-top: -24px;
+  margin-left: 10px;
+}
+
+/*
+.linux .toggle-box-unchecked {
+  margin-top: -21px !important;
+}
+
+.windows .toggle-box-unchecked {
+  margin-top: -20px !important;
+}
+*/
+
+.toggle-box-unchecked {
+  position: absolute;
+  margin-top: -24px;
+  margin-left: 32px;
+}
+
+/* End of Toggle switch */
+
+/* End of connection component */

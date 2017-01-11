@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=470">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <link rel="stylesheet" href="css/popup.css" type="text/css">
+    <title>BlockBear</title>
+</head>
+
+<body class="body-mode-normal">
+    <div id="app" class="container" data-bind="css: {'loaded' : isLoaded}">
+        <div id="popup-div" class="table">
+            <div class="caption medium-row">
+                <img src="../images/logo.png" class="img-top-logo">
+                <div data-bind="click: openSettings" id="settings-gear">
+                    <img src="../images/icon_gear.png" class="img-top-settings">
+                </div>
+            </div>
+            <div class="table-row medium-row section-border">
+                <div class="table-cell status-cell">
+                    <div class="status-label">
+                        <span>Blocker</span>
+                    </div>
+                </div>
+                <div class="table-cell">
+                    <div data-bind="click: toggle">
+                        <input class="toggle" type="checkbox" name="toggle" id="toggle" data-bind="checked: isToggled" enabled="false">
+                        <label for="toggle"></label>
+                    </div>
+                    <div data-bind="css: { 'toggle-box-checked': isToggled(), 'toggle-box-unchecked': !isToggled()}, click: toggle">
+                        <span class="toggle-text" data-bind="text: isToggledText"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="table-row medium-row section-border whitelist">
+                <div class="table-cell status-cell">
+                    <div class="status-label">
+                        <span data-bind="text: domain"></span>
+                    </div>
+                </div>
+                <div class="table-cell">
+                    <!--<a href="#" data-bind="text: isWhitelistedText, click: toggleWhitelist"></a>-->
+                    <div data-bind="click: toggleWhitelist">
+                        <input class="toggle mini" type="checkbox" data-bind="checked: isWhitelisted" enabled="false">
+                        <label for=""></label>
+                    </div>
+                </div>
+            </div>
+            <div class="table-row medium-row progress-bar" data-bind="css: { 'hidden': isToggleShowDetails() }">
+                <div class="table-cell colspan">
+                    <div>
+                        <div class="bar blocks">
+                            <span data-bind="style: { width: pageBlockedPercentage() }"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-cell"></div>
+            </div>
+            <div class="table-row medium-row section-border count-tracker" data-bind="click: toggleShowDetails">
+                <div class="table-cell status-cell">
+                    <div class="status-label">
+                        <span id="pageBlockedCount"></span>
+                        <span data-bind="text: pageBlockedText"></span>
+                    </div>
+                </div>
+                <div class="table-cell">
+                    <div class="arrow" data-bind="css: { 'close': isToggleShowDetails(), 'open': !isToggleShowDetails()}"></div>
+                </div>
+            </div>
+        </div>
+        <div class="table tracker-details" data-bind="foreach: sortedPageDetails" style="display: none;">
+            <div class="table-row medium-row" data-bind="css: { 'first': $index() == 0 }, attr: { 'class': barClass}">
+                <div class="table-cell status-cell">
+                    <div class="status-label">
+                        <span data-bind="css: { 'disabled': !enabled() || !$parent.isWhitelisted() }, attr: { 'id': id }"></span>
+                        <span data-bind="css: { 'disabled': !enabled() || !$parent.isWhitelisted() }, text: title"></span>
+                    </div>
+                </div>
+                <div class="table-cell">
+                    <div data-bind="click: onClick">
+                        <input class="toggle mini" type="checkbox" data-bind="checked: enabled() && $parent.isWhitelisted()" enabled="false">
+                        <label for=""></label>
+                    </div>
+                </div>
+            </div>
+            <div class="table-row medium-row progress-bar" data-bind="css: { 'last': ($index() + 1) == $parent.sortedPageDetails().length }">
+                <div class="table-cell colspan">
+                    <div>
+                        <div data-bind="attr: { 'class': barClass}">
+                            <span data-bind="style: { width: percentage() }"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-cell"></div>
+            </div>
+        </div>
+    </div>
+    <script src="lib/punycode.js"></script>
+    <script src="js/knockout.js"></script>
+    <script src="js/vapi-common.js"></script>
+    <script src="js/vapi-client.js"></script>
+    <script src="js/vapi-popup.js"></script>
+    <script src="js/udom.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/blockbear-utils.js"></script>
+    <script src="js/popup.js"></script>
+</body>
+
+</html>

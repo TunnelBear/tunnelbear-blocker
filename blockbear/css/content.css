@@ -1,0 +1,39 @@
+.tb-container {
+  display: block;
+}
+
+.tb-block{
+  border: none;
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+  cursor: pointer;
+  display: block;
+  min-width: 48px;
+  min-height: 48px;
+  overflow: hidden;
+  padding: 0px;
+  position: relative;
+  visibility: visible;
+}
+
+.tb-block:hover::after {
+  display: block;
+}
+
+.tb-block::after {
+    color: white;
+    background-color: #4a4a4a;
+    border-radius: 10px;
+    content: "unblock flash";
+    top: 50%;
+    position: absolute;
+    text-align: center;
+    left: 50%;
+    right: 0;
+    margin: 40px -50px;
+    width: 100px;
+    display: none;
+}

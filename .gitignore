@@ -2,3 +2,4 @@
 *.pem
 /dist/build/
 /tmp/
+bower_components
