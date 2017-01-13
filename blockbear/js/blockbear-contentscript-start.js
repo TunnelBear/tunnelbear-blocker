@@ -578,10 +578,10 @@
                 for (var index = 0; index < iframes.length; index++) {
                     var iframe = iframes[index];
                     try {
-                        iframe.contentWindow.init = function (api) {
+                        iframe.contentWindow.init = function () {
                             this.window.eval("(" + api + ")(" + blockFingerprinting + ", " + blockMicrophone + ", " + blockKeyboard + ", " + blockMouse + ", " + blockBlockAdBlock + ");");
                         }
-                        iframe.contentWindow.init(api);
+                        iframe.contentWindow.init();
                     } catch (e) {
                         console.log(e);
                     }
