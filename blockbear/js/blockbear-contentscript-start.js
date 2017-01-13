@@ -220,48 +220,48 @@
         }
 
         // https://www.keytrac.net/en/tryout/authenticate
-        if (blockKeyboard) {
-            if (!window.blockKeyboard) {
-                window.blockKeyboard = true;
-                console.log('block keyboard');
+        // if (blockKeyboard) {
+        //     if (!window.blockKeyboard) {
+        //         window.blockKeyboard = true;
+        //         console.log('block keyboard');
 
-                var keyboardNotification = false;
-                function sleepRand(min, max) {
-                    var now = new Date().getTime();
-                    var rand = Math.random() * (max - min) + min;
-                    var end = now + rand;
-                    console.log('RAND = ' + rand);
-                    while (new Date().getTime() < end) { }
-                }
-                var addEventListener = function () {
-                    var sleepMin = 10;
-                    var sleepMax = 20;
-                    return function () {
-                        var args = arguments;
-                        // if (args[0] == "keydown") {
-                        //     console.log('block keydown');
-                        //     return this["addEventListener_BACKUP"](args[0], function (e) {
-                        //         console.log('keydown...')
-                        //         var shouldSleep = Math.round(Math.random()) < 0.5 ? sleepRand(sleepMin, sleepMax) : false;
-                        //         args[1](e);
-                        //     }, args[2]);
-                        // }
-                        if (args[0] == "keyup") {
-                            console.log('block keyup');
-                            return this["addEventListener_BACKUP"](args[0], function (e) {
-                                console.log('keyup...')
-                                if (!keyboardNotification) {
-                                    keyboardNotification = true;
-                                    window.top.postMessage({ message: 'keyboard', source: 'blockbear' }, '*');
-                                }
-                                var shouldSleep = Math.round(Math.random()) < 0.8 ? sleepRand(sleepMin, sleepMax) : false;
-                                args[1](e);
-                            }, args[2]);
-                        }
-                        return this["addEventListener_BACKUP"](args[0], args[1], args[2]);
-                    };
-                }
-                setApi(HTMLInputElement.prototype, "addEventListener", function () { return window.blockKeyboard }, addEventListener);
+        //         var keyboardNotification = false;
+        //         function sleepRand(min, max) {
+        //             var now = new Date().getTime();
+        //             var rand = Math.random() * (max - min) + min;
+        //             var end = now + rand;
+        //             console.log('RAND = ' + rand);
+        //             while (new Date().getTime() < end) { }
+        //         }
+        //         var addEventListener = function () {
+        //             var sleepMin = 10;
+        //             var sleepMax = 20;
+        //             return function () {
+        //                 var args = arguments;
+        //                 // if (args[0] == "keydown") {
+        //                 //     console.log('block keydown');
+        //                 //     return this["addEventListener_BACKUP"](args[0], function (e) {
+        //                 //         console.log('keydown...')
+        //                 //         var shouldSleep = Math.round(Math.random()) < 0.5 ? sleepRand(sleepMin, sleepMax) : false;
+        //                 //         args[1](e);
+        //                 //     }, args[2]);
+        //                 // }
+        //                 if (args[0] == "keyup") {
+        //                     console.log('block keyup');
+        //                     return this["addEventListener_BACKUP"](args[0], function (e) {
+        //                         console.log('keyup...')
+        //                         if (!keyboardNotification) {
+        //                             keyboardNotification = true;
+        //                             window.top.postMessage({ message: 'keyboard', source: 'blockbear' }, '*');
+        //                         }
+        //                         var shouldSleep = Math.round(Math.random()) < 0.8 ? sleepRand(sleepMin, sleepMax) : false;
+        //                         args[1](e);
+        //                     }, args[2]);
+        //                 }
+        //                 return this["addEventListener_BACKUP"](args[0], args[1], args[2]);
+        //             };
+        //         }
+        //         setApi(HTMLInputElement.prototype, "addEventListener", function () { return window.blockKeyboard }, addEventListener);
 
 
 
@@ -303,54 +303,54 @@
                 //     };
                 // }
                 // setApi(HTMLInputElement.prototype, "addEventListener", function () { return window.blockKeyboard }, addEventListener);
-            }
-        } else {
-            window.blockKeyboard = false;
-            window.top.postMessage({ message: 'restore-keyboard', source: 'blockbear' }, '*');
-        }
+        //     }
+        // } else {
+        //     window.blockKeyboard = false;
+        //     window.top.postMessage({ message: 'restore-keyboard', source: 'blockbear' }, '*');
+        // }
 
-        if (blockMouse) {
-            if (!window.blockMouse) {
-                window.blockMouse = true;
-                console.log('block mouse');
-                var isMousedown = false;
-                var wheelNotification = false;
-                var mouseMoveNotification = false;
-                function sleepRand(min, max) {
-                    var now = new Date().getTime();
-                    var rand = Math.random() * (max - min) + min;
-                    var end = now + rand;
-                    console.log('RAND = ' + rand);
-                    while (new Date().getTime() < end) { }
-                }
-                var addEventListener = function () {
-                    var sleepMin = 1;
-                    var sleepMax = 10;
-                    return function () {
-                        var args = arguments;
-                        if (args[0] == "wheel") {
-                            console.log('listen wheel');
-                            return this["addEventListener_BACKUP"](args[0], function (e) {
-                                if (!wheelNotification) {
-                                    wheelNotification = true;
-                                    window.top.postMessage({ message: 'mouse', source: 'blockbear' }, '*');
-                                }
-                                var shouldSleep = Math.round(Math.random()) < 0.8 ? sleepRand(sleepMin, sleepMax) : false;
-                                args[1](e);
-                            }, args[2]);
-                        }
+        // if (blockMouse) {
+        //     if (!window.blockMouse) {
+        //         window.blockMouse = true;
+        //         console.log('block mouse');
+        //         var isMousedown = false;
+        //         var wheelNotification = false;
+        //         var mouseMoveNotification = false;
+        //         function sleepRand(min, max) {
+        //             var now = new Date().getTime();
+        //             var rand = Math.random() * (max - min) + min;
+        //             var end = now + rand;
+        //             console.log('RAND = ' + rand);
+        //             while (new Date().getTime() < end) { }
+        //         }
+        //         var addEventListener = function () {
+        //             var sleepMin = 1;
+        //             var sleepMax = 10;
+        //             return function () {
+        //                 var args = arguments;
+        //                 if (args[0] == "wheel") {
+        //                     console.log('listen wheel');
+        //                     return this["addEventListener_BACKUP"](args[0], function (e) {
+        //                         if (!wheelNotification) {
+        //                             wheelNotification = true;
+        //                             window.top.postMessage({ message: 'mouse', source: 'blockbear' }, '*');
+        //                         }
+        //                         var shouldSleep = Math.round(Math.random()) < 0.8 ? sleepRand(sleepMin, sleepMax) : false;
+        //                         args[1](e);
+        //                     }, args[2]);
+        //                 }
 
-                        if (args[0] == 'mousemove') {
-                            return this["addEventListener_BACKUP"](args[0], function (e) {
-                                console.log('mousemove');
-                                if (!mouseMoveNotification) {
-                                    mouseMoveNotification = true;
-                                    window.top.postMessage({ message: 'mouse', source: 'blockbear' }, '*');
-                                }
-                                var shouldSleep = Math.round(Math.random()) < 0.5 ? sleepRand(sleepMin, sleepMax) : false;
-                                args[1](e);
-                            });
-                        }
+        //                 if (args[0] == 'mousemove') {
+        //                     return this["addEventListener_BACKUP"](args[0], function (e) {
+        //                         console.log('mousemove');
+        //                         if (!mouseMoveNotification) {
+        //                             mouseMoveNotification = true;
+        //                             window.top.postMessage({ message: 'mouse', source: 'blockbear' }, '*');
+        //                         }
+        //                         var shouldSleep = Math.round(Math.random()) < 0.5 ? sleepRand(sleepMin, sleepMax) : false;
+        //                         args[1](e);
+        //                     });
+        //                 }
 
 
                         // [BUG] Google Calendar
@@ -384,17 +384,17 @@
                         //         }, 10);
                         //     }, args[2]);
                         // }
-                        return this["addEventListener_BACKUP"](args[0], args[1], args[2]);
-                    };
-                }
-                setApi(Element.prototype, "addEventListener", function () { return window.blockMouse }, addEventListener);
-                setApi(HTMLDocument.prototype, "addEventListener", function () { return window.blockMouse }, addEventListener);
-                setApi(Window.prototype, "addEventListener", function () { return window.blockMouse }, addEventListener);
-            }
-        } else {
-            window.blockMouse = false;
-            window.top.postMessage({ message: 'restore-mouse', source: 'blockbear' }, '*');
-        }
+        //                 return this["addEventListener_BACKUP"](args[0], args[1], args[2]);
+        //             };
+        //         }
+        //         setApi(Element.prototype, "addEventListener", function () { return window.blockMouse }, addEventListener);
+        //         setApi(HTMLDocument.prototype, "addEventListener", function () { return window.blockMouse }, addEventListener);
+        //         setApi(Window.prototype, "addEventListener", function () { return window.blockMouse }, addEventListener);
+        //     }
+        // } else {
+        //     window.blockMouse = false;
+        //     window.top.postMessage({ message: 'restore-mouse', source: 'blockbear' }, '*');
+        // }
 
         // http://jcarlosnorte.com/security/2016/03/06/advanced-tor-browser-fingerprinting.html
         // https://panopticlick.eff.org/

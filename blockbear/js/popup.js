@@ -183,31 +183,34 @@
                     messager.send({ what: 'toggleBlockEmail' });
                     messager.send({ what: 'reloadTab', tabId: popupData.tabId });
                 }
-            }, {
-                id: 'keyboard',
-                title: vAPI.i18n("keyboard"),
-                count: self.pageBlockedKeyboardCount,
-                percentage: self.pageBlockedKeyboardPercentage,
-                enabled: self.blockKeyboardEnabled,
-                barClass: 'bar keyboard',
-                onClick: function () {
-                    self.blockKeyboardEnabled(!self.blockKeyboardEnabled());
-                    messager.send({ what: 'toggleBlockKeyboard' });
-                    messager.send({ what: 'reloadTab', tabId: popupData.tabId });
-                }
-            }, {
-                id: 'mouse',
-                title: vAPI.i18n("mouse"),
-                count: self.pageBlockedMouseCount,
-                percentage: self.pageBlockedMousePercentage,
-                enabled: self.blockMouseEnabled,
-                barClass: 'bar mouse',
-                onClick: function () {
-                    self.blockMouseEnabled(!self.blockMouseEnabled());
-                    messager.send({ what: 'toggleBlockMouse' });
-                    messager.send({ what: 'reloadTab', tabId: popupData.tabId });
-                }
-            }, {
+            }, 
+            // {
+            //     id: 'keyboard',
+            //     title: vAPI.i18n("keyboard"),
+            //     count: self.pageBlockedKeyboardCount,
+            //     percentage: self.pageBlockedKeyboardPercentage,
+            //     enabled: self.blockKeyboardEnabled,
+            //     barClass: 'bar keyboard',
+            //     onClick: function () {
+            //         self.blockKeyboardEnabled(!self.blockKeyboardEnabled());
+            //         messager.send({ what: 'toggleBlockKeyboard' });
+            //         messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+            //     }
+            // }, 
+            // {
+            //     id: 'mouse',
+            //     title: vAPI.i18n("mouse"),
+            //     count: self.pageBlockedMouseCount,
+            //     percentage: self.pageBlockedMousePercentage,
+            //     enabled: self.blockMouseEnabled,
+            //     barClass: 'bar mouse',
+            //     onClick: function () {
+            //         self.blockMouseEnabled(!self.blockMouseEnabled());
+            //         messager.send({ what: 'toggleBlockMouse' });
+            //         messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+            //     }
+            // }, 
+            {
                 id: 'microphone',
                 title: vAPI.i18n("microphone"),
                 count: self.pageBlockedMicrophoneCount,
@@ -299,8 +302,8 @@
                 self.animateCount(0, self.pageBlockedFlashCount(), 1000, document.getElementById('flash'));
                 self.animateCount(0, self.pageBlockedFingerprintingCount(), 1000, document.getElementById('fingerprinting'));
                 self.animateCount(0, self.pageBlockedEmailCount(), 1000, document.getElementById('email'));
-                self.animateCount(0, self.pageBlockedKeyboardCount(), 1000, document.getElementById('keyboard'));
-                self.animateCount(0, self.pageBlockedMouseCount(), 1000, document.getElementById('mouse'));
+                // self.animateCount(0, self.pageBlockedKeyboardCount(), 1000, document.getElementById('keyboard'));
+                // self.animateCount(0, self.pageBlockedMouseCount(), 1000, document.getElementById('mouse'));
                 self.animateCount(0, self.pageBlockedMicrophoneCount(), 1000, document.getElementById('microphone'));
                 self.animateCount(0, self.pageBlockedAdsCount(), 1000, document.getElementById('ads'));
                 self.animateCount(0, self.pageBlockedSocialCount(), 1000, document.getElementById('social'));
