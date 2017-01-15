@@ -24,16 +24,19 @@
 }
 
 .tb-block::after {
-    color: white;
-    background-color: #4a4a4a;
-    border-radius: 10px;
-    content: "unblock flash";
-    top: 50%;
-    position: absolute;
-    text-align: center;
-    left: 50%;
-    right: 0;
-    margin: 40px -50px;
-    width: 100px;
+    color: white!important;
+    background-color: #4a4a4a!important;
+    border-radius: 10px!important;
+    content: "unblock flash"!important;
+    top: 50%!important;
+    position: absolute!important;
+    text-align: center!important;
+    left: 50%!important;
+    right: 0!important;
+    margin: 40px -50px!important;
+    width: 100px!important;
+    font-size: 12px!important;
+    line-height: 18px!important;
+    font-family: Helvetica,Arial,sans-serif!important;
     display: none;
 }
