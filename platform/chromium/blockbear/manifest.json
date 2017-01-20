@@ -27,62 +27,42 @@
     },
     "content_scripts": [
         {
-            "matches": [
-                "http://*/*",
-                "https://*/*"
-            ],
-            "js": [
-                "js/vapi-client.js",
-                "js/blockbear-contentscript-start.js",
-                "js/contentscript-start.js"
-            ],
-            "css": [
-                "css/block.css"
-            ],
+            "matches": ["http://*/*", "https://*/*"],
+            "js": ["js/vapi-client.js", "js/blockbear-contentscript-start.js", "js/contentscript.js"],
+            "css": ["css/block.css"],
             "run_at": "document_start",
             "all_frames": true
         },
         {
-            "matches": [
-                "http://*/*",
-                "https://*/*"
-            ],
-            "js": [
-                "js/contentscript-end.js",
-                "js/blockbear-contentscript-end.js"
-            ],
-            "css": [
-                "css/content.css"
-            ],
-            "run_at": "document_end",
-            "all_frames": true
+            "matches": ["http://*/*", "https://*/*"],
+            "js": ["js/scriptlets/subscriber.js"],
+            "run_at": "document_idle",
+            "all_frames": false
         },
         {
-            "matches": [
-                "https://*.adblockplus.org/*",
-                "https://*.adblockplus.me/*",
-                "https://www.fanboy.co.nz/*"
-            ],
-            "js": [
-                "js/subscriber.js"
-            ],
-            "run_at": "document_idle"
+            "matches": ["http://*/*", "https://*/*"],
+            "js": ["js/blockbear-contentscript-end.js"],
+            "css": ["css/content.css"],
+            "run_at": "document_end",
+            "all_frames": false
         }
     ],
-    "minimum_chrome_version": "22.0",
+    "incognito": "split",
+    "minimum_chrome_version": "26.0",
+    "optional_permissions": [ "file:///*" ],
     "options_page": "settings.html",
-    // "options_ui": {
-    //     "page": "options_ui.html"
-    // },
+    "options_ui": {
+        "page": "options_ui.html"
+    },
     "permissions": [
         "contextMenus",
+        "privacy",
         "storage",
         "tabs",
         "unlimitedStorage",
         "webNavigation",
         "webRequest",
         "webRequestBlocking",
-        "privacy",
         "http://*/*",
         "https://*/*"
     ],
@@ -95,5 +75,8 @@
         "js/pixel-tracking.js"
     ],
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-    "short_name": "BlockBear"
+    "short_name": "BlockBear",
+    "storage": {
+        "managed_schema": "managed_storage.json"
+    }
 }

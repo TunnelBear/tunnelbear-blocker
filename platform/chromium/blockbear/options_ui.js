@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see {http://www.gnu.org/licenses/}.
 
-    Home: https://github.com/chrisaljoudi/uBlock
+    Home: https://github.com/gorhill/uBlock
 */
 
 /******************************************************************************/
@@ -27,15 +27,17 @@
 
 'use strict';
 
-var messager = vAPI.messaging.channel('_open');
-messager.send({
-    what: 'gotoURL',
-    details: {
-        url: 'settings.html',
-        select: true,
-        index: -1
+vAPI.messaging.send(
+    'default',
+    {
+        what: 'gotoURL',
+        details: {
+            url: 'settings.html',
+            select: true,
+            index: -1
+        }
     }
-});
+);
 window.close();
 
 /******************************************************************************/
