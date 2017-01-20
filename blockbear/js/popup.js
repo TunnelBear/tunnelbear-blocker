@@ -139,6 +139,7 @@
                 percentage: self.pageBlockedAdsPercentage,
                 enabled: self.blockAdsEnabled,
                 barClass: 'bar ads',
+                url: 'https://www.tunnelbear.com/blocker/info#ads',
                 onClick: function () {
                     self.blockAdsEnabled(!self.blockAdsEnabled());
                     setTimeout(function () {
@@ -154,6 +155,7 @@
                 percentage: self.pageBlockedFlashPercentage,
                 enabled: self.flashEnabled,
                 barClass: 'bar flash',
+                url: 'https://www.tunnelbear.com/blocker/info#flash',
                 onClick: function () {
                     self.flashEnabled(!self.flashEnabled());
                     messager.send({ what: 'toggleFlash' });
@@ -166,6 +168,7 @@
                 percentage: self.pageBlockedFingerprintingPercentage,
                 enabled: self.browserFingerprintingEnabled,
                 barClass: 'bar fingerprinting',
+                url: 'https://www.tunnelbear.com/blocker/info#fingerprinting',
                 onClick: function () {
                     self.browserFingerprintingEnabled(!self.browserFingerprintingEnabled());
                     messager.send({ what: 'toggleBrowserFingerprinting' });
@@ -178,6 +181,7 @@
                 percentage: self.pageBlockedEmailPercentage,
                 enabled: self.blockEmailEnabled,
                 barClass: 'bar email',
+                url: 'https://www.tunnelbear.com/blocker/info#email-tracking',
                 onClick: function () {
                     self.blockEmailEnabled(!self.blockEmailEnabled());
                     messager.send({ what: 'toggleBlockEmail' });
@@ -191,6 +195,7 @@
             //     percentage: self.pageBlockedKeyboardPercentage,
             //     enabled: self.blockKeyboardEnabled,
             //     barClass: 'bar keyboard',
+            //     url: 'https://www.tunnelbear.com/blocker/info#mouse-and-keyboard',
             //     onClick: function () {
             //         self.blockKeyboardEnabled(!self.blockKeyboardEnabled());
             //         messager.send({ what: 'toggleBlockKeyboard' });
@@ -204,6 +209,7 @@
             //     percentage: self.pageBlockedMousePercentage,
             //     enabled: self.blockMouseEnabled,
             //     barClass: 'bar mouse',
+            //     url: 'https://www.tunnelbear.com/blocker/info#mouse-and-keyboard',
             //     onClick: function () {
             //         self.blockMouseEnabled(!self.blockMouseEnabled());
             //         messager.send({ what: 'toggleBlockMouse' });
@@ -217,6 +223,7 @@
                 percentage: self.pageBlockedMicrophonePercentage,
                 enabled: self.blockMicrophoneEnabled,
                 barClass: 'bar microphone',
+                url: 'https://www.tunnelbear.com/blocker/info#ultrasonic-tracking',
                 onClick: function () {
                     self.blockMicrophoneEnabled(!self.blockMicrophoneEnabled());
                     messager.send({ what: 'toggleBlockMicrophone' });
@@ -229,6 +236,7 @@
                 percentage: self.pageBlockedSocialPercentage,
                 enabled: self.socialEnabled,
                 barClass: 'bar social',
+                url: 'https://www.tunnelbear.com/blocker/info#social-buttons',
                 onClick: function () {
                     self.socialEnabled(!self.socialEnabled());
                     setTimeout(function () {
@@ -244,6 +252,7 @@
                 percentage: self.pageBlockedPrivacyPercentage,
                 enabled: self.privacyEnabled,
                 barClass: 'bar privacy',
+                url: 'https://www.tunnelbear.com/blocker/info#scripts-trackers',
                 onClick: function () {
                     self.privacyEnabled(!self.privacyEnabled());
                     setTimeout(function () {
@@ -259,6 +268,7 @@
                 percentage: self.pageBlockedMalwarePercentage,
                 enabled: self.malwareEnabled,
                 barClass: 'bar malware',
+                url: 'https://www.tunnelbear.com/blocker/info#scripts-trackers',
                 onClick: function () {
                     self.malwareEnabled(!self.malwareEnabled());
                     setTimeout(function () {
@@ -314,6 +324,11 @@
 
         this.openSettings = function () {
             chrome.tabs.create({ url: "settings.html" });
+        }
+
+        this.createTab = function (item) {
+            console.log(item);
+            chrome.tabs.create({ url: item.url });
         }
 
         this.watchContentChanged = function () {
