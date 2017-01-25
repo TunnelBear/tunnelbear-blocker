@@ -1,5 +1,7 @@
 (function () {
     var messager = vAPI.messaging.channel('settings.js');
+    var messager = vAPI.messaging;
+    messager.addChannelListener('settings');
 
     var getSettingsData = function (callback) {
         var onDataReceived = function (response) {

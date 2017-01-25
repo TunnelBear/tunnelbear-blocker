@@ -473,7 +473,46 @@ var onMessage = function(request, sender, callback) {
             µb.updateBadgeAsync(request.tabId);
         }
         break;
-
+    case 'toggleBlockBear':
+        µb.changeUserSettings("blockBearEnabled", !µb.userSettings.blockBearEnabled);
+        break;
+    case 'toggleBlockAds':
+        µb.changeUserSettings("blockAdsEnabled", !µb.userSettings.blockAdsEnabled);
+        µb.setFilters('ads', !µb.userSettings.blockAdsEnabled, callback);
+        break;
+    case 'toggleFlash':
+        µb.changeUserSettings("flashbearEnabled", !µb.userSettings.flashbearEnabled);
+        break;
+    case 'toggleBrowserFingerprinting':
+        µb.changeUserSettings("blockBrowserFingerprintingEnabled", !µb.userSettings.blockBrowserFingerprintingEnabled);
+        break;
+    case 'toggleBlockEmail':
+        µb.changeUserSettings("blockEmailEnabled", !µb.userSettings.blockEmailEnabled);
+        break;
+    case 'toggleBlockKeyboard':
+        µb.changeUserSettings("blockKeyboardEnabled", !µb.userSettings.blockKeyboardEnabled);
+        break;
+    case 'toggleBlockMouse':
+        µb.changeUserSettings("blockMouseEnabled", !µb.userSettings.blockMouseEnabled);
+        break;
+    case 'toggleBlockMicrophone':
+        µb.changeUserSettings("blockMicrophoneEnabled", !µb.userSettings.blockMicrophoneEnabled);
+        break;
+    case 'toggleSocial':
+        µb.changeUserSettings("blockSocialEnabled", !µb.userSettings.blockSocialEnabled);
+        µb.setFilters('social', !µb.userSettings.blockSocialEnabled, callback);
+        break;
+    case 'togglePrivacy':
+        µb.changeUserSettings("blockPrivacyEnabled", !µb.userSettings.blockPrivacyEnabled);
+        µb.setFilters('privacy', !µb.userSettings.blockPrivacyEnabled, callback);
+        break;
+    case 'toggleMalware':
+        µb.changeUserSettings("blockMalwareEnabled", !µb.userSettings.blockMalwareEnabled);
+        µb.setFilters('malware', !µb.userSettings.blockMalwareEnabled, callback);
+        break;
+    case 'toggleShowPopupDetails':
+        µb.changeUserSettings("showPopupDetails", !µb.userSettings.showPopupDetails);
+        break;    
     default:
         return vAPI.messaging.UNHANDLED;
     }

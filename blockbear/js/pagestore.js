@@ -494,7 +494,7 @@ PageStore.prototype.getNetFilteringSwitch = function () {
 };
 
 PageStore.prototype.netFilteringSwitchEnabled = function () {
-    var tabContext = µb.tabContextManager.mustLookup(this.tabId).getNetFilteringSwitch();
+    var tabContext = µb.tabContextManager.mustLookup(this.tabId);
     if (
         this.netFilteringReadTime > µb.netWhitelistModifyTime &&
         this.netFilteringReadTime > tabContext.modifyTime
@@ -511,6 +511,9 @@ PageStore.prototype.netFilteringSwitchEnabled = function () {
     this.netFilteringReadTime = Date.now();
     return this.netFiltering;
 };
+
+PageStore.prototype.sendStats = function () {
+}
 
 /******************************************************************************/
 
@@ -558,10 +561,7 @@ PageStore.prototype.temporarilyAllowLargeMediaElements = function() {
 
 PageStore.prototype.journalAddRequest = function(hostname, result) {
     if ( hostname === '' ) { return; }
-    this.journal.push(
-        hostname,
-        result.charCodeAt(1) === 0x62 /* 'b' */ ? 0x00000001 : 0x00010000
-    );
+    this.journal.push(hostname, result);
     if ( this.journalTimer === null ) {
         this.journalTimer = vAPI.setTimeout(this.journalProcess.bind(this, true), 1000);
     }
@@ -596,7 +596,7 @@ PageStore.prototype.journalProcess = function(fromTimer) {
 
     var journal = this.journal,
         i, n = journal.length,
-        hostname, count, hostnameCounts,
+        hostname, result, count, hostnameCounts,
         aggregateCounts = 0,
         now = Date.now(),
         pivot = this.journalLastCommitted || 0;
@@ -609,9 +609,29 @@ PageStore.prototype.journalProcess = function(fromTimer) {
             hostnameCounts = 0;
             this.contentLastModified = now;
         }
-        count = journal[i+1];
+        result = journal[i+1];
+        count = result.charCodeAt(1) === 0x62 /* 'b' */ ? 0x00000001 : 0x00010000
         this.hostnameToCountMap.set(hostname, hostnameCounts + count);
         aggregateCounts += count;
+
+        if(result) {
+            var split = result ? result.split(':') : [];
+            var group = split.length > 1 ? split[1] : '';
+            switch (group) {
+                case 'social':
+                    this.perLoadBlockedSocialCount++;
+                    break;
+                case 'privacy':
+                    this.perLoadBlockedPrivacyCount++;
+                    break;
+                case 'malware':
+                    this.perLoadBlockedMalwareCount++;
+                    break;
+                default:
+                    this.perLoadBlockedAdsCount++;
+                    break;
+            }
+        }
     }
     this.perLoadBlockedRequestCount += aggregateCounts & 0xFFFF;
     this.perLoadAllowedRequestCount += aggregateCounts >>> 16 & 0xFFFF;

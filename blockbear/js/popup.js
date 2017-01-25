@@ -1,11 +1,12 @@
 (function () {
-    var messager = vAPI.messaging.channel('popup.js');
+    var messager = vAPI.messaging;
+    messager.addChannelListener('popupPanel');
 
     var getPopupData = function (callback) {
         var onDataReceived = function (response) {
             callback(response);
         };
-        messager.send({ what: 'getPopupData', tabId: null }, onDataReceived);
+        messager.send('popupPanel', { what: 'getPopupData', tabId: null }, onDataReceived);
     }
 
     function PopupViewModel(popupData) {
@@ -143,8 +144,8 @@
                 onClick: function () {
                     self.blockAdsEnabled(!self.blockAdsEnabled());
                     setTimeout(function () {
-                        messager.send({ what: 'toggleBlockAds' }, function () {
-                            messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+                        messager.send('popupPanel', { what: 'toggleBlockAds' }, function () {
+                            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                         });
                     }, 500);
                 }
@@ -158,8 +159,8 @@
                 url: 'https://www.tunnelbear.com/blocker/info#flash',
                 onClick: function () {
                     self.flashEnabled(!self.flashEnabled());
-                    messager.send({ what: 'toggleFlash' });
-                    messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+                    messager.send('popupPanel', { what: 'toggleFlash' });
+                    messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                 }
             }, {
                 id: 'fingerprinting',
@@ -171,8 +172,8 @@
                 url: 'https://www.tunnelbear.com/blocker/info#fingerprinting',
                 onClick: function () {
                     self.browserFingerprintingEnabled(!self.browserFingerprintingEnabled());
-                    messager.send({ what: 'toggleBrowserFingerprinting' });
-                    messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+                    messager.send('popupPanel', { what: 'toggleBrowserFingerprinting' });
+                    messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                 }
             }, {
                 id: 'email',
@@ -184,8 +185,8 @@
                 url: 'https://www.tunnelbear.com/blocker/info#email-tracking',
                 onClick: function () {
                     self.blockEmailEnabled(!self.blockEmailEnabled());
-                    messager.send({ what: 'toggleBlockEmail' });
-                    messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+                    messager.send('popupPanel', { what: 'toggleBlockEmail' });
+                    messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                 }
             }, 
             // {
@@ -198,8 +199,8 @@
             //     url: 'https://www.tunnelbear.com/blocker/info#mouse-and-keyboard',
             //     onClick: function () {
             //         self.blockKeyboardEnabled(!self.blockKeyboardEnabled());
-            //         messager.send({ what: 'toggleBlockKeyboard' });
-            //         messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+            //         messager.send('popupPanel', { what: 'toggleBlockKeyboard' });
+            //         messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
             //     }
             // }, 
             // {
@@ -212,8 +213,8 @@
             //     url: 'https://www.tunnelbear.com/blocker/info#mouse-and-keyboard',
             //     onClick: function () {
             //         self.blockMouseEnabled(!self.blockMouseEnabled());
-            //         messager.send({ what: 'toggleBlockMouse' });
-            //         messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+            //         messager.send('popupPanel', { what: 'toggleBlockMouse' });
+            //         messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
             //     }
             // }, 
             {
@@ -226,8 +227,8 @@
                 url: 'https://www.tunnelbear.com/blocker/info#ultrasonic-tracking',
                 onClick: function () {
                     self.blockMicrophoneEnabled(!self.blockMicrophoneEnabled());
-                    messager.send({ what: 'toggleBlockMicrophone' });
-                    messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+                    messager.send('popupPanel', { what: 'toggleBlockMicrophone' });
+                    messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                 }
             },{
                 id: 'social',
@@ -240,8 +241,8 @@
                 onClick: function () {
                     self.socialEnabled(!self.socialEnabled());
                     setTimeout(function () {
-                        messager.send({ what: 'toggleSocial' }, function () {
-                            messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+                        messager.send('popupPanel', { what: 'toggleSocial' }, function () {
+                            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                         });
                     }, 500);
                 }
@@ -256,8 +257,8 @@
                 onClick: function () {
                     self.privacyEnabled(!self.privacyEnabled());
                     setTimeout(function () {
-                        messager.send({ what: 'togglePrivacy' }, function () {
-                            messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+                        messager.send('popupPanel', { what: 'togglePrivacy' }, function () {
+                            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                         });
                     }, 500);
                 }
@@ -272,8 +273,8 @@
                 onClick: function () {
                     self.malwareEnabled(!self.malwareEnabled());
                     setTimeout(function () {
-                        messager.send({ what: 'toggleMalware' }, function () {
-                            messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+                        messager.send('popupPanel', { what: 'toggleMalware' }, function () {
+                            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                         });
                     }, 500);
                 }
@@ -286,16 +287,16 @@
 
         this.toggle = function () {
             this.isToggled(!this.isToggled());
-            messager.send({ what: 'toggleBlockBear', tabId: popupData.tabId });
-            messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+            messager.send('popupPanel', { what: 'toggleBlockBear', tabId: popupData.tabId });
+            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
         }
         this.toggleWhitelist = function () {
             this.isWhitelisted(!this.isWhitelisted());
-            messager.send({ what: 'toggleNetFiltering', url: popupData.pageURL, scope: '', state: this.isWhitelisted(), tabId: popupData.tabId });
-            messager.send({ what: 'reloadTab', tabId: popupData.tabId });
+            messager.send('popupPanel', { what: 'toggleNetFiltering', url: popupData.pageURL, scope: '', state: this.isWhitelisted(), tabId: popupData.tabId });
+            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
         }
         this.toggleShowDetails = function () {
-            messager.send({ what: 'toggleShowPopupDetails' });
+            messager.send('popupPanel', { what: 'toggleShowPopupDetails' });
             this.setDetailsVisibility(!this.isToggleShowDetails());
         }
         

@@ -12,10 +12,11 @@
         return;
     }
 
-    var messager = vAPI.messaging.channel('blockbear-contentscript-end.js');
+    var messager = vAPI.messaging;
+    messager.addChannelListener('blockbear-contentscript-end.js');
     window.addEventListener('message', function (event) {
         if (event && event.data && event.data.source == 'blockbear-pixel-tracking') {
-            messager.send({ what: 'pixel-tracking' });
+            messager.send('blockbear-contentscript-end.js', { what: 'pixel-tracking' });
         }
     });
 
@@ -115,7 +116,7 @@
                 btn.style["background"] = getBlockBackground();
             });
             element.appendChild(btn);
-            messager.send({ what: 'incrementFlashCount' });
+            messager.send('blockbear-contentscript-end.js', { what: 'incrementFlashCount' });
         }
 
         var unblockFlash = function () {
@@ -128,11 +129,11 @@
         var unblockFlashElement = function (element) {
             element.classList.add("tb-unlock");
             element.style.display = "";
-            messager.send({ what: 'decrementFlashCount' });
+            messager.send('blockbear-contentscript-end.js', { what: 'decrementFlashCount' });
         }
 
         var applyFlashbear = function () {
-            messager.send({
+            messager.send('blockbear-contentscript-end.js', {
                 what: 'blockFlash'
             }, function (response) {
                 if (response.result) {
@@ -150,7 +151,7 @@
         }
     })();
     
-    messager.send({
+    messager.send('blockbear-contentscript-end.js', {
         what: 'blockEmailEnabled'
     }, function (response) {
         if (response) {

@@ -3,38 +3,38 @@
         return;
     }
 
-    var messager = vAPI.messaging.channel('blockbear-contentscript-start.js');
-
+    var messager = vAPI.messaging;
+    messager.addChannelListener('blockbear-contentscript-start.js');
     var notifications = [];
     window.addEventListener('message', function (event) {
         if (event && event.data && event.data.source == 'blockbear') {
             switch (event.data.message) {
                 case 'restore-fingerprinting':
-                    messager.send({ what: 'clearFingerprintingCount' });
+                    messager.send('blockbear-contentscript-start.js', { what: 'clearFingerprintingCount' });
                     break;
                 case 'restore-keyboard':
-                    messager.send({ what: 'clearKeyboardCount' });
+                    messager.send('blockbear-contentscript-start.js', { what: 'clearKeyboardCount' });
                     break;
                 case 'keyboard':
-                    messager.send({ what: 'incrementKeyboardCount', message: event.data.message, data: event.data.data });
+                    messager.send('blockbear-contentscript-start.js', { what: 'incrementKeyboardCount', message: event.data.message, data: event.data.data });
                     break;
                 case 'restore-mouse':
-                    messager.send({ what: 'clearMouseCount' });
+                    messager.send('blockbear-contentscript-start.js', { what: 'clearMouseCount' });
                     break;
                 case 'mouse':
-                    messager.send({ what: 'incrementMouseCount', message: event.data.message, data: event.data.data });
+                    messager.send('blockbear-contentscript-start.js', { what: 'incrementMouseCount', message: event.data.message, data: event.data.data });
                     break;
                 case 'restore-microphone':
-                    messager.send({ what: 'clearMicrophoneCount' });
+                    messager.send('blockbear-contentscript-start.js', { what: 'clearMicrophoneCount' });
                     break;
                 case 'microphone':
-                    messager.send({ what: 'incrementMicrophoneCount', message: event.data.message, data: event.data.data });
+                    messager.send('blockbear-contentscript-start.js', { what: 'incrementMicrophoneCount', message: event.data.message, data: event.data.data });
                     break;
                 default:
                     if (notifications.indexOf(event.data.message) == -1) {
                         console.log(event.data.message);
                         notifications.push(event.data.message);
-                        messager.send({ what: 'incrementFingerprintingCount', message: event.data.message, data: event.data.data });
+                        messager.send('blockbear-contentscript-start.js', { what: 'incrementFingerprintingCount', message: event.data.message, data: event.data.data });
                     }
                     break;
             }
@@ -604,10 +604,10 @@
         this.document.documentElement.removeAttribute("onreset");
     }
 
-    messager.send({
+    messager.send('blockbear-contentscript-start.js', {
         what: 'blockBrowserFingerprinting'
     }, function (response) {
         reset(response.blockFingerprinting, response.blockMicrophone, response.blockKeyboard, response.blockMouse, response.blockBlockAdBlock);
     });
-    reset(true, true, true, true, false);
+    // reset(true, true, true, true, false);
 })();
