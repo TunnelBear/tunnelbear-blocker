@@ -1,5 +1,4 @@
 (function () {
-    var messager = vAPI.messaging.channel('settings.js');
     var messager = vAPI.messaging;
     messager.addChannelListener('settings');
 
@@ -7,7 +6,7 @@
         var onDataReceived = function (response) {
             callback(response);
         };
-        messager.send({ what: 'getSettingsData', tabId: null }, onDataReceived);
+        messager.send('settings', { what: 'getSettingsData', tabId: null }, onDataReceived);
     }
     
     function SettingsViewModel(settingsData) {
@@ -72,56 +71,56 @@
             var self = this;
             this.settingsBlockAdsEnabled(!this.settingsBlockAdsEnabled());
             setTimeout(function () {
-                messager.send({ what: 'toggleBlockAds' }, function () {
+                messager.send('settings', { what: 'toggleBlockAds' }, function () {
                     self.reload = true;
                 });
             }, 500);
         }
         this.toggleFlash = function () {
             this.settingsFlashEnabled(!this.settingsFlashEnabled());
-            messager.send({ what: 'toggleFlash' });
+            messager.send('settings', { what: 'toggleFlash' });
             this.reload = true;
         }
         this.toggleBrowserFingerprinting = function () {
             this.settingsBrowserFingerprintingEnabled(!this.settingsBrowserFingerprintingEnabled());
-            messager.send({ what: 'toggleBrowserFingerprinting' });
+            messager.send('settings', { what: 'toggleBrowserFingerprinting' });
             this.reload = true;
         }
         this.toggleBlockMicrophone = function () {
             this.settingsBlockMicrophoneEnabled(!this.settingsBlockMicrophoneEnabled());
-            messager.send({ what: 'toggleBlockMicrophone' });
+            messager.send('settings', { what: 'toggleBlockMicrophone' });
             this.reload = true;
         }
         this.toggleBlockKeyboard = function () {
             this.settingsBlockKeyboardEnabled(!this.settingsBlockKeyboardEnabled());
-            messager.send({ what: 'toggleBlockKeyboard' });
+            messager.send('settings', { what: 'toggleBlockKeyboard' });
             this.reload = true;
         }
         this.toggleBlockMouse = function () {
             this.settingsBlockMouseEnabled(!this.settingsBlockMouseEnabled());
-            messager.send({ what: 'toggleBlockMouse' });
+            messager.send('settings', { what: 'toggleBlockMouse' });
             this.reload = true;
         }
         this.toggleBlockEmail = function () {
             this.settingsBlockEmailEnabled(!this.settingsBlockEmailEnabled());
-            messager.send({ what: 'toggleBlockEmail' });
+            messager.send('settings', { what: 'toggleBlockEmail' });
             this.reload = true;
         }
         this.toggleBlockWebRTC = function () {
             this.settingsBlockWebRTCEnabled(!this.settingsBlockWebRTCEnabled());
-            messager.send({ what: 'toggleBlockWebRTC' });
+            messager.send('settings', { what: 'toggleBlockWebRTC' });
             this.reload = true;
         }
         this.toggleBlockBlockAdBlock = function () {
             this.settingsBlockBlockAdBlockEnabled(!this.settingsBlockBlockAdBlockEnabled());
-            messager.send({ what: 'toggleBlockBlockAdBlock' });
+            messager.send('settings', { what: 'toggleBlockBlockAdBlock' });
             this.reload = true;
         }
         this.toggleSocial = function () {
             var self = this;
             this.settingsSocialEnabled(!this.settingsSocialEnabled());
             setTimeout(function () {
-                messager.send({ what: 'toggleSocial' }, function () {
+                messager.send('settings', { what: 'toggleSocial' }, function () {
                     self.reload = true;
                 });
             }, 500);
@@ -130,7 +129,7 @@
             var self = this;
             this.settingsPrivacyEnabled(!this.settingsPrivacyEnabled());
             setTimeout(function () {
-                messager.send({ what: 'togglePrivacy' }, function () {
+                messager.send('settings', { what: 'togglePrivacy' }, function () {
                     self.reload = true;
                 });
             }, 500);
@@ -139,14 +138,14 @@
             var self = this;
             this.settingsMalwareEnabled(!this.settingsMalwareEnabled());
             setTimeout(function () {
-                messager.send({ what: 'toggleMalware' }, function () {
+                messager.send('settings', { what: 'toggleMalware' }, function () {
                     self.reload = true;
                 });
             }, 500);
         }
         this.toggleSendStats = function () {
             this.settingsSendStatsEnabled(!this.settingsSendStatsEnabled());
-            messager.send({ what: 'toggleSendStats' });
+            messager.send('settings', { what: 'toggleSendStats' });
             this.reload = true;
         }
     };

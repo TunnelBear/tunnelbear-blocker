@@ -795,6 +795,88 @@ vAPI.messaging.listen('cloudWidget', onMessage);
 /******************************************************************************/
 /******************************************************************************/
 
+// channel: settings
+
+(function() {
+
+/******************************************************************************/
+
+var µb = µBlock;
+
+/******************************************************************************/
+
+var onMessage = function(request, sender, callback) {
+
+    // Async
+    switch ( request.what ) {
+        case 'getSettingsData': 
+            callback(µb.userSettings);
+            return;
+        default:
+            break;
+    }
+
+    // Sync
+    var response;
+
+    switch ( request.what ) {
+        case 'toggleBlockAds':
+            µb.changeUserSettings("blockAdsEnabled", !µb.userSettings.blockAdsEnabled);
+            µb.setFilters('ads', !µb.userSettings.blockAdsEnabled, callback);
+            break;
+        case 'toggleFlash':
+            µb.changeUserSettings("flashbearEnabled", !µb.userSettings.flashbearEnabled);
+            break;
+        case 'toggleBrowserFingerprinting':
+            µb.changeUserSettings("blockBrowserFingerprintingEnabled", !µb.userSettings.blockBrowserFingerprintingEnabled);
+            break;
+        case 'toggleBlockMicrophone':
+            µb.changeUserSettings("blockMicrophoneEnabled", !µb.userSettings.blockMicrophoneEnabled);
+            break;
+        case 'toggleBlockPixelTracking':
+            µb.changeUserSettings("blockPixelTrackingEnabled", !µb.userSettings.blockPixelTrackingEnabled);
+            break;
+        case 'toggleBlockEmail':
+            µb.changeUserSettings("blockEmailEnabled", !µb.userSettings.blockEmailEnabled);
+            break;
+        case 'toggleBlockWebRTC':
+            µb.changeUserSettings("blockWebRTCEnabled", !µb.userSettings.blockWebRTCEnabled);
+            µb.setBlockWebRTC(µb.userSettings.blockWebRTCEnabled);
+            break;
+        case 'toggleBlockBlockAdBlock':
+            µb.changeUserSettings("blockBlockAdBlockEnabled", !µb.userSettings.blockBlockAdBlockEnabled);
+            break;
+        case 'toggleSocial':
+            µb.changeUserSettings("blockSocialEnabled", !µb.userSettings.blockSocialEnabled);
+            µb.setFilters('social', !µb.userSettings.blockSocialEnabled, callback);
+            break;
+        case 'togglePrivacy':
+            µb.changeUserSettings("blockPrivacyEnabled", !µb.userSettings.blockPrivacyEnabled);
+            µb.setFilters('privacy', !µb.userSettings.blockPrivacyEnabled, callback);
+            break;
+        case 'toggleMalware':
+            µb.changeUserSettings("blockMalwareEnabled", !µb.userSettings.blockMalwareEnabled);
+            µb.setFilters('malware', !µb.userSettings.blockMalwareEnabled, callback);
+            break;
+        case 'toggleSendStats':
+            µb.changeUserSettings("sendStatsEnabled", !µb.userSettings.sendStatsEnabled);
+            break;
+        default:
+            return vAPI.messaging.UNHANDLED;
+    }
+
+    callback(response);
+};
+
+vAPI.messaging.listen('settings', onMessage);
+
+/******************************************************************************/
+
+})();
+
+/******************************************************************************/
+/******************************************************************************/
+
 // channel: dashboard
 
 (function() {
