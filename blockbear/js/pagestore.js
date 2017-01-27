@@ -596,7 +596,7 @@ PageStore.prototype.journalProcess = function(fromTimer) {
 
     var journal = this.journal,
         i, n = journal.length,
-        hostname, result, count, hostnameCounts,
+        hostname, b, result, count, hostnameCounts,
         aggregateCounts = 0,
         now = Date.now(),
         pivot = this.journalLastCommitted || 0;
@@ -610,13 +610,15 @@ PageStore.prototype.journalProcess = function(fromTimer) {
             this.contentLastModified = now;
         }
         result = journal[i+1];
-        count = result.charCodeAt(1) === 0x62 /* 'b' */ ? 0x00000001 : 0x00010000
+        b = result.charCodeAt(1) === 0x62; /* 'b' */
+        count = b ? 0x00000001 : 0x00010000;
         this.hostnameToCountMap.set(hostname, hostnameCounts + count);
         aggregateCounts += count;
 
-        if(result) {
+        if(b && result) {
             var split = result ? result.split(':') : [];
             var group = split.length > 1 ? split[1] : '';
+            console.log(hostname + ': ' + result);
             switch (group) {
                 case 'social':
                     this.perLoadBlockedSocialCount++;
