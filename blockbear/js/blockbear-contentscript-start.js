@@ -439,7 +439,7 @@
                     setApi(Element.prototype, "getClientRects", function () { return window.blockBrowserFingerprinting }, function () {
                         return function () {
                             window.top.postMessage({ message: 'element.getClientRects', source: 'blockbear' }, '*');
-                            return [];
+                            return [{top: 0, right: 0, bottom: 0, left: 0, width: 0}];
                         }
                     });
                     setApi(CSSStyleDeclaration.prototype, "fontFamily", function () { return window.blockBrowserFingerprinting }, function () {
