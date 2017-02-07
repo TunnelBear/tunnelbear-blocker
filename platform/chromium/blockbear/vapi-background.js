@@ -699,8 +699,9 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
                 }
             } else {
                 chrome.browserAction.setIcon({ tabId: tabId, path: ICON_PATHS[iconStatus] });
-                chrome.browserAction.setBadgeText({ tabId: tabId, text: '' });
             }
+        } else {
+            chrome.browserAction.setIcon({ tabId: tabId, path: ICON_PATHS[iconStatus] });
         }
     };
 
