@@ -444,6 +444,7 @@
                     });
                     setApi(CSSStyleDeclaration.prototype, "fontFamily", function () { return window.blockBrowserFingerprinting }, function () {
                         window.top.postMessage({ message: 'CSSStyleDeclaration.fontFamily', source: 'blockbear' }, '*');
+                        return "";
                     }, function (val) {
                         window.top.postMessage({ message: 'CSSStyleDeclaration.fontFamily', source: 'blockbear' }, '*');
                     });
