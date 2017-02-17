@@ -1147,6 +1147,9 @@
 
 µBlock.filterBuiltinLists = function (details) {
     for (var name in details) {
+        if(name == "https://www.fanboy.co.nz/fanboy-antifacebook.txt") {
+            details[name].off = false;
+        }
         if(details[name].off == false) {
             switch(details[name].group){
                 case 'privacy':
