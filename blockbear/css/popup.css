@@ -11,6 +11,22 @@
   background: #faf9f7;
 }
 
+.report {
+  background: url('../images/report_icon_normal2x.png');
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  height: 16px;
+  width: 16px;
+  float: left;
+  margin-left: 5px;
+}
+
+.report:hover {
+  background: url('../images/report_icon_hover2x.png');
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+}
+
 .count-tracker {
   border-top-color: transparent;
   background: #faf9f7;

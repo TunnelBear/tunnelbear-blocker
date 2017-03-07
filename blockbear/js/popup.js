@@ -299,6 +299,15 @@
             messager.send('popupPanel', { what: 'toggleShowPopupDetails' });
             this.setDetailsVisibility(!this.isToggleShowDetails());
         }
+
+        this.showReport = function() {
+            chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+                var tab = tabs[0];
+                var manifest = chrome.runtime.getManifest();
+                var url = "https://www.tunnelbear.com/blocker/reports?url=" + tab.url + "&version=" + manifest.version;
+                chrome.tabs.create({ url: url });
+            });
+        }
         
         this.setDetailsVisibility = function (visible) {
             if (visible) {

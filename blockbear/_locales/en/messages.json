@@ -122,5 +122,8 @@
 	},
 	"email": {
 		"message": "Email"
+	},
+	"tooltipReport": {
+		"message": "Report"
 	}
 }
