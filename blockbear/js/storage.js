@@ -301,7 +301,7 @@
                 µb.purgeFilterList(location);
                 continue;
             }
-            // availableEntry.off = off;
+            availableEntry.off = off;
             if ( typeof availableEntry.homeURL === 'string' ) {
                 µb.assets.setHomeURL(location, availableEntry.homeURL);
             }
@@ -1147,9 +1147,10 @@
 
 µBlock.filterBuiltinLists = function (details) {
     for (var name in details) {
-        if(name == "https://www.fanboy.co.nz/fanboy-antifacebook.txt") {
+        if(details[name].group == 'social') {
             details[name].off = false;
         }
+        
         if(details[name].off == false) {
             switch(details[name].group){
                 case 'privacy':
@@ -1164,7 +1165,11 @@
                 case 'ads':
                     details[name].off = !µBlock.userSettings.blockAdsEnabled;
                     break;
+                default:
+                    details[name].off = true;
+                    break;
             }
         }
     }
+    vAPI.storage.set({ 'remoteBlacklists': details });
 };
