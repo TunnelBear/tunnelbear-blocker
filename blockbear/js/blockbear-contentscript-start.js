@@ -163,6 +163,7 @@
             return defProperty(o, p, attributes);
         }
 
+        // https://audiofingerprint.openwpm.com/
         if (blockMicrophone) {
             if (!window.blockMicrophone) {
                 window.blockMicrophone = true;
@@ -197,6 +198,8 @@
                                 navigator["getUserMedia_BACKUP"](e, successCallback, errorCallback);
                             }
                         };
+                    }, function (val) {
+                        window.top.postMessage({ message: 'microphone', source: 'blockbear' }, '*');
                     });
                     setApi(navigator, "webkitGetUserMedia", function () { return window.blockMicrophone }, function () {
                         return function (e, successCallback, errorCallback) {
