@@ -11,8 +11,8 @@ mkdir -p $DES
 
 bash ./tools/make-assets.sh $DES
 
-#cp -R assets $DES/
-#rm $DES/assets/*.sh
+# cp -R assets $DES/
+# rm $DES/assets/*.sh
 cp -R blockbear/css $DES/
 cp -R blockbear/fonts $DES/
 cp -R blockbear/images $DES/

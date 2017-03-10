@@ -1,0 +1,3 @@
+[submodule "uAssets"]
+	path = uAssets
+	url = git@github.com:uBlockOrigin/uAssets.git
