@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
 
-    "name": "BlockBear",
+    "name": "TunnelBear Blocker",
     "version": "0.9.0",
 
     "default_locale": "en",
@@ -17,7 +17,7 @@
             "16": "images/browsericons/icon_off.png",
             "32": "images/browsericons/icon_off@2x.png"  
         },
-        "default_title": "BlockBear",
+        "default_title": "TunnelBear Blocker",
         "default_popup": "popup.html"
     },
 
@@ -75,7 +75,7 @@
         "js/pixel-tracking.js"
     ],
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-    "short_name": "BlockBear",
+    "short_name": "TunnelBear Blocker",
     "storage": {
         "managed_schema": "managed_storage.json"
     }
