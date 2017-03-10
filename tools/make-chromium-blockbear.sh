@@ -9,6 +9,9 @@ DES=dist/build/blockbear.chromium
 rm -rf $DES
 mkdir -p $DES
 
+echo "*** blockbear.chromium: bower install..."
+bower install
+
 bash ./tools/make-assets.sh $DES
 
 #cp -R assets $DES/
