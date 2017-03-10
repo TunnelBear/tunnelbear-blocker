@@ -598,7 +598,7 @@ input.toggle.mini:checked + label:after{
   left: 50%;
   margin-left: -35px;
   opacity: 0;
-  transition: visibility 1s, opacity 1s ease-in-out;
+  transition: visibility 0.5s, opacity 0.5s ease-in-out;
 }
 
 .tooltip .tooltiptext::after {
