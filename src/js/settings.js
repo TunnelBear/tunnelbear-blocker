@@ -1,256 +1,159 @@
-/*******************************************************************************
+(function () {
+    var messager = vAPI.messaging;
+    messager.addChannelListener('settings');
 
-    uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2016 Raymond Hill
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see {http://www.gnu.org/licenses/}.
-
-    Home: https://github.com/gorhill/uBlock
-*/
-
-/* global uDom */
-
-/******************************************************************************/
-
-(function() {
-
-'use strict';
-
-/******************************************************************************/
-
-var messaging = vAPI.messaging;
-
-/******************************************************************************/
-
-var handleImportFilePicker = function() {
-    var file = this.files[0];
-    if ( file === undefined || file.name === '' ) {
-        return;
+    var getSettingsData = function (callback) {
+        var onDataReceived = function (response) {
+            callback(response);
+        };
+        messager.send('settings', { what: 'getSettingsData', tabId: null }, onDataReceived);
     }
-    if ( file.type.indexOf('text') !== 0 ) {
-        return;
-    }
-    var filename = file.name;
+    
+    function SettingsViewModel(settingsData) {
+        this.reload = false;
+        this.isLoaded = ko.observable(true);
 
-    var fileReaderOnLoadHandler = function() {
-        var userData;
-        try {
-            userData = JSON.parse(this.result);
-            if ( typeof userData !== 'object' ) {
-                throw 'Invalid';
-            }
-            if ( typeof userData.userSettings !== 'object' ) {
-                throw 'Invalid';
-            }
-            if ( typeof userData.netWhitelist !== 'string' ) {
-                throw 'Invalid';
-            }
-            if ( typeof userData.filterLists !== 'object' ) {
-                throw 'Invalid';
-            }
-        }
-        catch (e) {
-            userData = undefined;
-        }
-        if ( userData === undefined ) {
-            window.alert(vAPI.i18n('aboutRestoreDataError'));
-            return;
-        }
-        var time = new Date(userData.timeStamp);
-        var msg = vAPI.i18n('aboutRestoreDataConfirm')
-                      .replace('{{time}}', time.toLocaleString());
-        var proceed = window.confirm(msg);
-        if ( proceed ) {
-            messaging.send(
-                'dashboard',
-                {
-                    what: 'restoreUserData',
-                    userData: userData,
-                    file: filename
-                }
-            );
-        }
-    };
+        this.settingsBlockAdsEnabled = ko.observable(settingsData.blockAdsEnabled);
+        this.settingsFlashEnabled = ko.observable(settingsData.flashbearEnabled);
+        this.settingsBrowserFingerprintingEnabled = ko.observable(settingsData.blockBrowserFingerprintingEnabled);
+        this.settingsBlockMicrophoneEnabled = ko.observable(settingsData.blockMicrophoneEnabled);
+        this.settingsBlockKeyboardEnabled = ko.observable(settingsData.blockKeyboardEnabled);
+        this.settingsBlockMouseEnabled = ko.observable(settingsData.blockMouseEnabled);
+        this.settingsBlockEmailEnabled = ko.observable(settingsData.blockEmailEnabled);
+        this.settingsBlockWebRTCEnabled = ko.observable(settingsData.blockWebRTCEnabled);
+        this.settingsBlockBlockAdBlockEnabled = ko.observable(settingsData.blockBlockAdBlockEnabled);
+        this.settingsSocialEnabled = ko.observable(settingsData.blockSocialEnabled);
+        this.settingsPrivacyEnabled = ko.observable(settingsData.blockPrivacyEnabled);
+        this.settingsMalwareEnabled = ko.observable(settingsData.blockMalwareEnabled);
+        this.settingsSendStatsEnabled = ko.observable(settingsData.sendStatsEnabled);
 
-    var fr = new FileReader();
-    fr.onload = fileReaderOnLoadHandler;
-    fr.readAsText(file);
-};
+        this.settingsBlockAdsText = ko.computed(function () {
+            return this.settingsBlockAdsEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsFlashText = ko.computed(function () {
+            return this.settingsFlashEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsBrowserFingerprintingText = ko.computed(function () {
+            return this.settingsBrowserFingerprintingEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsBlockMicrophoneText = ko.computed(function () {
+            return this.settingsBlockMicrophoneEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsBlockKeyboardText = ko.computed(function () {
+            return this.settingsBlockKeyboardEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+         this.settingsBlockMouseText = ko.computed(function () {
+            return this.settingsBlockMouseEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsBlockEmailText = ko.computed(function () {
+            return this.settingsBlockEmailEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsBlockWebRTCText = ko.computed(function () {
+            return this.settingsBlockWebRTCEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsBlockBlockAdBlockText = ko.computed(function () {
+            return this.settingsBlockBlockAdBlockEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsSocialText = ko.computed(function () {
+            return this.settingsSocialEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsPrivacyText = ko.computed(function () {
+            return this.settingsPrivacyEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsMalwareText = ko.computed(function () {
+            return this.settingsMalwareEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsSendStatsText = ko.computed(function () {
+            return this.settingsSendStatsEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
 
-/******************************************************************************/
-
-var startImportFilePicker = function() {
-    var input = document.getElementById('restoreFilePicker');
-    // Reset to empty string, this will ensure an change event is properly
-    // triggered if the user pick a file, even if it is the same as the last
-    // one picked.
-    input.value = '';
-    input.click();
-};
-
-/******************************************************************************/
-
-var exportToFile = function() {
-    messaging.send('dashboard', { what: 'backupUserData' }, onLocalDataReceived);
-};
-
-/******************************************************************************/
-
-var onLocalDataReceived = function(details) {
-    uDom('#localData > ul > li:nth-of-type(1)').text(
-        vAPI.i18n('settingsStorageUsed')
-            .replace(
-                '{{value}}',
-                typeof details.storageUsed === 'number' ? details.storageUsed.toLocaleString() : '?'
-            )
-    );
-
-    var elem, dt;
-    var timeOptions = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        timeZoneName: 'short'
-    };
-    var lastBackupFile = details.lastBackupFile || '';
-    if ( lastBackupFile !== '' ) {
-        dt = new Date(details.lastBackupTime);
-        uDom('#localData > ul > li:nth-of-type(2) > ul > li:nth-of-type(1)').text(dt.toLocaleString('fullwide', timeOptions));
-        //uDom('#localData > ul > li:nth-of-type(2) > ul > li:nth-of-type(2)').text(lastBackupFile);
-        uDom('#localData > ul > li:nth-of-type(2)').css('display', '');
-    }
-
-    var lastRestoreFile = details.lastRestoreFile || '';
-    elem = uDom('#localData > p:nth-of-type(3)');
-    if ( lastRestoreFile !== '' ) {
-        dt = new Date(details.lastRestoreTime);
-        uDom('#localData > ul > li:nth-of-type(3) > ul > li:nth-of-type(1)').text(dt.toLocaleString('fullwide', timeOptions));
-        uDom('#localData > ul > li:nth-of-type(3) > ul > li:nth-of-type(2)').text(lastRestoreFile);
-        uDom('#localData > ul > li:nth-of-type(3)').css('display', '');
-    }
-
-    if ( details.cloudStorageSupported === false ) {
-        uDom('#cloud-storage-enabled').attr('disabled', '');
-    }
-    if ( details.privacySettingsSupported === false ) {
-        uDom('#prefetching-disabled').attr('disabled', '');
-        uDom('#hyperlink-auditing-disabled').attr('disabled', '');
-        uDom('#webrtc-ipaddress-hidden').attr('disabled', '');
-    }
-};
-
-/******************************************************************************/
-
-var resetUserData = function() {
-    var msg = vAPI.i18n('aboutResetDataConfirm');
-    var proceed = window.confirm(msg);
-    if ( proceed ) {
-        messaging.send('dashboard', { what: 'resetUserData' });
-    }
-};
-
-/******************************************************************************/
-
-var synchronizeDOM = function() {
-    document.body.classList.toggle(
-        'advancedUser',
-        uDom.nodeFromId('advanced-user-enabled').checked === true
-    );
-};
-
-/******************************************************************************/
-
-var changeUserSettings = function(name, value) {
-    messaging.send(
-        'dashboard',
-        {
-            what: 'userSettings',
-            name: name,
-            value: value
-        }
-    );
-};
-
-/******************************************************************************/
-
-var onInputChanged = function(ev) {
-    var input = ev.target;
-    var name = this.getAttribute('data-setting-name');
-    var value = input.value;
-    if ( name === 'largeMediaSize' ) {
-        value = Math.min(Math.max(Math.floor(parseInt(value, 10) || 0), 0), 1000000);
-    }
-    if ( value !== input.value ) {
-        input.value = value;
-    }
-    changeUserSettings(name, value);
-};
-
-/******************************************************************************/
-
-// Workaround for:
-// https://github.com/gorhill/uBlock/issues/1448
-
-var onPreventDefault = function(ev) {
-    ev.target.focus();
-    ev.preventDefault();
-};
-
-/******************************************************************************/
-
-// TODO: use data-* to declare simple settings
-
-var onUserSettingsReceived = function(details) {
-    uDom('[data-setting-type="bool"]').forEach(function(uNode) {
-        uNode.prop('checked', details[uNode.attr('data-setting-name')] === true)
-             .on('change', function() {
-                    changeUserSettings(
-                        this.getAttribute('data-setting-name'),
-                        this.checked
-                    );
-                    synchronizeDOM();
+        this.toggleBlockAds = function () {
+            var self = this;
+            this.settingsBlockAdsEnabled(!this.settingsBlockAdsEnabled());
+            setTimeout(function () {
+                messager.send('settings', { what: 'toggleBlockAds' }, function () {
+                    self.reload = true;
                 });
+            }, 500);
+        }
+        this.toggleFlash = function () {
+            this.settingsFlashEnabled(!this.settingsFlashEnabled());
+            messager.send('settings', { what: 'toggleFlash' });
+            this.reload = true;
+        }
+        this.toggleBrowserFingerprinting = function () {
+            this.settingsBrowserFingerprintingEnabled(!this.settingsBrowserFingerprintingEnabled());
+            messager.send('settings', { what: 'toggleBrowserFingerprinting' });
+            this.reload = true;
+        }
+        this.toggleBlockMicrophone = function () {
+            this.settingsBlockMicrophoneEnabled(!this.settingsBlockMicrophoneEnabled());
+            messager.send('settings', { what: 'toggleBlockMicrophone' });
+            this.reload = true;
+        }
+        this.toggleBlockKeyboard = function () {
+            this.settingsBlockKeyboardEnabled(!this.settingsBlockKeyboardEnabled());
+            messager.send('settings', { what: 'toggleBlockKeyboard' });
+            this.reload = true;
+        }
+        this.toggleBlockMouse = function () {
+            this.settingsBlockMouseEnabled(!this.settingsBlockMouseEnabled());
+            messager.send('settings', { what: 'toggleBlockMouse' });
+            this.reload = true;
+        }
+        this.toggleBlockEmail = function () {
+            this.settingsBlockEmailEnabled(!this.settingsBlockEmailEnabled());
+            messager.send('settings', { what: 'toggleBlockEmail' });
+            this.reload = true;
+        }
+        this.toggleBlockWebRTC = function () {
+            this.settingsBlockWebRTCEnabled(!this.settingsBlockWebRTCEnabled());
+            messager.send('settings', { what: 'toggleBlockWebRTC' });
+            this.reload = true;
+        }
+        this.toggleBlockBlockAdBlock = function () {
+            this.settingsBlockBlockAdBlockEnabled(!this.settingsBlockBlockAdBlockEnabled());
+            messager.send('settings', { what: 'toggleBlockBlockAdBlock' });
+            this.reload = true;
+        }
+        this.toggleSocial = function () {
+            var self = this;
+            this.settingsSocialEnabled(!this.settingsSocialEnabled());
+            setTimeout(function () {
+                messager.send('settings', { what: 'toggleSocial' }, function () {
+                    self.reload = true;
+                });
+            }, 500);
+        }
+        this.togglePrivacy = function () {
+            var self = this;
+            this.settingsPrivacyEnabled(!this.settingsPrivacyEnabled());
+            setTimeout(function () {
+                messager.send('settings', { what: 'togglePrivacy' }, function () {
+                    self.reload = true;
+                });
+            }, 500);
+        }
+        this.toggleMalware = function () {
+            var self = this;
+            this.settingsMalwareEnabled(!this.settingsMalwareEnabled());
+            setTimeout(function () {
+                messager.send('settings', { what: 'toggleMalware' }, function () {
+                    self.reload = true;
+                });
+            }, 500);
+        }
+        this.toggleSendStats = function () {
+            this.settingsSendStatsEnabled(!this.settingsSendStatsEnabled());
+            messager.send('settings', { what: 'toggleSendStats' });
+            this.reload = true;
+        }
+    };
+    
+    uDom.onLoad(function () {
+        getSettingsData(function (response) {
+            ko.applyBindings(new SettingsViewModel(response));
+        });
     });
-
-    uDom('[data-setting-name="noLargeMedia"] ~ label:first-of-type > input[type="number"]')
-        .attr('data-setting-name', 'largeMediaSize')
-        .attr('data-setting-type', 'input');
-
-    uDom('[data-setting-type="input"]').forEach(function(uNode) {
-        uNode.val(details[uNode.attr('data-setting-name')])
-             .on('change', onInputChanged)
-             .on('click', onPreventDefault);
-    });
-
-    uDom('#export').on('click', exportToFile);
-    uDom('#import').on('click', startImportFilePicker);
-    uDom('#reset').on('click', resetUserData);
-    uDom('#restoreFilePicker').on('change', handleImportFilePicker);
-
-    synchronizeDOM();
-};
-
-/******************************************************************************/
-
-uDom.onLoad(function() {
-    messaging.send('dashboard', { what: 'userSettings' }, onUserSettingsReceived);
-    messaging.send('dashboard', { what: 'getLocalData' }, onLocalDataReceived);
-});
-
-/******************************************************************************/
 
 })();
