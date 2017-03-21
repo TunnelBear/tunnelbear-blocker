@@ -58,7 +58,7 @@ var µBlock = (function() { // jshint ignore:line
             colorBlindFriendly: false,
             contextMenuEnabled: true,
             dynamicFilteringEnabled: false,
-            externalLists: [],
+            externalLists: defaultExternalLists,
             firewallPaneMinimized: true,
             hyperlinkAuditingDisabled: true,
             ignoreGenericCosmeticFilters: false,
@@ -68,7 +68,8 @@ var µBlock = (function() { // jshint ignore:line
             requestLogMaxEntries: 1000,
             showIconBadge: true,
             tooltipsDisabled: false,
-            webrtcIPAddressHidden: false
+            webrtcIPAddressHidden: false,
+            showPopupDetails: false
         },
 
         hiddenSettingsDefault: hiddenSettingsDefault,
