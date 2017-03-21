@@ -67,7 +67,8 @@ return {
         requestLogMaxEntries: 1000,
         showIconBadge: true,
         tooltipsDisabled: false,
-        webrtcIPAddressHidden: false
+        webrtcIPAddressHidden: false,
+        showPopupDetails: false
     },
 
     hiddenSettingsDefault: {
