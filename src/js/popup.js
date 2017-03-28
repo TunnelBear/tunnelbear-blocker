@@ -117,7 +117,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
             return (this.pageBlockedMalwareCount() / this.pageBlockedCount() * 100) + '%';
         }, this);
         this.pageBlockedText = ko.computed(function () {
-            return this.pageBlockedCount() > 1 ? chrome.i18n.getMessage("popupBlocks") : chrome.i18n.getMessage("popupBlock");
+            return chrome.i18n.getMessage("popupBlocked")
         }, this);
 
         this.isToggled = ko.observable(popupData.blockBearEnabled);
