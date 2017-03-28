@@ -32,7 +32,7 @@ vAPI.messaging.send(
     {
         what: 'gotoURL',
         details: {
-            url: 'dashboard.html',
+            url: 'settings.html',
             select: true,
             index: -1
         }
