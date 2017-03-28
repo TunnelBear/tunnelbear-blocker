@@ -528,6 +528,7 @@
 
     // Built-in filter lists loaded.
     var onBuiltinListsLoaded = function(entries) {
+        µBlock.filterBuiltinLists(entries);
         for ( var assetKey in entries ) {
             if ( entries.hasOwnProperty(assetKey) === false ) { continue; }
             entry = entries[assetKey];
@@ -606,7 +607,7 @@
             cfe = µb.cosmeticFilteringEngine,
             acceptedCount = snfe.acceptedCount + cfe.acceptedCount,
             discardedCount = snfe.discardedCount + cfe.discardedCount;
-        µb.applyCompiledFilters(compiled, assetKey === µb.userFiltersPath);
+        µb.applyCompiledFilters(compiled, assetKey === µb.userFiltersPath, µb.availableFilterLists[assetKey]);
         if ( µb.availableFilterLists.hasOwnProperty(assetKey) ) {
             var entry = µb.availableFilterLists[assetKey];
             entry.entryCount = snfe.acceptedCount + cfe.acceptedCount - acceptedCount;
@@ -624,6 +625,7 @@
     };
 
     var onFilterListsReady = function(lists) {
+        µb.filterBuiltinLists(lists);
         µb.availableFilterLists = lists;
 
         µb.redirectEngine.reset();
@@ -802,7 +804,7 @@
 //   Added `firstparty` argument: to avoid discarding cosmetic filters when
 //   applying 1st-party filters.
 
-µBlock.applyCompiledFilters = function(rawText, firstparty) {
+µBlock.applyCompiledFilters = function(rawText, firstparty, entry) {
     var skipCosmetic = !firstparty && !this.userSettings.parseAllABPHideFilters,
         skipGenericCosmetic = this.userSettings.ignoreGenericCosmeticFilters,
         staticNetFilteringEngine = this.staticNetFilteringEngine,
@@ -810,7 +812,7 @@
         lineIter = new this.LineIterator(rawText);
     while ( lineIter.eot() === false ) {
         cosmeticFilteringEngine.fromCompiledContent(lineIter, skipGenericCosmetic, skipCosmetic);
-        staticNetFilteringEngine.fromCompiledContent(lineIter);
+        staticNetFilteringEngine.fromCompiledContent(lineIter, entry.group);
     }
 };
 
@@ -1160,4 +1162,35 @@
         }
         return;
     }
+};
+
+/******************************************************************************/
+
+µBlock.filterBuiltinLists = function (details) {
+    for (var name in details) {
+        if(details[name].group == 'social') {
+            details[name].off = false;
+        }
+
+        if(details[name].off == false) {
+            switch(details[name].group){
+                case 'privacy':
+                    details[name].off = !µBlock.userSettings.blockPrivacyEnabled;
+                    break;
+                case 'social':
+                    details[name].off = !µBlock.userSettings.blockSocialEnabled;
+                    break;
+                case 'malware':
+                    details[name].off = !µBlock.userSettings.blockMalwareEnabled;
+                    break;
+                case 'ads':
+                    details[name].off = !µBlock.userSettings.blockAdsEnabled;
+                    break;
+                default:
+                    details[name].off = true;
+                    break;
+            }
+        }
+    }
+    vAPI.storage.set({ 'remoteBlacklists': details });
 };

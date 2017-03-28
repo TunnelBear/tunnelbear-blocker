@@ -880,8 +880,14 @@ vAPI.tabs.registerListeners();
         var pageStore = this.pageStoreFromTabId(tabId);
         if ( pageStore !== null ) {
             state = pageStore.getNetFilteringSwitch();
-            if ( state && this.userSettings.showIconBadge && pageStore.perLoadBlockedRequestCount ) {
-                badge = this.formatCount(pageStore.perLoadBlockedRequestCount);
+            if ( state && this.userSettings.showIconBadge) {
+                badge = this.formatCount(pageStore.perLoadBlockedRequestCount 
+                + pageStore.perLoadBlockedFlashCount 
+                + pageStore.perLoadBlockedFingerprintingCount
+                + pageStore.perLoadBlockedEmailCount
+                + pageStore.perLoadBlockedKeyboardCount
+                + pageStore.perLoadBlockedMouseCount
+                + pageStore.perLoadBlockedMicrophoneCount);
             }
         }
 
