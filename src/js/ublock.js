@@ -560,6 +560,24 @@ var reInvalidHostname = /[^a-z0-9.\-\[\]:]/,
 
 /******************************************************************************/
 
+µBlock.setBlockWebRTC = function (value) {
+    if (chrome.privacy.network.webRTCMultipleRoutesEnabled) {
+        chrome.privacy.network.webRTCMultipleRoutesEnabled.set({'value': !value});
+    }
+    if (chrome.privacy.network.webRTCNonProxiedUdpEnabled) {
+        chrome.privacy.network.webRTCNonProxiedUdpEnabled.set({'value': !value});
+    }
+    if (chrome.privacy.network.webRTCIPHandlingPolicy) {
+        if(value) {
+            chrome.privacy.network.webRTCIPHandlingPolicy.set({'value': 'disable_non_proxied_udp'});
+        } else {
+            chrome.privacy.network.webRTCIPHandlingPolicy.set({'value': 'default'});
+        }
+    }
+}
+
+/******************************************************************************/
+
 µBlock.scriptlets = (function() {
     var pendingEntries = Object.create(null);
 
