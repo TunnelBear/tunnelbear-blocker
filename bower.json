@@ -1,0 +1,16 @@
+{
+  "name": "tunnelbear-blocker",
+  "description": "",
+  "main": "",
+  "license": "GPL-3.0",
+  "homepage": "https://tunnelbear.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "knockout": "^3.4.1"
+  }
+}

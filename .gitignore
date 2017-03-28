@@ -1,4 +1,7 @@
 *.bak
 *.pem
+.DS_Store
 /dist/build/
 /tmp/
+/bower_components/
+/node_modules/
