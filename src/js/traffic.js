@@ -185,6 +185,32 @@ var onBeforeRequest = function(details) {
 };
 
 /******************************************************************************/
+var onBeforeSendHeaders = function (details) {
+    
+    var µb = µBlock;
+    
+    // Check if this request came from gmail
+    var gmail = false;
+    for (var i = 0; i < details.requestHeaders.length; i++) {
+        if (details.requestHeaders[i].name.toLowerCase() == 'referer') {
+            if (details.url.indexOf('googleusercontent.com/proxy') > 0 && details.requestHeaders[i].value.indexOf('//mail.google.com/') > 0) {
+                gmail = true;
+                break;
+            }
+        }
+    }
+    
+    var safe = !µb.userSettings.blockEmailEnabled || !gmail || details.url.indexOf('blockbear=img-safe') > 0 ? true : false;
+    if (!safe && details.type == 'image') {
+        return { cancel: true };
+    }
+    
+    return { requestHeaders: details.requestHeaders };
+};
+
+/******************************************************************************/
+
+/******************************************************************************/
 
 var onBeforeRootFrameRequest = function(details) {
     var tabId = details.tabId,
@@ -680,6 +706,15 @@ vAPI.net.onBeforeRequest = {
     ],
     extra: [ 'blocking' ],
     callback: onBeforeRequest
+};
+
+vAPI.net.onBeforeSendHeaders = {
+    urls: [
+        'http://*/*',
+        'https://*/*'
+    ],
+    extra: ['requestHeaders', 'blocking'],
+    callback: onBeforeSendHeaders
 };
 
 vAPI.net.onHeadersReceived = {
