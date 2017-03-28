@@ -1,6 +1,6 @@
 {
 	"extShortDesc": {
-		"message": "Simple and handsome. TunnelBear Blocker sinks its teeth into online tracking to keep your browsing habits a little more private",
+		"message": "Simple and handsome. TunnelBear Blocker sinks its teeth into online tracking to keep your browsing habits a little more private.",
 		"description": ""
 	},
 	"back": {
@@ -52,7 +52,7 @@
 		"description": ""
 	},
     "settingsBlockBlockAdBlock": {
-		"message": "***************Adblock",
+		"message": "F***F***Adblock",
 		"description": ""
 	},
 	"settingsBlockSocial": {
@@ -87,11 +87,8 @@
 		"message": "liste noire",
 		"description": ""
 	},
-	"popupBlocks": {
-		"message": "Blocks"
-	},
-	"popupBlock": {
-		"message": "Block"
+	"popupBlocked": {
+		"message": "Bloque(s)"
 	},
 	"ads": {
 		"message": "Pubs"
