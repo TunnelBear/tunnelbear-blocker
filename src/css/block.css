@@ -1,0 +1,6 @@
+object[type$="x-shockwave-flash"]:not([classid]):not(.tb-unlock),
+object[type$="futuresplash"]:not([classid]):not(.tb-unlock),
+embed[type$="x-shockwave-flash"]:not(.tb-unlock),
+embed[type$="futuresplash"]:not(.tb-unlock) {
+  display: none !important;
+}
