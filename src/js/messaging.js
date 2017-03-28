@@ -290,7 +290,22 @@ var popupDataFromTabId = function(tabId, tabTitle) {
     var tabContext = µb.tabContextManager.mustLookup(tabId),
         rootHostname = tabContext.rootHostname;
     var r = {
+        blockBearEnabled: µb.userSettings.blockBearEnabled,
+        blockAdsEnabled: µb.userSettings.blockAdsEnabled,
+        flashbearEnabled: µb.userSettings.flashbearEnabled,
+        sendStatsEnabled: µb.userSettings.sendStatsEnabled,
+        blockBrowserFingerprintingEnabled: µb.userSettings.blockBrowserFingerprintingEnabled,
+        blockMicrophoneEnabled: µb.userSettings.blockMicrophoneEnabled,
+        blockKeyboardEnabled: µb.userSettings.blockKeyboardEnabled,
+        blockMouseEnabled: µb.userSettings.blockMouseEnabled,
+        blockEmailEnabled: µb.userSettings.blockEmailEnabled,
+        blockWebRTCEnabled: µb.userSettings.blockWebRTCEnabled,
+        blockBlockAdBlockEnabled: µb.userSettings.blockBlockAdBlockEnabled,
+        blockSocialEnabled: µb.userSettings.blockSocialEnabled,
+        blockPrivacyEnabled: µb.userSettings.blockPrivacyEnabled,
+        blockMalwareEnabled: µb.userSettings.blockMalwareEnabled,
         advancedUserEnabled: µb.userSettings.advancedUserEnabled,
+        showPopupDetails: µb.userSettings.showPopupDetails,
         appName: vAPI.app.name,
         appVersion: vAPI.app.version,
         colorBlindFriendly: µb.userSettings.colorBlindFriendly,
@@ -307,6 +322,16 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         pageDomain: tabContext.rootDomain,
         pageAllowedRequestCount: 0,
         pageBlockedRequestCount: 0,
+        pageBlockedAdsCount: 0,
+        pageBlockedKeyboardCount: 0,
+        pageBlockedMouseCount: 0,
+        pageBlockedMicrophoneCount: 0,
+        pageBlockedFlashCount: 0,
+        pageBlockedFingerprintingCount: 0,
+        pageBlockedEmailCount: 0,
+        pageBlockedSocialCount: 0,
+        pageBlockedPrivacyCount: 0,
+        pageBlockedMalwareCount: 0,
         popupBlockedCount: 0,
         tabId: tabId,
         tabTitle: tabTitle,
@@ -328,6 +353,18 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         }
         r.pageBlockedRequestCount = pageStore.perLoadBlockedRequestCount;
         r.pageAllowedRequestCount = pageStore.perLoadAllowedRequestCount;
+        r.pageBlockedRequestCount = pageStore.perLoadBlockedRequestCount;
+        r.pageAllowedRequestCount = pageStore.perLoadAllowedRequestCount;
+        r.pageBlockedAdsCount = pageStore.perLoadBlockedAdsCount;
+        r.pageBlockedFlashCount = pageStore.perLoadBlockedFlashCount;
+        r.pageBlockedFingerprintingCount = pageStore.perLoadBlockedFingerprintingCount;
+        r.pageBlockedEmailCount = pageStore.perLoadBlockedEmailCount;
+        r.pageBlockedKeyboardCount = pageStore.perLoadBlockedKeyboardCount;
+        r.pageBlockedMouseCount = pageStore.perLoadBlockedMouseCount;
+        r.pageBlockedMicrophoneCount = pageStore.perLoadBlockedMicrophoneCount;
+        r.pageBlockedSocialCount = pageStore.perLoadBlockedSocialCount;
+        r.pageBlockedPrivacyCount = pageStore.perLoadBlockedPrivacyCount;
+        r.pageBlockedMalwareCount = pageStore.perLoadBlockedMalwareCount;
         r.netFilteringSwitch = pageStore.getNetFilteringSwitch();
         r.hostnameDict = getHostnameDict(pageStore.hostnameToCountMap);
         r.contentLastModified = pageStore.contentLastModified;
@@ -437,7 +474,46 @@ var onMessage = function(request, sender, callback) {
             µb.updateBadgeAsync(request.tabId);
         }
         break;
-
+    case 'toggleBlockBear':
+        µb.changeUserSettings("blockBearEnabled", !µb.userSettings.blockBearEnabled);
+        break;
+    case 'toggleBlockAds':
+        µb.changeUserSettings("blockAdsEnabled", !µb.userSettings.blockAdsEnabled);
+        µb.setFilters('ads', !µb.userSettings.blockAdsEnabled, callback);
+        break;
+    case 'toggleFlash':
+        µb.changeUserSettings("flashbearEnabled", !µb.userSettings.flashbearEnabled);
+        break;
+    case 'toggleBrowserFingerprinting':
+        µb.changeUserSettings("blockBrowserFingerprintingEnabled", !µb.userSettings.blockBrowserFingerprintingEnabled);
+        break;
+    case 'toggleBlockEmail':
+        µb.changeUserSettings("blockEmailEnabled", !µb.userSettings.blockEmailEnabled);
+        break;
+    case 'toggleBlockKeyboard':
+        µb.changeUserSettings("blockKeyboardEnabled", !µb.userSettings.blockKeyboardEnabled);
+        break;
+    case 'toggleBlockMouse':
+        µb.changeUserSettings("blockMouseEnabled", !µb.userSettings.blockMouseEnabled);
+        break;
+    case 'toggleBlockMicrophone':
+        µb.changeUserSettings("blockMicrophoneEnabled", !µb.userSettings.blockMicrophoneEnabled);
+        break;
+    case 'toggleSocial':
+        µb.changeUserSettings("blockSocialEnabled", !µb.userSettings.blockSocialEnabled);
+        µb.setFilters('social', !µb.userSettings.blockSocialEnabled, callback);
+        break;
+    case 'togglePrivacy':
+        µb.changeUserSettings("blockPrivacyEnabled", !µb.userSettings.blockPrivacyEnabled);
+        µb.setFilters('privacy', !µb.userSettings.blockPrivacyEnabled, callback);
+        break;
+    case 'toggleMalware':
+        µb.changeUserSettings("blockMalwareEnabled", !µb.userSettings.blockMalwareEnabled);
+        µb.setFilters('malware', !µb.userSettings.blockMalwareEnabled, callback);
+        break;
+    case 'toggleShowPopupDetails':
+        µb.changeUserSettings("showPopupDetails", !µb.userSettings.showPopupDetails);
+        break;
     default:
         return vAPI.messaging.UNHANDLED;
     }
@@ -712,6 +788,88 @@ var onMessage = function(request, sender, callback) {
 };
 
 vAPI.messaging.listen('cloudWidget', onMessage);
+
+/******************************************************************************/
+
+})();
+
+/******************************************************************************/
+/******************************************************************************/
+
+// channel: settings
+
+(function() {
+
+/******************************************************************************/
+
+var µb = µBlock;
+
+/******************************************************************************/
+
+var onMessage = function(request, sender, callback) {
+
+    // Async
+    switch ( request.what ) {
+        case 'getSettingsData':
+            callback(µb.userSettings);
+            return;
+        default:
+            break;
+    }
+
+    // Sync
+    var response;
+
+    switch ( request.what ) {
+        case 'toggleBlockAds':
+            µb.changeUserSettings("blockAdsEnabled", !µb.userSettings.blockAdsEnabled);
+            µb.setFilters('ads', !µb.userSettings.blockAdsEnabled, callback);
+            break;
+        case 'toggleFlash':
+            µb.changeUserSettings("flashbearEnabled", !µb.userSettings.flashbearEnabled);
+            break;
+        case 'toggleBrowserFingerprinting':
+            µb.changeUserSettings("blockBrowserFingerprintingEnabled", !µb.userSettings.blockBrowserFingerprintingEnabled);
+            break;
+        case 'toggleBlockMicrophone':
+            µb.changeUserSettings("blockMicrophoneEnabled", !µb.userSettings.blockMicrophoneEnabled);
+            break;
+        case 'toggleBlockPixelTracking':
+            µb.changeUserSettings("blockPixelTrackingEnabled", !µb.userSettings.blockPixelTrackingEnabled);
+            break;
+        case 'toggleBlockEmail':
+            µb.changeUserSettings("blockEmailEnabled", !µb.userSettings.blockEmailEnabled);
+            break;
+        case 'toggleBlockWebRTC':
+            µb.changeUserSettings("blockWebRTCEnabled", !µb.userSettings.blockWebRTCEnabled);
+            µb.setBlockWebRTC(µb.userSettings.blockWebRTCEnabled);
+            break;
+        case 'toggleBlockBlockAdBlock':
+            µb.changeUserSettings("blockBlockAdBlockEnabled", !µb.userSettings.blockBlockAdBlockEnabled);
+            break;
+        case 'toggleSocial':
+            µb.changeUserSettings("blockSocialEnabled", !µb.userSettings.blockSocialEnabled);
+            µb.setFilters('social', !µb.userSettings.blockSocialEnabled, callback);
+            break;
+        case 'togglePrivacy':
+            µb.changeUserSettings("blockPrivacyEnabled", !µb.userSettings.blockPrivacyEnabled);
+            µb.setFilters('privacy', !µb.userSettings.blockPrivacyEnabled, callback);
+            break;
+        case 'toggleMalware':
+            µb.changeUserSettings("blockMalwareEnabled", !µb.userSettings.blockMalwareEnabled);
+            µb.setFilters('malware', !µb.userSettings.blockMalwareEnabled, callback);
+            break;
+        case 'toggleSendStats':
+            µb.changeUserSettings("sendStatsEnabled", !µb.userSettings.sendStatsEnabled);
+            break;
+        default:
+            return vAPI.messaging.UNHANDLED;
+    }
+
+    callback(response);
+};
+
+vAPI.messaging.listen('settings', onMessage);
 
 /******************************************************************************/
 
