@@ -128,7 +128,8 @@ var onSelfieReady = function(selfie) {
     if ( selfie.redirectEngine === undefined ) {
         return false;
     }
-
+    
+    µb.filterBuiltinLists(selfie.filterLists);
     µb.remoteBlacklists = selfie.filterLists;
     µb.staticNetFilteringEngine.fromSelfie(selfie.staticNetFilteringEngine);
     µb.redirectEngine.fromSelfie(selfie.redirectEngine);

@@ -1055,11 +1055,12 @@ FilterHostnameDict.fromSelfie = function(s) {
 
 /******************************************************************************/
 
-var FilterBucket = function(a, b) {
+var FilterBucket = function(a, b, c) {
     this.promoted = 0;
     this.vip = 16;
     this.f = null;  // short-lived register
     this.filters = [];
+    this.group = c;
     if ( a !== undefined ) {
         this.filters[0] = a;
         if ( b !== undefined ) {
@@ -1979,10 +1980,12 @@ FilterContainer.prototype.compileToAtomicFilter = function(filterClass, parsed, 
 
 /******************************************************************************/
 
-FilterContainer.prototype.fromCompiledContent = function(lineIter) {
+FilterContainer.prototype.fromCompiledContent = function(lineIter, group) {
     var line, hash, token, fclass, fdata,
         bucket, entry, filter,
         fieldIter = new µb.FieldIterator('\v');
+
+    group = µBlock.getGroupName(group);
 
     while ( lineIter.eot() === false ) {
         if ( lineIter.text.charCodeAt(lineIter.offset) !== 0x6E /* 'n' */ ) {
@@ -2012,10 +2015,17 @@ FilterContainer.prototype.fromCompiledContent = function(lineIter) {
             this.categories.set(hash, bucket);
         }
         entry = bucket.get(token);
-
+        if (entry) {
+            if (!entry.group 
+                || entry.group == 'malware'
+                || entry.group == 'privacy') {
+                entry.group = group;
+            }
+        }
         if ( token === '.' ) {
             if ( entry === undefined ) {
                 entry = new FilterHostnameDict();
+                entry.group = group;
                 bucket.set('.', entry);
             }
             // 'fclass' is hostname
@@ -2033,6 +2043,7 @@ FilterContainer.prototype.fromCompiledContent = function(lineIter) {
 
         filter = this.filterFromSelfie(fclass, fdata);
         if ( entry === undefined ) {
+            filter.group = group;
             bucket.set(token, filter);
             continue;
         }
@@ -2040,7 +2051,7 @@ FilterContainer.prototype.fromCompiledContent = function(lineIter) {
             entry.add(filter);
             continue;
         }
-        bucket.set(token, new FilterBucket(entry, filter));
+        bucket.set(token, new FilterBucket(entry, filter, group));
     }
 };
 
@@ -2503,6 +2514,9 @@ FilterContainer.prototype.toResultString = function(verbose) {
         return '';
     }
     var s = this.keyRegister & 0x01 ? 'sa:' : 'sb:';
+    if(this.fRegister) {
+        s += this.fRegister.group;
+    }
     if ( !verbose ) {
         return s;
     }

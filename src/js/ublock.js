@@ -295,6 +295,27 @@ var reInvalidHostname = /[^a-z0-9.\-\[\]:]/,
 /******************************************************************************/
 /******************************************************************************/
 
+µBlock.getGroupName = function(group) {
+    if(group != 'privacy' && group != 'malware' && group != 'social') {
+        return 'ads';
+    }
+    return group;
+}
+
+µBlock.setFilters = function (group, value, callback) {
+    µBlock.getAvailableLists(function (list) {
+        var switches = [];
+        for (var name in list) {
+            var element = list[name];
+            if (µBlock.getGroupName(element.group) == group) {
+                switches.push({ location: name, off: value });
+            }
+        }
+        µBlock.selectFilterLists(switches);
+        µBlock.reloadAllFilters(callback);
+    });
+}
+
 µBlock.changeUserSettings = function(name, value) {
     var us = this.userSettings;
 
