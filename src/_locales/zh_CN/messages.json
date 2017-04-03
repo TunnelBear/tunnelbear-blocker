@@ -71,14 +71,6 @@
 		"message": "恶意软件保护",
 		"description": ""
 	},
-	"settingsHelpTunnelBear": {
-		"message": "帮助 TunnelBear 训练更强悍的熊",
-		"description": ""
-	},
-	"settingsShareStats": {
-		"message": "与 TunnelBear 分享匿名数据",
-		"description": ""
-	},
 	"whitelist": {
 		"message": "白名单",
 		"description": ""
