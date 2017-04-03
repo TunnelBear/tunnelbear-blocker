@@ -71,14 +71,6 @@
 		"message": "Protection contre les malwares",
 		"description": ""
 	},
-	"settingsHelpTunnelBear": {
-		"message": "Aider TunnelBear",
-		"description": ""
-	},
-	"settingsShareStats": {
-		"message": "Partager anonymement mes stats avec TunnelBear",
-		"description": ""
-	},
 	"whitelist": {
 		"message": "liste blanche",
 		"description": ""

@@ -71,14 +71,6 @@
 		"message": "Malware protection",
 		"description": ""
 	},
-	"settingsHelpTunnelBear": {
-		"message": "Help TunnelBear Make Meaner Bears",
-		"description": ""
-	},
-	"settingsShareStats": {
-		"message": "Share anonymized stats with TunnelBear",
-		"description": ""
-	},
 	"whitelist": {
 		"message": "whitelist",
 		"description": ""

@@ -7,7 +7,7 @@
             callback(response);
         };
         messager.send('settings', { what: 'getSettingsData', tabId: null }, onDataReceived);
-    }
+    };
     
     function SettingsViewModel(settingsData) {
         this.reload = false;
@@ -25,7 +25,6 @@
         this.settingsSocialEnabled = ko.observable(settingsData.blockSocialEnabled);
         this.settingsPrivacyEnabled = ko.observable(settingsData.blockPrivacyEnabled);
         this.settingsMalwareEnabled = ko.observable(settingsData.blockMalwareEnabled);
-        this.settingsSendStatsEnabled = ko.observable(settingsData.sendStatsEnabled);
 
         this.settingsBlockAdsText = ko.computed(function () {
             return this.settingsBlockAdsEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
@@ -63,9 +62,6 @@
         this.settingsMalwareText = ko.computed(function () {
             return this.settingsMalwareEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
         }, this);
-        this.settingsSendStatsText = ko.computed(function () {
-            return this.settingsSendStatsEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
-        }, this);
 
         this.toggleBlockAds = function () {
             var self = this;
@@ -75,47 +71,47 @@
                     self.reload = true;
                 });
             }, 500);
-        }
+        };
         this.toggleFlash = function () {
             this.settingsFlashEnabled(!this.settingsFlashEnabled());
             messager.send('settings', { what: 'toggleFlash' });
             this.reload = true;
-        }
+        };
         this.toggleBrowserFingerprinting = function () {
             this.settingsBrowserFingerprintingEnabled(!this.settingsBrowserFingerprintingEnabled());
             messager.send('settings', { what: 'toggleBrowserFingerprinting' });
             this.reload = true;
-        }
+        };
         this.toggleBlockMicrophone = function () {
             this.settingsBlockMicrophoneEnabled(!this.settingsBlockMicrophoneEnabled());
             messager.send('settings', { what: 'toggleBlockMicrophone' });
             this.reload = true;
-        }
+        };
         this.toggleBlockKeyboard = function () {
             this.settingsBlockKeyboardEnabled(!this.settingsBlockKeyboardEnabled());
             messager.send('settings', { what: 'toggleBlockKeyboard' });
             this.reload = true;
-        }
+        };
         this.toggleBlockMouse = function () {
             this.settingsBlockMouseEnabled(!this.settingsBlockMouseEnabled());
             messager.send('settings', { what: 'toggleBlockMouse' });
             this.reload = true;
-        }
+        };
         this.toggleBlockEmail = function () {
             this.settingsBlockEmailEnabled(!this.settingsBlockEmailEnabled());
             messager.send('settings', { what: 'toggleBlockEmail' });
             this.reload = true;
-        }
+        };
         this.toggleBlockWebRTC = function () {
             this.settingsBlockWebRTCEnabled(!this.settingsBlockWebRTCEnabled());
             messager.send('settings', { what: 'toggleBlockWebRTC' });
             this.reload = true;
-        }
+        };
         this.toggleBlockBlockAdBlock = function () {
             this.settingsBlockBlockAdBlockEnabled(!this.settingsBlockBlockAdBlockEnabled());
             messager.send('settings', { what: 'toggleBlockBlockAdBlock' });
             this.reload = true;
-        }
+        };
         this.toggleSocial = function () {
             var self = this;
             this.settingsSocialEnabled(!this.settingsSocialEnabled());
@@ -124,7 +120,7 @@
                     self.reload = true;
                 });
             }, 500);
-        }
+        };
         this.togglePrivacy = function () {
             var self = this;
             this.settingsPrivacyEnabled(!this.settingsPrivacyEnabled());
@@ -133,22 +129,17 @@
                     self.reload = true;
                 });
             }, 500);
-        }
+        };
         this.toggleMalware = function () {
             var self = this;
             this.settingsMalwareEnabled(!this.settingsMalwareEnabled());
             setTimeout(function () {
-                messager.send('settings', { what: 'toggleMalware' }, function () {
+                messager.send('settings', {what: 'toggleMalware'}, function () {
                     self.reload = true;
                 });
             }, 500);
-        }
-        this.toggleSendStats = function () {
-            this.settingsSendStatsEnabled(!this.settingsSendStatsEnabled());
-            messager.send('settings', { what: 'toggleSendStats' });
-            this.reload = true;
-        }
-    };
+        };
+    }
     
     uDom.onLoad(function () {
         getSettingsData(function (response) {
