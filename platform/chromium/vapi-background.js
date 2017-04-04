@@ -63,6 +63,11 @@ vAPI.cacheStorage = chrome.storage.local;
 /******************************************************************************/
 /******************************************************************************/
 
+chrome.runtime.setUninstallURL("https://www.tunnelbear.com/account#/feedback/blocker");
+
+/******************************************************************************/
+/******************************************************************************/
+
 // https://github.com/gorhill/uMatrix/issues/234
 // https://developer.chrome.com/extensions/privacy#property-network
 
@@ -606,105 +611,32 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
 // Since we may be called asynchronously, the tab id may not exist
 // anymore, so this ensures it does still exist.
 
-    var IconState = function (badge, img) {
-        this.badge = badge;
-        // ^ a number -- the badge 'value'
-        this.img = img;
-        // ^ a string -- 'on' or 'off'
-        this.dirty = (1 << 1) | (1 << 0);
-        /* ^ bitmask AB: two bits, A and B
-                where A is whether img has changed and needs render
-                and B is whether badge has changed and needs render */
-    };
-    var iconStateForTabId = {}; // {tabId: IconState}
+vAPI.setIcon = function(tabId, iconStatus, badge) {
+    tabId = toChromiumTabId(tabId);
+    if ( tabId === 0 ) {
+        return;
+    }
 
-    var ICON_PATHS = {
-        "on": { '16': 'img/browsericons/icon00.png', '32': 'img/browsericons/icon00@2x.png' },
-        "on1": { '16': 'img/browsericons/icon01.png', '32': 'img/browsericons/icon01@2x.png' },
-        "on2": { '16': 'img/browsericons/icon02.png', '32': 'img/browsericons/icon02@2x.png' },
-        "on3": { '16': 'img/browsericons/icon03.png', '32': 'img/browsericons/icon03@2x.png' },
-        "off": { '16': 'img/browsericons/icon_off.png', '32': 'img/browsericons/icon_off@2x.png' }
-    };
-
-    var iconAnimations = [];
-    var iconAnimated = false;
-
-    vAPI.setIcon = function (tabId, iconStatus, badge) {
-        tabId = toChromiumTabId(tabId);
-        if (tabId === 0) {
+    var onIconReady = function() {
+        if ( vAPI.lastError() ) {
             return;
         }
-        var stopIconAnimation = function () {
-            iconAnimated = false;
-        }
-        var playIconAnimation = function (tabId, i, badge) {
-            iconAnimated = true;
-            var icon = "on";
-            if (!i) {
-                i = 0;
-            }
-            if (i > 0 && i < 4) {
-                icon += i;
-            }
-            chrome.browserAction.setIcon({ tabId: tabId, path: ICON_PATHS[icon] }, function () {
-                if (vAPI.lastError()) {
-                    stopIconAnimation();
-                    return;
-                }
-                if (badge == 0) {
-                    stopIconAnimation();
-                } else {
-                    setTimeout(function () {
-                        if (i == 1) {
-                            chrome.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: '#666' });
-                            chrome.browserAction.setBadgeText({ tabId: tabId, text: '' });
-                        } else {
-                            // if (i == 3) {
-                            //     chrome.browserAction.setBadgeText({ tabId: tabId, text: badge });
-                            // }
-                        }
-                        i++;
-                        if (i < 5) {
-                            playIconAnimation(tabId, i, badge);
-                        } else {
-                            if (iconAnimations.length > 0) {
-                                var anim = iconAnimations.shift();
-                                playIconAnimation(anim.tabId, 0, anim.badge);
-                            } else {
-                                stopIconAnimation();
-                                chrome.browserAction.setBadgeText({ tabId: tabId, text: badge });
-                            }
-                        }
-                    }, 100);
-                }
+        chrome.browserAction.setBadgeText({ tabId: tabId, text: badge });
+        if ( badge !== '' ) {
+            chrome.browserAction.setBadgeBackgroundColor({
+                tabId: tabId,
+                color: '#666'
             });
-        }
-        var state = iconStateForTabId[tabId];
-        if (typeof state === "undefined") {
-            state = iconStateForTabId[tabId] = new IconState(badge, iconStatus);
-        }
-        else {
-            state.oldBadge = state.badge;
-            state.dirty = ((state.badge !== badge) << 1) | ((state.img !== iconStatus) << 0);
-            state.badge = badge;
-            state.img = iconStatus;
-        }
-        if ((state.dirty & 1) || (state.dirty & 2)) { // got a new icon?
-            if (badge && state.oldBadge < badge) {
-                console.log('SET BADGE: ' + badge);
-                if (iconAnimated) {
-                    iconAnimations.push({ tabId: tabId, badge: badge });
-                } else {
-                    playIconAnimation(tabId, 0, badge);
-                }
-            } else {
-                chrome.browserAction.setIcon({ tabId: tabId, path: ICON_PATHS[iconStatus] });
-            }
-        } else {
-            chrome.browserAction.setIcon({ tabId: tabId, path: ICON_PATHS[iconStatus] });
         }
     };
 
+    var iconPaths = iconStatus === 'on' ?
+        { '19': 'img/browsericons/icon19.png',     '38': 'img/browsericons/icon38.png' } :
+        { '19': 'img/browsericons/icon19-off.png', '38': 'img/browsericons/icon38-off.png' };
+
+    chrome.browserAction.setIcon({ tabId: tabId, path: iconPaths }, onIconReady);
+    vAPI.contextMenu.onMustUpdate(tabId);
+};
 
 /******************************************************************************/
 /******************************************************************************/
@@ -1075,16 +1007,6 @@ vAPI.net.registerListeners = function() {
         normalizeRequestDetails(details);
         return onBeforeRequestClient(details);
     };
-
-    var onBeforeSendHeadersClient = this.onBeforeSendHeaders.callback;
-    var onBeforeSendHeaders = function (details) {
-        normalizeRequestDetails(details);
-        return onBeforeSendHeadersClient(details);
-    };
-    chrome.webRequest.onBeforeSendHeaders.addListener(
-        onBeforeSendHeaders,
-        { urls: ["<all_urls>"] },
-        this.onBeforeSendHeaders.extra);
 
     // This is needed for Chromium 49-55.
     var onBeforeSendHeaders = function(details) {
