@@ -58,7 +58,7 @@ var µBlock = (function() { // jshint ignore:line
             colorBlindFriendly: false,
             contextMenuEnabled: true,
             dynamicFilteringEnabled: false,
-            externalLists: defaultExternalLists,
+            externalLists: [],
             firewallPaneMinimized: true,
             hyperlinkAuditingDisabled: true,
             ignoreGenericCosmeticFilters: false,
