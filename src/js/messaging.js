@@ -479,7 +479,7 @@ var onMessage = function(request, sender, callback) {
         break;
     case 'toggleBlockAds':
         µb.changeUserSettings("blockAdsEnabled", !µb.userSettings.blockAdsEnabled);
-        µb.setFilters('ads', !µb.userSettings.blockAdsEnabled, callback);
+        µb.setFilters(callback);
         break;
     case 'toggleFlash':
         µb.changeUserSettings("flashbearEnabled", !µb.userSettings.flashbearEnabled);
@@ -501,15 +501,15 @@ var onMessage = function(request, sender, callback) {
         break;
     case 'toggleSocial':
         µb.changeUserSettings("blockSocialEnabled", !µb.userSettings.blockSocialEnabled);
-        µb.setFilters('social', !µb.userSettings.blockSocialEnabled, callback);
+        µb.setFilters(callback);
         break;
     case 'togglePrivacy':
         µb.changeUserSettings("blockPrivacyEnabled", !µb.userSettings.blockPrivacyEnabled);
-        µb.setFilters('privacy', !µb.userSettings.blockPrivacyEnabled, callback);
+        µb.setFilters(callback);
         break;
     case 'toggleMalware':
         µb.changeUserSettings("blockMalwareEnabled", !µb.userSettings.blockMalwareEnabled);
-        µb.setFilters('malware', !µb.userSettings.blockMalwareEnabled, callback);
+        µb.setFilters(callback);
         break;
     case 'toggleShowPopupDetails':
         µb.changeUserSettings("showPopupDetails", !µb.userSettings.showPopupDetails);
@@ -823,7 +823,7 @@ var onMessage = function(request, sender, callback) {
     switch ( request.what ) {
         case 'toggleBlockAds':
             µb.changeUserSettings("blockAdsEnabled", !µb.userSettings.blockAdsEnabled);
-            µb.setFilters('ads', !µb.userSettings.blockAdsEnabled, callback);
+            µb.setFilters(callback);
             break;
         case 'toggleFlash':
             µb.changeUserSettings("flashbearEnabled", !µb.userSettings.flashbearEnabled);
@@ -849,15 +849,15 @@ var onMessage = function(request, sender, callback) {
             break;
         case 'toggleSocial':
             µb.changeUserSettings("blockSocialEnabled", !µb.userSettings.blockSocialEnabled);
-            µb.setFilters('social', !µb.userSettings.blockSocialEnabled, callback);
+            µb.setFilters(callback);
             break;
         case 'togglePrivacy':
             µb.changeUserSettings("blockPrivacyEnabled", !µb.userSettings.blockPrivacyEnabled);
-            µb.setFilters('privacy', !µb.userSettings.blockPrivacyEnabled, callback);
+            µb.setFilters(callback);
             break;
         case 'toggleMalware':
             µb.changeUserSettings("blockMalwareEnabled", !µb.userSettings.blockMalwareEnabled);
-            µb.setFilters('malware', !µb.userSettings.blockMalwareEnabled, callback);
+            µb.setFilters(callback);
             break;
         case 'toggleSendStats':
             µb.changeUserSettings("sendStatsEnabled", !µb.userSettings.sendStatsEnabled);

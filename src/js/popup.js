@@ -154,10 +154,9 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 url: 'https://www.tunnelbear.com/blocker/info#ads',
                 onClick: function () {
                     self.blockAdsEnabled(!self.blockAdsEnabled());
+                    messager.send('popupPanel', { what: 'toggleBlockAds' });
                     setTimeout(function () {
-                        messager.send('popupPanel', { what: 'toggleBlockAds' }, function () {
-                            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
-                        });
+                        messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                     }, 500);
                 }
             }, {
@@ -251,10 +250,9 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 url: 'https://www.tunnelbear.com/blocker/info#social-buttons',
                 onClick: function () {
                     self.socialEnabled(!self.socialEnabled());
+                    messager.send('popupPanel', { what: 'toggleSocial' });
                     setTimeout(function () {
-                        messager.send('popupPanel', { what: 'toggleSocial' }, function () {
-                            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
-                        });
+                        messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                     }, 500);
                 }
             }, {
@@ -267,10 +265,9 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 url: 'https://www.tunnelbear.com/blocker/info#scripts-trackers',
                 onClick: function () {
                     self.privacyEnabled(!self.privacyEnabled());
+                    messager.send('popupPanel', { what: 'togglePrivacy' });
                     setTimeout(function () {
-                        messager.send('popupPanel', { what: 'togglePrivacy' }, function () {
-                            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
-                        });
+                        messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                     }, 500);
                 }
             }, {
@@ -283,10 +280,9 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 url: 'https://www.tunnelbear.com/blocker/info#scripts-trackers',
                 onClick: function () {
                     self.malwareEnabled(!self.malwareEnabled());
+                    messager.send('popupPanel', { what: 'toggleMalware' });
                     setTimeout(function () {
-                        messager.send('popupPanel', { what: 'toggleMalware' }, function () {
-                            messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
-                        });
+                        messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                     }, 500);
                 }
             }]);

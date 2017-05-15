@@ -137,7 +137,7 @@ var onSelfieReady = function(selfie) {
         return false;
     }
 
-    µb.filterBuiltinLists(selfie.filterLists);
+    µb.filterBuiltinLists(selfie.selectedFilterLists);
     µb.availableFilterLists = selfie.availableFilterLists;
     µb.staticNetFilteringEngine.fromSelfie(selfie.staticNetFilteringEngine);
     µb.redirectEngine.fromSelfie(selfie.redirectEngine);

@@ -1168,12 +1168,12 @@
 
 µBlock.filterBuiltinLists = function (details) {
     for (var name in details) {
-        if(details[name].group == 'social') {
+        if (details[name].group == 'social') {
             details[name].off = false;
         }
 
-        if(details[name].off == false) {
-            switch(details[name].group){
+        if (details[name].off == false) {
+            switch (details[name].group) {
                 case 'privacy':
                     details[name].off = !µBlock.userSettings.blockPrivacyEnabled;
                     break;
@@ -1192,5 +1192,6 @@
             }
         }
     }
-    vAPI.storage.set({ 'remoteBlacklists': details });
+    var listKeys = µBlock.newListKeysFromOldData(details);
+    µBlock.saveSelectedFilterLists(listKeys);
 };
