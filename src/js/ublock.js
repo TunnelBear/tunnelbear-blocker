@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2016 Raymond Hill
+    Copyright (C) 2014-2017 Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -295,6 +295,41 @@ var reInvalidHostname = /[^a-z0-9.\-\[\]:]/,
 /******************************************************************************/
 /******************************************************************************/
 
+µBlock.getGroupName = function(group) {
+    if(group != 'privacy' && group != 'malware' && group != 'social') {
+        return 'ads';
+    }
+    return group;
+}
+
+µBlock.setFilters = function (callback) {
+    var isToggleEnabled = function(group) {
+        switch (group) {
+            case 'privacy':
+                return µBlock.userSettings.blockPrivacyEnabled;
+            case 'social':
+                return µBlock.userSettings.blockSocialEnabled;
+            case 'malware':
+                return µBlock.userSettings.blockMalwareEnabled;
+            case 'ads':
+                return µBlock.userSettings.blockAdsEnabled;
+            default:
+                return false;
+        }
+    }
+
+    µBlock.getAvailableLists(function (list) {
+        var switches = [];
+        for (var element in list) {
+            if (isToggleEnabled(µBlock.getGroupName(list[element]['group']))) {            
+                switches.push(element);
+            }
+        }
+        µBlock.saveSelectedFilterLists(switches);
+        µBlock.loadFilterLists();
+    });
+}
+
 µBlock.changeUserSettings = function(name, value) {
     var us = this.userSettings;
 
@@ -339,6 +374,9 @@ var reInvalidHostname = /[^a-z0-9.\-\[\]:]/,
         if ( value === true ) {
             us.dynamicFilteringEnabled = true;
         }
+        break;
+    case 'autoUpdate':
+        this.scheduleAssetUpdater(value ? 7 * 60 * 1000 : 0);
         break;
     case 'collapseBlocked':
         if ( value === false ) {
@@ -533,6 +571,24 @@ var reInvalidHostname = /[^a-z0-9.\-\[\]:]/,
 
     return injectAsync;
 })();
+
+/******************************************************************************/
+
+µBlock.setBlockWebRTC = function (value) {
+    if (chrome.privacy.network.webRTCMultipleRoutesEnabled) {
+        chrome.privacy.network.webRTCMultipleRoutesEnabled.set({'value': !value});
+    }
+    if (chrome.privacy.network.webRTCNonProxiedUdpEnabled) {
+        chrome.privacy.network.webRTCNonProxiedUdpEnabled.set({'value': !value});
+    }
+    if (chrome.privacy.network.webRTCIPHandlingPolicy) {
+        if(value) {
+            chrome.privacy.network.webRTCIPHandlingPolicy.set({'value': 'disable_non_proxied_udp'});
+        } else {
+            chrome.privacy.network.webRTCIPHandlingPolicy.set({'value': 'default'});
+        }
+    }
+}
 
 /******************************************************************************/
 

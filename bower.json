@@ -1,9 +1,9 @@
 {
-  "name": "blockbear-origin",
+  "name": "tunnelbear-blocker",
   "description": "",
   "main": "",
   "license": "GPL-3.0",
-  "homepage": "",
+  "homepage": "https://tunnelbear.com",
   "private": true,
   "ignore": [
     "**/.*",

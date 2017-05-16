@@ -13,6 +13,7 @@ popd > /dev/null
 
 rm -rf $DES
 mkdir $DES
+cp    ./assets/assets.json                                       $DES/
 
 mkdir $DES/thirdparties
 cp -R ../uAssets/thirdparties/easylist-downloads.adblockplus.org $DES/thirdparties/
@@ -23,8 +24,5 @@ cp -R ../uAssets/thirdparties/www.malwaredomainlist.com          $DES/thirdparti
 
 mkdir $DES/ublock
 cp -R ../uAssets/filters/*                                       $DES/ublock/
-cp -R ./assets/ublock/filter-lists.json                          $DES/ublock/
-
-cp ../uAssets/checksums/ublock0.txt                              $DES/checksums.txt
 
 echo "done."

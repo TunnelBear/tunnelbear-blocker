@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2016 Raymond Hill
+    Copyright (C) 2014-2017 Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ var onMessage = function(request, sender, callback) {
     switch ( request.what ) {
     case 'getAssetContent':
         // https://github.com/chrisaljoudi/uBlock/issues/417
-        µb.assets.get(request.url, callback);
+        µb.assets.get(request.url, { dontCache: true }, callback);
         return;
 
     case 'listsFromNetFilter':
@@ -77,7 +77,7 @@ var onMessage = function(request, sender, callback) {
         return;
 
     case 'reloadAllFilters':
-        µb.reloadAllFilters(callback);
+        µb.loadFilterLists();
         return;
 
     case 'scriptlet':
@@ -94,10 +94,8 @@ var onMessage = function(request, sender, callback) {
     var response;
 
     switch ( request.what ) {
-    case 'mouseClick':
-        µb.mouseX = request.x;
-        µb.mouseY = request.y;
-        µb.mouseURL = request.url;
+    case 'applyFilterListSelection':
+        response = µb.applyFilterListSelection(request);
         break;
 
     case 'compileCosmeticFilterSelector':
@@ -121,7 +119,8 @@ var onMessage = function(request, sender, callback) {
         break;
 
     case 'forceUpdateAssets':
-        µb.assetUpdater.force();
+        µb.scheduleAssetUpdater(0);
+        µb.assets.updateStart({ delay: µb.hiddenSettings.manualUpdateAssetFetchPeriod || 2000 });
         break;
 
     case 'getAppData':
@@ -146,6 +145,12 @@ var onMessage = function(request, sender, callback) {
         µb.openNewTab(request.details);
         break;
 
+    case 'mouseClick':
+        µb.mouseX = request.x;
+        µb.mouseY = request.y;
+        µb.mouseURL = request.url;
+        break;
+
     case 'reloadTab':
         if ( vAPI.isBehindTheSceneTabId(request.tabId) === false ) {
             vAPI.tabs.reload(request.tabId);
@@ -157,10 +162,6 @@ var onMessage = function(request, sender, callback) {
 
     case 'scriptletResponse':
         µb.scriptlets.report(tabId, request.scriptlet, request.response);
-        break;
-
-    case 'selectFilterLists':
-        µb.selectFilterLists(request.switches);
         break;
 
     case 'setWhitelist':
@@ -289,7 +290,22 @@ var popupDataFromTabId = function(tabId, tabTitle) {
     var tabContext = µb.tabContextManager.mustLookup(tabId),
         rootHostname = tabContext.rootHostname;
     var r = {
+        blockBearEnabled: µb.userSettings.blockBearEnabled,
+        blockAdsEnabled: µb.userSettings.blockAdsEnabled,
+        flashbearEnabled: µb.userSettings.flashbearEnabled,
+        sendStatsEnabled: µb.userSettings.sendStatsEnabled,
+        blockBrowserFingerprintingEnabled: µb.userSettings.blockBrowserFingerprintingEnabled,
+        blockMicrophoneEnabled: µb.userSettings.blockMicrophoneEnabled,
+        blockKeyboardEnabled: µb.userSettings.blockKeyboardEnabled,
+        blockMouseEnabled: µb.userSettings.blockMouseEnabled,
+        blockEmailEnabled: µb.userSettings.blockEmailEnabled,
+        blockWebRTCEnabled: µb.userSettings.blockWebRTCEnabled,
+        blockBlockAdBlockEnabled: µb.userSettings.blockBlockAdBlockEnabled,
+        blockSocialEnabled: µb.userSettings.blockSocialEnabled,
+        blockPrivacyEnabled: µb.userSettings.blockPrivacyEnabled,
+        blockMalwareEnabled: µb.userSettings.blockMalwareEnabled,
         advancedUserEnabled: µb.userSettings.advancedUserEnabled,
+        showPopupDetails: µb.userSettings.showPopupDetails,
         appName: vAPI.app.name,
         appVersion: vAPI.app.version,
         colorBlindFriendly: µb.userSettings.colorBlindFriendly,
@@ -306,6 +322,16 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         pageDomain: tabContext.rootDomain,
         pageAllowedRequestCount: 0,
         pageBlockedRequestCount: 0,
+        pageBlockedAdsCount: 0,
+        pageBlockedKeyboardCount: 0,
+        pageBlockedMouseCount: 0,
+        pageBlockedMicrophoneCount: 0,
+        pageBlockedFlashCount: 0,
+        pageBlockedFingerprintingCount: 0,
+        pageBlockedEmailCount: 0,
+        pageBlockedSocialCount: 0,
+        pageBlockedPrivacyCount: 0,
+        pageBlockedMalwareCount: 0,
         popupBlockedCount: 0,
         tabId: tabId,
         tabTitle: tabTitle,
@@ -327,6 +353,18 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         }
         r.pageBlockedRequestCount = pageStore.perLoadBlockedRequestCount;
         r.pageAllowedRequestCount = pageStore.perLoadAllowedRequestCount;
+        r.pageBlockedRequestCount = pageStore.perLoadBlockedRequestCount;
+        r.pageAllowedRequestCount = pageStore.perLoadAllowedRequestCount;
+        r.pageBlockedAdsCount = pageStore.perLoadBlockedAdsCount;
+        r.pageBlockedFlashCount = pageStore.perLoadBlockedFlashCount;
+        r.pageBlockedFingerprintingCount = pageStore.perLoadBlockedFingerprintingCount;
+        r.pageBlockedEmailCount = pageStore.perLoadBlockedEmailCount;
+        r.pageBlockedKeyboardCount = pageStore.perLoadBlockedKeyboardCount;
+        r.pageBlockedMouseCount = pageStore.perLoadBlockedMouseCount;
+        r.pageBlockedMicrophoneCount = pageStore.perLoadBlockedMicrophoneCount;
+        r.pageBlockedSocialCount = pageStore.perLoadBlockedSocialCount;
+        r.pageBlockedPrivacyCount = pageStore.perLoadBlockedPrivacyCount;
+        r.pageBlockedMalwareCount = pageStore.perLoadBlockedMalwareCount;
         r.netFilteringSwitch = pageStore.getNetFilteringSwitch();
         r.hostnameDict = getHostnameDict(pageStore.hostnameToCountMap);
         r.contentLastModified = pageStore.contentLastModified;
@@ -436,7 +474,46 @@ var onMessage = function(request, sender, callback) {
             µb.updateBadgeAsync(request.tabId);
         }
         break;
-
+    case 'toggleBlockBear':
+        µb.changeUserSettings("blockBearEnabled", !µb.userSettings.blockBearEnabled);
+        break;
+    case 'toggleBlockAds':
+        µb.changeUserSettings("blockAdsEnabled", !µb.userSettings.blockAdsEnabled);
+        µb.setFilters(callback);
+        break;
+    case 'toggleFlash':
+        µb.changeUserSettings("flashbearEnabled", !µb.userSettings.flashbearEnabled);
+        break;
+    case 'toggleBrowserFingerprinting':
+        µb.changeUserSettings("blockBrowserFingerprintingEnabled", !µb.userSettings.blockBrowserFingerprintingEnabled);
+        break;
+    case 'toggleBlockEmail':
+        µb.changeUserSettings("blockEmailEnabled", !µb.userSettings.blockEmailEnabled);
+        break;
+    case 'toggleBlockKeyboard':
+        µb.changeUserSettings("blockKeyboardEnabled", !µb.userSettings.blockKeyboardEnabled);
+        break;
+    case 'toggleBlockMouse':
+        µb.changeUserSettings("blockMouseEnabled", !µb.userSettings.blockMouseEnabled);
+        break;
+    case 'toggleBlockMicrophone':
+        µb.changeUserSettings("blockMicrophoneEnabled", !µb.userSettings.blockMicrophoneEnabled);
+        break;
+    case 'toggleSocial':
+        µb.changeUserSettings("blockSocialEnabled", !µb.userSettings.blockSocialEnabled);
+        µb.setFilters(callback);
+        break;
+    case 'togglePrivacy':
+        µb.changeUserSettings("blockPrivacyEnabled", !µb.userSettings.blockPrivacyEnabled);
+        µb.setFilters(callback);
+        break;
+    case 'toggleMalware':
+        µb.changeUserSettings("blockMalwareEnabled", !µb.userSettings.blockMalwareEnabled);
+        µb.setFilters(callback);
+        break;
+    case 'toggleShowPopupDetails':
+        µb.changeUserSettings("showPopupDetails", !µb.userSettings.showPopupDetails);
+        break;
     default:
         return vAPI.messaging.UNHANDLED;
     }
@@ -719,6 +796,88 @@ vAPI.messaging.listen('cloudWidget', onMessage);
 /******************************************************************************/
 /******************************************************************************/
 
+// channel: settings
+
+(function() {
+
+/******************************************************************************/
+
+var µb = µBlock;
+
+/******************************************************************************/
+
+var onMessage = function(request, sender, callback) {
+
+    // Async
+    switch ( request.what ) {
+        case 'getSettingsData':
+            callback(µb.userSettings);
+            return;
+        default:
+            break;
+    }
+
+    // Sync
+    var response;
+
+    switch ( request.what ) {
+        case 'toggleBlockAds':
+            µb.changeUserSettings("blockAdsEnabled", !µb.userSettings.blockAdsEnabled);
+            µb.setFilters(callback);
+            break;
+        case 'toggleFlash':
+            µb.changeUserSettings("flashbearEnabled", !µb.userSettings.flashbearEnabled);
+            break;
+        case 'toggleBrowserFingerprinting':
+            µb.changeUserSettings("blockBrowserFingerprintingEnabled", !µb.userSettings.blockBrowserFingerprintingEnabled);
+            break;
+        case 'toggleBlockMicrophone':
+            µb.changeUserSettings("blockMicrophoneEnabled", !µb.userSettings.blockMicrophoneEnabled);
+            break;
+        case 'toggleBlockPixelTracking':
+            µb.changeUserSettings("blockPixelTrackingEnabled", !µb.userSettings.blockPixelTrackingEnabled);
+            break;
+        case 'toggleBlockEmail':
+            µb.changeUserSettings("blockEmailEnabled", !µb.userSettings.blockEmailEnabled);
+            break;
+        case 'toggleBlockWebRTC':
+            µb.changeUserSettings("blockWebRTCEnabled", !µb.userSettings.blockWebRTCEnabled);
+            µb.setBlockWebRTC(µb.userSettings.blockWebRTCEnabled);
+            break;
+        case 'toggleBlockBlockAdBlock':
+            µb.changeUserSettings("blockBlockAdBlockEnabled", !µb.userSettings.blockBlockAdBlockEnabled);
+            break;
+        case 'toggleSocial':
+            µb.changeUserSettings("blockSocialEnabled", !µb.userSettings.blockSocialEnabled);
+            µb.setFilters(callback);
+            break;
+        case 'togglePrivacy':
+            µb.changeUserSettings("blockPrivacyEnabled", !µb.userSettings.blockPrivacyEnabled);
+            µb.setFilters(callback);
+            break;
+        case 'toggleMalware':
+            µb.changeUserSettings("blockMalwareEnabled", !µb.userSettings.blockMalwareEnabled);
+            µb.setFilters(callback);
+            break;
+        case 'toggleSendStats':
+            µb.changeUserSettings("sendStatsEnabled", !µb.userSettings.sendStatsEnabled);
+            break;
+        default:
+            return vAPI.messaging.UNHANDLED;
+    }
+
+    callback(response);
+};
+
+vAPI.messaging.listen('settings', onMessage);
+
+/******************************************************************************/
+
+})();
+
+/******************************************************************************/
+/******************************************************************************/
+
 // channel: dashboard
 
 (function() {
@@ -753,37 +912,34 @@ var backupUserData = function(callback) {
         timeStamp: Date.now(),
         version: vAPI.app.version,
         userSettings: µb.userSettings,
-        filterLists: {},
+        selectedFilterLists: µb.selectedFilterLists,
         hiddenSettingsString: µb.stringFromHiddenSettings(),
         netWhitelist: µb.stringFromWhitelist(µb.netWhitelist),
         dynamicFilteringString: µb.permanentFirewall.toString(),
         urlFilteringString: µb.permanentURLFiltering.toString(),
         hostnameSwitchesString: µb.hnSwitches.toString(),
-        userFilters: ''
-    };
-
-    var onSelectedListsReady = function(filterLists) {
-        userData.filterLists = filterLists;
-
-        var filename = vAPI.i18n('aboutBackupFilename')
-            .replace('{{datetime}}', µb.dateNowToSensibleString())
-            .replace(/ +/g, '_');
-
-        vAPI.download({
-            'url': 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(userData, null, '  ')),
-            'filename': filename
-        });
-
-        µb.restoreBackupSettings.lastBackupFile = filename;
-        µb.restoreBackupSettings.lastBackupTime = Date.now();
-        vAPI.storage.set(µb.restoreBackupSettings);
-
-        getLocalData(callback);
+        userFilters: '',
+        // TODO(seamless migration):
+        // The following is strictly for convenience, to be minimally
+        // forward-compatible. This will definitely be removed in the
+        // short term, as I do not expect the need to install an older
+        // version of uBO to ever be needed beyond the short term.
+        // >>>>>>>>
+        filterLists: µb.oldDataFromNewListKeys(µb.selectedFilterLists)
+        // <<<<<<<<
     };
 
     var onUserFiltersReady = function(details) {
         userData.userFilters = details.content;
-        µb.extractSelectedFilterLists(onSelectedListsReady);
+        var filename = vAPI.i18n('aboutBackupFilename')
+            .replace('{{datetime}}', µb.dateNowToSensibleString())
+            .replace(/ +/g, '_');
+        µb.restoreBackupSettings.lastBackupFile = filename;
+        µb.restoreBackupSettings.lastBackupTime = Date.now();
+        vAPI.storage.set(µb.restoreBackupSettings);
+        getLocalData(function(localData) {
+            callback({ localData: localData, userData: userData });
+        });
     };
 
     µb.assets.get(µb.userFiltersPath, onUserFiltersReady);
@@ -791,32 +947,40 @@ var backupUserData = function(callback) {
 
 var restoreUserData = function(request) {
     var userData = request.userData;
-    var countdown = 8;
-    var onCountdown = function() {
-        countdown -= 1;
-        if ( countdown === 0 ) {
-            vAPI.app.restart();
-        }
+
+    var restart = function() {
+        vAPI.app.restart();
     };
 
     var onAllRemoved = function() {
-        // Be sure to adjust `countdown` if adding/removing anything below
-        µb.keyvalSetOne('version', userData.version);
         µBlock.saveLocalSettings();
-        vAPI.storage.set(userData.userSettings, onCountdown);
-        µb.keyvalSetOne('remoteBlacklists', userData.filterLists, onCountdown);
+        vAPI.storage.set(userData.userSettings);
         µb.hiddenSettingsFromString(userData.hiddenSettingsString || '');
-        µb.keyvalSetOne('netWhitelist', userData.netWhitelist || '', onCountdown);
-        µb.keyvalSetOne('dynamicFilteringString', userData.dynamicFilteringString || '', onCountdown);
-        µb.keyvalSetOne('urlFilteringString', userData.urlFilteringString || '', onCountdown);
-        µb.keyvalSetOne('hostnameSwitchesString', userData.hostnameSwitchesString || '', onCountdown);
-        µb.assets.put(µb.userFiltersPath, userData.userFilters, onCountdown);
         vAPI.storage.set({
+            netWhitelist: userData.netWhitelist || '',
+            dynamicFilteringString: userData.dynamicFilteringString || '',
+            urlFilteringString: userData.urlFilteringString || '',
+            hostnameSwitchesString: userData.hostnameSwitchesString || '',
             lastRestoreFile: request.file || '',
             lastRestoreTime: Date.now(),
             lastBackupFile: '',
             lastBackupTime: 0
-        }, onCountdown);
+        });
+        µb.assets.put(µb.userFiltersPath, userData.userFilters);
+
+        // 'filterLists' is available up to uBO v1.10.4, not beyond.
+        // 'selectedFilterLists' is available from uBO v1.11 and beyond.
+        var listKeys;
+        if ( Array.isArray(userData.selectedFilterLists) ) {
+            listKeys = userData.selectedFilterLists;
+        } else if ( userData.filterLists instanceof Object ) {
+            listKeys = µb.newListKeysFromOldData(userData.filterLists);
+        }
+        if ( listKeys !== undefined ) {
+            µb.saveSelectedFilterLists(listKeys, restart);
+        } else {
+            restart();
+        }
     };
 
     // https://github.com/chrisaljoudi/uBlock/issues/1102
@@ -848,9 +1012,7 @@ var prepListEntries = function(entries) {
     var µburi = µb.URI;
     var entry, hn;
     for ( var k in entries ) {
-        if ( entries.hasOwnProperty(k) === false ) {
-            continue;
-        }
+        if ( entries.hasOwnProperty(k) === false ) { continue; }
         entry = entries[k];
         if ( typeof entry.supportURL === 'string' && entry.supportURL !== '' ) {
             entry.supportName = µburi.hostnameFromURI(entry.supportURL);
@@ -867,18 +1029,17 @@ var getLists = function(callback) {
         autoUpdate: µb.userSettings.autoUpdate,
         available: null,
         cache: null,
-        parseCosmeticFilters: µb.userSettings.parseAllABPHideFilters,
         cosmeticFilterCount: µb.cosmeticFilteringEngine.getFilterCount(),
-        current: µb.remoteBlacklists,
+        current: µb.availableFilterLists,
+        externalLists: µb.userSettings.externalLists,
         ignoreGenericCosmeticFilters: µb.userSettings.ignoreGenericCosmeticFilters,
-        manualUpdate: false,
         netFilterCount: µb.staticNetFilteringEngine.getFilterCount(),
-        userFiltersPath: µb.userFiltersPath
+        parseCosmeticFilters: µb.userSettings.parseAllABPHideFilters,
+        userFiltersPath: µb.userFiltersPath,
+        aliases: µb.assets.listKeyAliases
     };
     var onMetadataReady = function(entries) {
         r.cache = entries;
-        r.manualUpdate = µb.assetUpdater.manualUpdate;
-        r.manualUpdateProgress = µb.assetUpdater.manualUpdateProgress;
         prepListEntries(r.cache);
         callback(r);
     };
@@ -952,9 +1113,6 @@ var onMessage = function(request, sender, callback) {
     case 'getLocalData':
         return getLocalData(callback);
 
-    case 'purgeAllCaches':
-        return µb.assets.purgeAll(callback);
-
     case 'readUserFilters':
         return µb.loadUserFilters(callback);
 
@@ -973,8 +1131,21 @@ var onMessage = function(request, sender, callback) {
         response = getRules();
         break;
 
+    case 'purgeAllCaches':
+        if ( request.hard ) {
+            µb.assets.remove(/./);
+        } else {
+            µb.assets.purge(/./, 'public_suffix_list.dat');
+        }
+        break;
+
     case 'purgeCache':
-        µb.assets.purgeCacheableAsset(request.path);
+        µb.assets.purge(request.assetKey);
+        µb.assets.remove('compiled/' + request.assetKey);
+        // https://github.com/gorhill/uBlock/pull/2314#issuecomment-278716960
+        if ( request.assetKey === 'ublock-filters' ) {
+            µb.assets.purge('ublock-resources');
+        }
         break;
 
     case 'readHiddenSettings':
@@ -1063,13 +1234,13 @@ var getURLFilteringData = function(details) {
         colorEntry = colors[url] = { r: 0, own: false };
         if ( suf.evaluateZ(context, url, type).r !== 0 ) {
             colorEntry.r = suf.r;
-            colorEntry.own = suf.context === context && suf.url === url && suf.type === type;
+            colorEntry.own = suf.r !== 0 && suf.context === context && suf.url === url && suf.type === type;
         }
         if ( response.dirty ) {
             continue;
         }
         puf.evaluateZ(context, url, type);
-        response.dirty = colorEntry.own !== (puf.context === context && puf.url === url && puf.type === type);
+        response.dirty = colorEntry.own !== (puf.r !== 0 && puf.context === context && puf.url === url && puf.type === type);
     }
     return response;
 };
@@ -1276,8 +1447,7 @@ var onMessage = function(request, sender, callback) {
 
     case 'subscriberData':
         response = {
-            confirmStr: vAPI.i18n('subscriberConfirm'),
-            externalLists: µBlock.userSettings.externalLists
+            confirmStr: vAPI.i18n('subscriberConfirm')
         };
         break;
 

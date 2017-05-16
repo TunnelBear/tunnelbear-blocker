@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2016 The uBlock Origin authors
+    Copyright (C) 2014-2017 The uBlock Origin authors
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,6 +59,11 @@ vAPI.app.restart = function() {
 
 vAPI.storage = chrome.storage.local;
 vAPI.cacheStorage = chrome.storage.local;
+
+/******************************************************************************/
+/******************************************************************************/
+
+chrome.runtime.setUninstallURL("https://www.tunnelbear.com/account#/feedback/blocker");
 
 /******************************************************************************/
 /******************************************************************************/
@@ -169,16 +174,12 @@ vAPI.browserSettings = (function() {
                             scope: 'regular'
                         }, this.noopCallback);
                     } else {
-                        // Respect current stricter setting if any. 
-                        cpn.webRTCIPHandlingPolicy.get({}, function(details) {
-                            var value = details.value === 'disable_non_proxied_udp' ?
-                                'disable_non_proxied_udp' :
-                                'default_public_interface_only';
-                            cpn.webRTCIPHandlingPolicy.set({
-                                value: value,
-                                scope: 'regular'
-                            }, this.noopCallback);
-                        }.bind(this));
+                        // https://github.com/uBlockOrigin/uAssets/issues/333#issuecomment-289426678
+                        // - Leverage virtuous side-effect of strictest setting.
+                        cpn.webRTCIPHandlingPolicy.set({
+                            value: 'disable_non_proxied_udp',
+                            scope: 'regular'
+                        }, this.noopCallback);
                     }
                 } catch(ex) {
                     console.error(ex);
@@ -606,31 +607,103 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
 // Since we may be called asynchronously, the tab id may not exist
 // anymore, so this ensures it does still exist.
 
-vAPI.setIcon = function(tabId, iconStatus, badge) {
+var IconState = function (badge, img) {
+    this.badge = badge;
+    // ^ a number -- the badge 'value'
+    this.img = img;
+    // ^ a string -- 'on' or 'off'
+    this.dirty = (1 << 1) | (1 << 0);
+    /* ^ bitmask AB: two bits, A and B
+            where A is whether img has changed and needs render
+            and B is whether badge has changed and needs render */
+};
+var iconStateForTabId = {}; // {tabId: IconState}
+
+var ICON_PATHS = {
+    "on": { '16': 'img/browsericons/icon00.png', '32': 'img/browsericons/icon00@2x.png' },
+    "on1": { '16': 'img/browsericons/icon01.png', '32': 'img/browsericons/icon01@2x.png' },
+    "on2": { '16': 'img/browsericons/icon02.png', '32': 'img/browsericons/icon02@2x.png' },
+    "on3": { '16': 'img/browsericons/icon03.png', '32': 'img/browsericons/icon03@2x.png' },
+    "off": { '16': 'img/browsericons/icon_off.png', '32': 'img/browsericons/icon_off@2x.png' }
+};
+
+var iconAnimations = [];
+var iconAnimated = false;
+
+vAPI.setIcon = function (tabId, iconStatus, badge) {
     tabId = toChromiumTabId(tabId);
-    if ( tabId === 0 ) {
+    if (tabId === 0) {
         return;
     }
-
-    var onIconReady = function() {
-        if ( vAPI.lastError() ) {
-            return;
+    var stopIconAnimation = function () {
+        iconAnimated = false;
+    }
+    var playIconAnimation = function (tabId, i, badge) {
+        iconAnimated = true;
+        var icon = "on";
+        if (!i) {
+            i = 0;
         }
-        chrome.browserAction.setBadgeText({ tabId: tabId, text: badge });
-        if ( badge !== '' ) {
-            chrome.browserAction.setBadgeBackgroundColor({
-                tabId: tabId,
-                color: '#666'
-            });
+        if (i > 0 && i < 4) {
+            icon += i;
         }
-    };
-
-    var iconPaths = iconStatus === 'on' ?
-        { '19': 'img/browsericons/icon19.png',     '38': 'img/browsericons/icon38.png' } :
-        { '19': 'img/browsericons/icon19-off.png', '38': 'img/browsericons/icon38-off.png' };
-
-    chrome.browserAction.setIcon({ tabId: tabId, path: iconPaths }, onIconReady);
-    vAPI.contextMenu.onMustUpdate(tabId);
+        chrome.browserAction.setIcon({ tabId: tabId, path: ICON_PATHS[icon] }, function () {
+            if (vAPI.lastError()) {
+                stopIconAnimation();
+                return;
+            }
+            if (badge == 0) {
+                stopIconAnimation();
+            } else {
+                setTimeout(function () {
+                    if (i == 1) {
+                        chrome.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: '#666' });
+                        chrome.browserAction.setBadgeText({ tabId: tabId, text: '' });
+                    } else {
+                        // if (i == 3) {
+                        //     chrome.browserAction.setBadgeText({ tabId: tabId, text: badge });
+                        // }
+                    }
+                    i++;
+                    if (i < 5) {
+                        playIconAnimation(tabId, i, badge);
+                    } else {
+                        if (iconAnimations.length > 0) {
+                            var anim = iconAnimations.shift();
+                            playIconAnimation(anim.tabId, 0, anim.badge);
+                        } else {
+                            stopIconAnimation();
+                            chrome.browserAction.setBadgeText({ tabId: tabId, text: badge });
+                        }
+                    }
+                }, 100);
+            }
+        });
+    }
+    var state = iconStateForTabId[tabId];
+    if (typeof state === "undefined") {
+        state = iconStateForTabId[tabId] = new IconState(badge, iconStatus);
+    }
+    else {
+        state.oldBadge = state.badge;
+        state.dirty = ((state.badge !== badge) << 1) | ((state.img !== iconStatus) << 0);
+        state.badge = badge;
+        state.img = iconStatus;
+    }
+    if ((state.dirty & 1) || (state.dirty & 2)) { // got a new icon?
+        if (badge && state.oldBadge < badge) {
+            console.log('SET BADGE: ' + badge);
+            if (iconAnimated) {
+                iconAnimations.push({ tabId: tabId, badge: badge });
+            } else {
+                playIconAnimation(tabId, 0, badge);
+            }
+        } else {
+            chrome.browserAction.setIcon({ tabId: tabId, path: ICON_PATHS[iconStatus] });
+        }
+    } else {
+        chrome.browserAction.setIcon({ tabId: tabId, path: ICON_PATHS[iconStatus] });
+    }
 };
 
 /******************************************************************************/
@@ -859,26 +932,36 @@ vAPI.net = {};
 /******************************************************************************/
 
 vAPI.net.registerListeners = function() {
-    var µb = µBlock;
-    var µburi = µb.URI;
+    var µb = µBlock,
+        µburi = µb.URI,
+        wrApi = chrome.webRequest;
 
     // https://bugs.chromium.org/p/chromium/issues/detail?id=410382
     // Between Chromium 38-48, plug-ins' network requests were reported as
     // type "other" instead of "object".
-    var is_v38_48 = /\bChrom[a-z]+\/(?:3[89]|4[0-8])\.[\d.]+\b/.test(navigator.userAgent),
-        is_v49_55 = /\bChrom[a-z]+\/(?:49|5[012345])\b/.test(navigator.userAgent);
+    var is_v38_48 = /\bChrom[a-z]+\/(?:3[89]|4[0-8])\.[\d.]+\b/.test(navigator.userAgent);
 
-    // Chromium-based browsers understand only these network request types.
-    var validTypes = [
-        'main_frame',
-        'sub_frame',
-        'stylesheet',
-        'script',
-        'image',
-        'object',
-        'xmlhttprequest',
-        'other'
-    ];
+    // legacy Chromium understands only these network request types.
+    var validTypes = {
+        main_frame: true,
+        sub_frame: true,
+        stylesheet: true,
+        script: true,
+        image: true,
+        object: true,
+        xmlhttprequest: true,
+        other: true
+    };
+    // modern Chromium/WebExtensions: more types available.
+    if ( wrApi.ResourceType ) {
+        (function() {
+            for ( var typeKey in wrApi.ResourceType ) {
+                if ( wrApi.ResourceType.hasOwnProperty(typeKey) ) {
+                    validTypes[wrApi.ResourceType[typeKey]] = true;
+                }
+            }
+        })();
+    }
 
     var extToTypeMap = new Map([
         ['eot','font'],['otf','font'],['svg','font'],['ttf','font'],['woff','font'],['woff2','font'],
@@ -888,7 +971,7 @@ vAPI.net.registerListeners = function() {
 
     var denormalizeTypes = function(aa) {
         if ( aa.length === 0 ) {
-            return validTypes;
+            return Object.keys(validTypes);
         }
         var out = [];
         var i = aa.length,
@@ -896,7 +979,7 @@ vAPI.net.registerListeners = function() {
             needOther = true;
         while ( i-- ) {
             type = aa[i];
-            if ( validTypes.indexOf(type) !== -1 ) {
+            if ( validTypes[type] ) {
                 out.push(type);
             }
             if ( type === 'other' ) {
@@ -922,23 +1005,29 @@ vAPI.net.registerListeners = function() {
     var normalizeRequestDetails = function(details) {
         details.tabId = details.tabId.toString();
 
+        var type = details.type;
+
         // https://github.com/gorhill/uBlock/issues/1493
-        // Chromium 49+ support a new request type: `ping`, which is fired as
-        // a result of using `navigator.sendBeacon`.
-        if ( details.type === 'ping' ) {
+        // Chromium 49+/WebExtensions support a new request type: `ping`,
+        // which is fired as a result of using `navigator.sendBeacon`.
+        if ( type === 'ping' ) {
             details.type = 'beacon';
             return;
         }
 
+        if ( type === 'imageset' ) {
+            details.type = 'image';
+            return;
+        }
+
         // The rest of the function code is to normalize type
-        if ( details.type !== 'other' ) {
+        if ( type !== 'other' ) {
             return;
         }
 
         // Try to map known "extension" part of URL to request type.
         var path = µburi.pathFromURI(details.url),
-            pos = path.indexOf('.', path.length - 6),
-            type;
+            pos = path.indexOf('.', path.length - 6);
         if ( pos !== -1 && (type = extToTypeMap.get(path.slice(pos + 1))) ) {
             details.type = type;
             return;
@@ -976,123 +1065,152 @@ vAPI.net.registerListeners = function() {
     // logger, etc.
     // Counterpart of following block of code is found in "vapi-client.js" --
     // search for "https://github.com/gorhill/uBlock/issues/1497".
+    //
+    // Once uBO 1.11.1 and uBO-Extra 2.12 are widespread, the image-based
+    // handling code can be removed.
     var onBeforeWebsocketRequest = function(details) {
+        if ( (details.type !== 'image') &&
+             (details.method !== 'HEAD' || details.type !== 'xmlhttprequest')
+        ) {
+            return;
+        }
+        var requestURL = details.url,
+            matches = /[?&]u(?:rl)?=([^&]+)/.exec(requestURL);
+        if ( matches === null ) { return; }
         details.type = 'websocket';
-        var matches = /url=([^&]+)/.exec(details.url);
         details.url = decodeURIComponent(matches[1]);
         var r = onBeforeRequestClient(details);
-        // Blocked?
-        if ( r && r.cancel ) {
-            return r;
-        }
-        // Returning a 1x1 transparent pixel means "not blocked".
-        return { redirectUrl: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' };
+        if ( r && r.cancel ) { return r; }
+        // Redirect to the provided URL, or a 1x1 data: URI if none provided.
+        matches = /[?&]r=([^&]+)/.exec(requestURL);
+        return {
+            redirectUrl: matches !== null ?
+                decodeURIComponent(matches[1]) :
+                'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+        };
     };
 
     var onBeforeRequestClient = this.onBeforeRequest.callback;
-    var onBeforeRequest = function(details) {
-        // https://github.com/gorhill/uBlock/issues/1497
-        if (
-            details.type === 'image' &&
-            details.url.endsWith('ubofix=f41665f3028c7fd10eecf573336216d3')
-        ) {
-            return onBeforeWebsocketRequest(details);
-        }
-
-        normalizeRequestDetails(details);
-        return onBeforeRequestClient(details);
-    };
-
-    // This is needed for Chromium 49-55.
-    var onBeforeSendHeaders = function(details) {
-        if ( details.type !== 'ping' || details.method !== 'POST' ) { return; }
-        var type = headerValue(details.requestHeaders, 'content-type');
-        if ( type === '' ) { return; }
-        if ( type.endsWith('/csp-report') ) {
-            details.type = 'csp_report';
+    var onBeforeRequest = validTypes.websocket
+        // modern Chromium/WebExtensions: type 'websocket' is supported
+        ? function(details) {
+            normalizeRequestDetails(details);
             return onBeforeRequestClient(details);
         }
-    };
+        // legacy Chromium
+        : function(details) {
+            // https://github.com/gorhill/uBlock/issues/1497
+            if ( details.url.endsWith('ubofix=f41665f3028c7fd10eecf573336216d3') ) {
+                var r = onBeforeWebsocketRequest(details);
+                if ( r !== undefined ) { return r; }
+            }
+            normalizeRequestDetails(details);
+            return onBeforeRequestClient(details);
+        };
+
+    // This is needed for Chromium 49-55.
+    var onBeforeSendHeaders = validTypes.csp_report
+        // modern Chromium/WebExtensions: type 'csp_report' is supported
+        ? null
+        // legacy Chromium
+        : function(details) {
+            if ( details.type !== 'ping' || details.method !== 'POST' ) { return; }
+            var type = headerValue(details.requestHeaders, 'content-type');
+            if ( type === '' ) { return; }
+            if ( type.endsWith('/csp-report') ) {
+                details.type = 'csp_report';
+                return onBeforeRequestClient(details);
+            }
+        };
 
     var onHeadersReceivedClient = this.onHeadersReceived.callback,
         onHeadersReceivedClientTypes = this.onHeadersReceived.types.slice(0),
         onHeadersReceivedTypes = denormalizeTypes(onHeadersReceivedClientTypes);
-    var onHeadersReceived = function(details) {
-        normalizeRequestDetails(details);
-        // Hack to work around Chromium API limitations, where requests of
-        // type `font` are returned as `other`. For example, our normalization
-        // fail at transposing `other` into `font` for URLs which are outside
-        // what is expected. At least when headers are received we can check
-        // for content type `font/*`. Blocking at onHeadersReceived time is
-        // less worse than not blocking at all. Also, due to Chromium bug,
-        // `other` always becomes `object` when it can't be normalized into
-        // something else. Test case for "unfriendly" font URLs:
-        //   https://www.google.com/fonts
-        if ( details.type === 'font' ) {
-            var r = onBeforeRequestClient(details);
-            if ( typeof r === 'object' && r.cancel === true ) {
-                return { cancel: true };
+    var onHeadersReceived = validTypes.font
+        // modern Chromium/WebExtensions: type 'font' is supported
+        ? function(details) {
+            normalizeRequestDetails(details);
+            if (
+                onHeadersReceivedClientTypes.length !== 0 &&
+                onHeadersReceivedClientTypes.indexOf(details.type) === -1
+            ) {
+                return;
+            }
+            return onHeadersReceivedClient(details);
+        }
+        // legacy Chromium
+        : function(details) {
+            normalizeRequestDetails(details);
+            // Hack to work around Chromium API limitations, where requests of
+            // type `font` are returned as `other`. For example, our normalization
+            // fail at transposing `other` into `font` for URLs which are outside
+            // what is expected. At least when headers are received we can check
+            // for content type `font/*`. Blocking at onHeadersReceived time is
+            // less worse than not blocking at all. Also, due to Chromium bug,
+            // `other` always becomes `object` when it can't be normalized into
+            // something else. Test case for "unfriendly" font URLs:
+            //   https://www.google.com/fonts
+            if ( details.type === 'font' ) {
+                var r = onBeforeRequestClient(details);
+                if ( typeof r === 'object' && r.cancel === true ) {
+                    return { cancel: true };
+                }
+            }
+            if (
+                onHeadersReceivedClientTypes.length !== 0 &&
+                onHeadersReceivedClientTypes.indexOf(details.type) === -1
+            ) {
+                return;
+            }
+            return onHeadersReceivedClient(details);
+        };
+
+    var urls, types;
+
+    if ( onBeforeRequest ) {
+        urls = this.onBeforeRequest.urls || ['<all_urls>'];
+        types = this.onBeforeRequest.types || undefined;
+        if (
+            (validTypes.websocket) &&
+            (types === undefined || types.indexOf('websocket') !== -1) &&
+            (urls.indexOf('<all_urls>') === -1)
+        ) {
+            if ( urls.indexOf('ws://*/*') === -1 ) {
+                urls.push('ws://*/*');
+            }
+            if ( urls.indexOf('wss://*/*') === -1 ) {
+                urls.push('wss://*/*');
             }
         }
-        if (
-            onHeadersReceivedClientTypes.length !== 0 &&
-            onHeadersReceivedClientTypes.indexOf(details.type) === -1
-        ) {
-            return;
-        }
-        return onHeadersReceivedClient(details);
-    };
+        wrApi.onBeforeRequest.addListener(
+            onBeforeRequest,
+            { urls: urls, types: types },
+            this.onBeforeRequest.extra
+        );
+    }
 
-    var installListeners = (function() {
-        var crapi = chrome.webRequest;
+    // Chromium 48 and lower does not support `ping` type.
+    // Chromium 56 and higher does support `csp_report` stype.
+    if ( onBeforeSendHeaders ) {
+        wrApi.onBeforeSendHeaders.addListener(
+            onBeforeSendHeaders,
+            {
+                'urls': [ '<all_urls>' ],
+                'types': [ 'ping' ]
+            },
+            [ 'blocking', 'requestHeaders' ]
+        );
+    }
 
-        //listener = function(details) {
-        //    quickProfiler.start('onBeforeRequest');
-        //    var r = onBeforeRequest(details);
-        //    quickProfiler.stop();
-        //    return r;
-        //};
-        if ( crapi.onBeforeRequest.hasListener(onBeforeRequest) === false ) {
-            crapi.onBeforeRequest.addListener(
-                onBeforeRequest,
-                {
-                    'urls': this.onBeforeRequest.urls || ['<all_urls>'],
-                    'types': this.onBeforeRequest.types || undefined
-                },
-                this.onBeforeRequest.extra
-            );
-        }
-
-        // Chromium 48 and lower does not support `ping` type.
-        // Chromium 56 and higher does support `csp_report` stype.
-        if ( is_v49_55 && crapi.onBeforeSendHeaders.hasListener(onBeforeSendHeaders) === false ) {
-            crapi.onBeforeSendHeaders.addListener(
-                onBeforeSendHeaders,
-                {
-                    'urls': [ '<all_urls>' ],
-                    'types': [ 'ping' ]
-                },
-                [ 'blocking', 'requestHeaders' ]
-            );
-        }
-
-        if ( crapi.onHeadersReceived.hasListener(onHeadersReceived) === false ) {
-            crapi.onHeadersReceived.addListener(
-                onHeadersReceived,
-                {
-                    'urls': this.onHeadersReceived.urls || ['<all_urls>'],
-                    'types': onHeadersReceivedTypes
-                },
-                this.onHeadersReceived.extra
-            );
-        }
-
-        // https://github.com/gorhill/uBlock/issues/675
-        // Experimental: keep polling to be sure our listeners are still installed.
-        //setTimeout(installListeners, 20000);
-    }).bind(this);
-
-    installListeners();
+    if ( onHeadersReceived ) {
+        urls = this.onHeadersReceived.urls || ['<all_urls>'];
+        types = onHeadersReceivedTypes;
+        wrApi.onHeadersReceived.addListener(
+            onHeadersReceived,
+            { urls: urls, types: types },
+            this.onHeadersReceived.extra
+        );
+    }
 };
 
 /******************************************************************************/
@@ -1255,10 +1373,13 @@ vAPI.cloud = (function() {
     var maxChunkCountPerItem = Math.floor(512 * 0.75) & ~(chunkCountPerFetch - 1);
 
     // Mind chrome.storage.sync.QUOTA_BYTES_PER_ITEM (8192 at time of writing)
-    var maxChunkSize = Math.floor(chrome.storage.sync.QUOTA_BYTES_PER_ITEM * 0.75);
+    var maxChunkSize = Math.floor(chrome.storage.sync.QUOTA_BYTES_PER_ITEM * 0.75 || 6144);
 
     // Mind chrome.storage.sync.QUOTA_BYTES (128 kB at time of writing)
-    var maxStorageSize = chrome.storage.sync.QUOTA_BYTES;
+    // Firefox:
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/storage/sync
+    // > You can store up to 100KB of data using this API/
+    var maxStorageSize = chrome.storage.sync.QUOTA_BYTES || 102400;
 
     var options = {
         defaultDeviceName: window.navigator.platform,

@@ -307,6 +307,16 @@ PageStore.prototype.init = function(tabId) {
     this.frames = Object.create(null);
     this.perLoadBlockedRequestCount = 0;
     this.perLoadAllowedRequestCount = 0;
+    this.perLoadBlockedFlashCount = 0;
+    this.perLoadBlockedAdsCount = 0;
+    this.perLoadBlockedSocialCount = 0;
+    this.perLoadBlockedPrivacyCount = 0;
+    this.perLoadBlockedMalwareCount = 0;
+    this.perLoadBlockedFingerprintingCount = 0;
+    this.perLoadBlockedEmailCount = 0;
+    this.perLoadBlockedKeyboardCount = 0;
+    this.perLoadBlockedMouseCount = 0;
+    this.perLoadBlockedMicrophoneCount = 0;
     this.hiddenElementCount = ''; // Empty string means "unknown"
     this.remoteFontCount = 0;
     this.popupBlockedCount = 0;
@@ -473,9 +483,37 @@ PageStore.prototype.createContextFromFrameHostname = function(frameHostname) {
 
 /******************************************************************************/
 
-PageStore.prototype.getNetFilteringSwitch = function() {
-    return µb.tabContextManager.mustLookup(this.tabId).getNetFilteringSwitch();
+// PageStore.prototype.getNetFilteringSwitch = function() {
+//     return µb.tabContextManager.mustLookup(this.tabId).getNetFilteringSwitch();
+// };
+PageStore.prototype.getNetFilteringSwitch = function () {
+    if (µb.userSettings.sendStatsEnabled){
+        this.sendStats();
+    }
+    return µb.userSettings.blockBearEnabled && this.netFilteringSwitchEnabled(); 
 };
+
+PageStore.prototype.netFilteringSwitchEnabled = function () {
+    var tabContext = µb.tabContextManager.mustLookup(this.tabId);
+    if (
+        this.netFilteringReadTime > µb.netWhitelistModifyTime &&
+        this.netFilteringReadTime > tabContext.modifyTime
+    ) {
+        return this.netFiltering;
+    }
+
+    // https://github.com/chrisaljoudi/uBlock/issues/1078
+    // Use both the raw and normalized URLs.
+    this.netFiltering = µb.getNetFilteringSwitch(tabContext.normalURL);
+    if ( this.netFiltering && tabContext.rawURL !== tabContext.normalURL ) {
+        this.netFiltering = µb.getNetFilteringSwitch(tabContext.rawURL);
+    }
+    this.netFilteringReadTime = Date.now();
+    return this.netFiltering;
+};
+
+PageStore.prototype.sendStats = function () {
+}
 
 /******************************************************************************/
 
@@ -523,10 +561,7 @@ PageStore.prototype.temporarilyAllowLargeMediaElements = function() {
 
 PageStore.prototype.journalAddRequest = function(hostname, result) {
     if ( hostname === '' ) { return; }
-    this.journal.push(
-        hostname,
-        result.charCodeAt(1) === 0x62 /* 'b' */ ? 0x00000001 : 0x00010000
-    );
+    this.journal.push(hostname, result);
     if ( this.journalTimer === null ) {
         this.journalTimer = vAPI.setTimeout(this.journalProcess.bind(this, true), 1000);
     }
@@ -561,7 +596,7 @@ PageStore.prototype.journalProcess = function(fromTimer) {
 
     var journal = this.journal,
         i, n = journal.length,
-        hostname, count, hostnameCounts,
+        hostname, b, result, count, hostnameCounts,
         aggregateCounts = 0,
         now = Date.now(),
         pivot = this.journalLastCommitted || 0;
@@ -574,9 +609,31 @@ PageStore.prototype.journalProcess = function(fromTimer) {
             hostnameCounts = 0;
             this.contentLastModified = now;
         }
-        count = journal[i+1];
+        result = journal[i+1];
+        b = result.charCodeAt(1) === 0x62; /* 'b' */
+        count = b ? 0x00000001 : 0x00010000;
         this.hostnameToCountMap.set(hostname, hostnameCounts + count);
         aggregateCounts += count;
+
+        if(b && result) {
+            var split = result ? result.split(':') : [];
+            var group = split.length > 1 ? split[1] : '';
+            console.log(hostname + ': ' + result);
+            switch (group) {
+                case 'social':
+                    this.perLoadBlockedSocialCount++;
+                    break;
+                case 'privacy':
+                    this.perLoadBlockedPrivacyCount++;
+                    break;
+                case 'malware':
+                    this.perLoadBlockedMalwareCount++;
+                    break;
+                default:
+                    this.perLoadBlockedAdsCount++;
+                    break;
+            }
+        }
     }
     this.perLoadBlockedRequestCount += aggregateCounts & 0xFFFF;
     this.perLoadAllowedRequestCount += aggregateCounts >>> 16 & 0xFFFF;
