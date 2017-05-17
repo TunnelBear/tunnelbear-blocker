@@ -978,12 +978,22 @@ var FilterHostnameDict = function() {
     this.dict = new Set();
 };
 
+Object.defineProperty(FilterHostnameDict.prototype, 'size', {
+    get: function() {
+        return this.dict.size;
+    }
+});
+
 FilterHostnameDict.prototype.add = function(hn) {
     if ( this.dict.has(hn) ) {
         return false;
     }
     this.dict.add(hn);
     return true;
+};
+
+FilterHostnameDict.prototype.remove = function(hn) {
+    return this.dict.delete(hn);
 };
 
 FilterHostnameDict.prototype.match = function() {
@@ -1077,6 +1087,17 @@ Object.defineProperty(FilterBucket.prototype, 'rtfid', {
 
 FilterBucket.prototype.add = function(a) {
     this.filters.push(a);
+};
+
+FilterBucket.prototype.remove = function(fclass, fdata) {
+    var i = this.filters.length,
+        filter;
+    while ( i-- ) {
+        filter = this.filters[i];
+        if ( filter.fid === fclass && filter.toSelfie() === fdata ) {
+            this.filters.splice(i, 1);
+        }
+    }
 };
 
 // Promote hit filters so they can be found faster next time.
@@ -1182,6 +1203,7 @@ FilterParser.prototype.toNormalizedType = {
 FilterParser.prototype.reset = function() {
     this.action = BlockAction;
     this.anchor = 0;
+    this.badFilter = false;
     this.elemHiding = false;
     this.f = '';
     this.firstParty = false;
@@ -1335,6 +1357,11 @@ FilterParser.prototype.parseOptions = function(s) {
         if ( opt === 'empty' ) {
             continue;
         }
+        // https://github.com/uBlockOrigin/uAssets/issues/192
+        if ( opt === 'badfilter' ) {
+            this.badFilter = true;
+            continue;
+        }
         // Unrecognized filter option: ignore whole filter.
         this.unsupported = true;
         break;
@@ -1417,10 +1444,13 @@ FilterParser.prototype.parse = function(raw) {
         s = s.slice(2);
 
         // convert hostname to punycode if needed
+        // https://github.com/gorhill/uBlock/issues/2599
         if ( this.reHasUnicode.test(s) ) {
             var matches = this.reIsolateHostname.exec(s);
             if ( matches ) {
-                s = matches[1] + punycode.toASCII(matches[2]) + matches[3];
+                s = (matches[1] !== undefined ? matches[1] : '') +
+                    punycode.toASCII(matches[2]) +
+                    matches[3];
                 //console.debug('µBlock.staticNetFilteringEngine/FilterParser.parse():', raw, '=', s);
             }
         }
@@ -1599,10 +1629,10 @@ FilterContainer.prototype.reset = function() {
     this.allowFilterCount = 0;
     this.blockFilterCount = 0;
     this.discardedCount = 0;
+    this.badFilters = new Set();
     this.duplicateBuster = new Set();
     this.categories = new Map();
     this.filterParser.reset();
-    this.filterCounts = {};
 
     // Reuse filter instances whenever possible at load time.
     this.fclassLast = null;
@@ -1619,6 +1649,7 @@ FilterContainer.prototype.reset = function() {
 
 FilterContainer.prototype.freeze = function() {
     histogram('allFilters', this.categories);
+    this.removeBadFilters();
     this.duplicateBuster = new Set();
     this.filterParser.reset();
     this.fclassLast = null;
@@ -1854,7 +1885,7 @@ FilterContainer.prototype.compile = function(raw, out) {
         return false;
     }
 
-    // Pure hostnames, use more efficient liquid dict
+    // Pure hostnames, use more efficient dictionary lookup
     // https://github.com/chrisaljoudi/uBlock/issues/665
     // Create a dict keyed on request type etc.
     if ( parsed.hostnamePure && this.compileHostnameOnlyFilter(parsed, out) ) {
@@ -1881,8 +1912,11 @@ FilterContainer.prototype.compileHostnameOnlyFilter = function(parsed, out) {
     //    return;
     //}
 
-    var party = AnyParty;
-    if ( parsed.firstParty !== parsed.thirdParty ) {
+    var route = parsed.badFilter ? 'n-\v' : 'n\v',
+        party;
+    if ( parsed.firstParty === parsed.thirdParty ) {
+        party = AnyParty;
+    } else {
         party = parsed.firstParty ? FirstParty : ThirdParty;
     }
     var keyShard = parsed.action | parsed.important | party;
@@ -1890,7 +1924,7 @@ FilterContainer.prototype.compileHostnameOnlyFilter = function(parsed, out) {
     var type = parsed.types;
     if ( type === 0 ) {
         out.push(
-            'n\v' +
+            route +
             toHex(keyShard) + '\v' +
             '.\v' +
             parsed.f
@@ -1902,7 +1936,7 @@ FilterContainer.prototype.compileHostnameOnlyFilter = function(parsed, out) {
     do {
         if ( type & 1 ) {
             out.push(
-                'n\v' +
+                route +
                 toHex(keyShard | (bitOffset << 4)) + '\v' +
                 '.\v' +
                 parsed.f
@@ -1935,11 +1969,12 @@ FilterContainer.prototype.compileFilter = function(parsed, out) {
 /******************************************************************************/
 
 FilterContainer.prototype.compileToAtomicFilter = function(filterClass, parsed, party, out) {
-    var bits = parsed.action | parsed.important | party;
-    var type = parsed.types;
+    var route = parsed.badFilter ? 'n-\v' : 'n\v',
+        bits = parsed.action | parsed.important | party,
+        type = parsed.types;
     if ( type === 0 ) {
         out.push(
-            'n\v' +
+            route +
             toHex(bits) + '\v' +
             parsed.token + '\v' +
             filterClass.fid + '\v' +
@@ -1951,7 +1986,7 @@ FilterContainer.prototype.compileToAtomicFilter = function(filterClass, parsed, 
     do {
         if ( type & 1 ) {
             out.push(
-                'n\v' +
+                route +
                 toHex(bits | (bitOffset << 4)) + '\v' +
                 parsed.token + '\v' +
                 filterClass.fid + '\v' +
@@ -1965,6 +2000,10 @@ FilterContainer.prototype.compileToAtomicFilter = function(filterClass, parsed, 
     // Only static filter with an explicit type can be redirected. If we reach
     // this point, it's because there is one or more explicit type.
     if ( !parsed.redirect ) {
+        return;
+    }
+
+    if ( parsed.badFilter ) {
         return;
     }
 
@@ -1988,12 +2027,17 @@ FilterContainer.prototype.fromCompiledContent = function(lineIter, group) {
     group = µBlock.getGroupName(group);
 
     while ( lineIter.eot() === false ) {
-        if ( lineIter.text.charCodeAt(lineIter.offset) !== 0x6E /* 'n' */ ) {
+        line = lineIter.next();
+        if ( line.charCodeAt(0) !== 0x6E /* 'n' */ ) {
+            lineIter.rewind();
             return;
         }
-        line = lineIter.next();
 
-        fieldIter.first(line);
+        if ( fieldIter.first(line) === 'n-' ) {
+            this.badFilters.add(line);
+            continue;
+        }
+
         hash = fieldIter.next();
         token = fieldIter.next();
         fclass = fieldIter.next();
@@ -2052,6 +2096,54 @@ FilterContainer.prototype.fromCompiledContent = function(lineIter, group) {
             continue;
         }
         bucket.set(token, new FilterBucket(entry, filter, group));
+    }
+};
+
+/******************************************************************************/
+
+FilterContainer.prototype.removeBadFilters = function() {
+    var lines = µb.setToArray(this.badFilters),
+        fieldIter = new µb.FieldIterator('\v'),
+        hash, token, fclass, fdata, bucket, entry,
+        i = lines.length;
+    while ( i-- ) {
+        fieldIter.first(lines[i]);
+        hash = fieldIter.next();
+        token = fieldIter.next();
+        fclass = fieldIter.next();
+        fdata = fieldIter.next();
+        bucket = this.categories.get(hash);
+        if ( bucket === undefined ) {
+            continue;
+        }
+        entry = bucket.get(token);
+        if ( entry === undefined ) {
+            continue;
+        }
+        if ( entry instanceof FilterBucket ) {
+            entry.remove(fclass, fdata);
+            if ( entry.filters.length === 1 ) {
+                bucket.set(token, entry.filters[0]);
+            }
+            continue;
+        }
+        if ( entry instanceof FilterHostnameDict ) {
+            entry.remove(fclass);  // 'fclass' is hostname
+            if ( entry.size === 0 ) {
+                bucket.delete(token);
+                if ( bucket.size === 0 ) {
+                    this.categories.delete(hash);
+                }
+            }
+            continue;
+        }
+        if ( entry.fid === fclass && entry.toSelfie() === fdata ) {
+            bucket.delete(token);
+            if ( bucket.size === 0 ) {
+                this.categories.delete(hash);
+            }
+            continue;
+        }
     }
 };
 

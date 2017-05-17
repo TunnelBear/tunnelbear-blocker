@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2016 Raymond Hill
+    Copyright (C) 2014-2017 Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,47 +34,41 @@ var exports = {};
 /******************************************************************************/
 
 // https://github.com/gorhill/uBlock/issues/2067
-//   Experimental: Suspend tabs until uBO is fully ready.
+//   Experimental: Block everything until uBO is fully ready.
+// TODO: re-work vAPI code to match more closely how listeners are
+//       registered with the webRequest API. This will simplify implementing
+//       the feature here: we could have a temporary onBeforeRequest listener
+//       which blocks everything until all is ready.
+//       This would allow to avoid the permanent special test at the top of
+//       the main onBeforeRequest just to implement this.
+var onBeforeReady = null;
 
-vAPI.net.onReady = function() {
-    if ( µBlock.hiddenSettings.suspendTabsUntilReady !== true ) {
+if ( µBlock.hiddenSettings.suspendTabsUntilReady ) {
+    onBeforeReady = (function() {
+        var suspendedTabs = new Set();
+        µBlock.onStartCompletedQueue.push(function(callback) {
+            onBeforeReady = null;
+            var iter = suspendedTabs.values(),
+                entry;
+            for (;;) {
+                entry = iter.next();
+                if ( entry.done ) { break; }
+                vAPI.tabs.reload(entry.value);
+            }
+            callback();
+        });
+        return function(tabId) {
+            if ( vAPI.isBehindTheSceneTabId(tabId) ) { return; }
+            suspendedTabs.add(tabId);
+            return true;
+        };
+    })();
+} else {
+    µBlock.onStartCompletedQueue.push(function(callback) {
         vAPI.onLoadAllCompleted();
-    }
-    var fn = onBeforeReady;
-    onBeforeReady = null;
-    if ( fn !== null ) {
-        fn('ready');
-    }
-};
-
-var onBeforeReady = (function() {
-    var suspendedTabs = new Set();
-
-    var forceReloadSuspendedTabs = function() {
-        var iter = suspendedTabs.values(),
-            entry;
-        for (;;) {
-            entry = iter.next();
-            if ( entry.done ) { break; }
-            vAPI.tabs.reload(entry.value);
-        }
-    };
-
-    return function(tabId) {
-        if (
-            vAPI.isBehindTheSceneTabId(tabId) ||
-            µBlock.hiddenSettings.suspendTabsUntilReady !== true
-        ) {
-            return;
-        }
-        if ( tabId === 'ready' ) {
-            forceReloadSuspendedTabs();
-            return;
-        }
-        suspendedTabs.add(tabId);
-        return true;
-    };
-})();
+        callback();
+    });
+}
 
 /******************************************************************************/
 
@@ -412,132 +406,124 @@ var onBeforeBehindTheSceneRequest = function(details) {
 
 // To handle:
 // - inline script tags
+// - websockets
 // - media elements larger than n kB
 
 var onHeadersReceived = function(details) {
     // Do not interfere with behind-the-scene requests.
     var tabId = details.tabId;
-    if ( vAPI.isBehindTheSceneTabId(tabId) ) {
-        return;
-    }
+    if ( vAPI.isBehindTheSceneTabId(tabId) ) { return; }
 
-    var requestType = details.type;
+    var µb = µBlock,
+        requestType = details.type;
 
     if ( requestType === 'main_frame' ) {
-        return onRootFrameHeadersReceived(details);
+        µb.tabContextManager.push(tabId, details.url);
     }
 
-    if ( requestType === 'sub_frame' ) {
-        return onFrameHeadersReceived(details);
-    }
-
-    if ( requestType === 'image' || requestType === 'media' ) {
-        return foilLargeMediaElement(details);
-    }
-};
-
-/******************************************************************************/
-
-var onRootFrameHeadersReceived = function(details) {
-    var µb = µBlock,
-        tabId = details.tabId;
-
-    µb.tabContextManager.push(tabId, details.url);
-
-    // Lookup the page store associated with this tab id.
     var pageStore = µb.pageStoreFromTabId(tabId);
-    if ( !pageStore ) {
+    if ( pageStore === null ) {
+        if ( requestType !== 'main_frame' ) { return; }
         pageStore = µb.bindTabToPageStats(tabId, 'beforeRequest');
     }
-    // I can't think of how pageStore could be null at this point.
+    if ( pageStore.getNetFilteringSwitch() === false ) { return; }
 
-    return processCSP(details, pageStore, pageStore.createContextFromPage());
-};
-
-/******************************************************************************/
-
-var onFrameHeadersReceived = function(details) {
-    // Lookup the page store associated with this tab id.
-    var pageStore = µBlock.pageStoreFromTabId(details.tabId);
-    if ( !pageStore ) {
-        return;
+    if ( requestType === 'image' || requestType === 'media' ) {
+        return foilLargeMediaElement(pageStore, details);
     }
 
-    // Frame id of frame request is their own id, while the request is made
-    // in the context of the parent.
-    return processCSP(
-        details,
-        pageStore,
-        pageStore.createContextFromFrameId(details.frameId)
-    );
+    // https://github.com/gorhill/uBO-Extra/issues/19
+    //   Turns out scripts must also be considered as potential embedded
+    //   contexts (as workers) and as such we may need to inject content
+    //   security policy directives.
+    if ( requestType === 'script' || requestType === 'main_frame' || requestType === 'sub_frame' ) {
+        return processCSP(pageStore, details);
+    }
 };
 
 /******************************************************************************/
 
-var processCSP = function(details, pageStore, context) {
+var processCSP = function(pageStore, details) {
     var µb = µBlock,
         tabId = details.tabId,
         requestURL = details.url,
         loggerEnabled = µb.logger.isEnabled();
 
-    context.requestURL = requestURL;
+    var context = pageStore.createContextFromPage();
     context.requestHostname = µb.URI.hostnameFromURI(requestURL);
+    if ( details.type !== 'main_frame' ) {
+        context.pageHostname = context.pageDomain = context.requestHostname;
+    }
 
-    context.requestType = 'inline-script';
-    var inlineScriptResult = pageStore.filterRequestNoCache(context),
+    var inlineScriptResult, blockInlineScript,
+        workerResult, blockWorker;
+    if ( details.type !== 'script' ) {
+        context.requestType = 'inline-script';
+        context.requestURL = requestURL;
+        inlineScriptResult = pageStore.filterRequestNoCache(context);
         blockInlineScript = µb.isBlockResult(inlineScriptResult);
+        // https://github.com/gorhill/uBlock/issues/2360
+        // https://github.com/gorhill/uBlock/issues/2440
+        context.requestType = 'script';
+        context.requestURL = 'blob:';
+        µb.staticNetFilteringEngine.matchString(context);
+        workerResult = µb.staticNetFilteringEngine.toResultString(loggerEnabled);
+        blockWorker = µb.isBlockResult(workerResult);
+    }
 
-    context.requestType = 'websocket';
     µb.staticNetFilteringEngine.matchStringExactType(context, requestURL, 'websocket');
     var websocketResult = µb.staticNetFilteringEngine.toResultString(loggerEnabled),
         blockWebsocket = µb.isBlockResult(websocketResult);
-    // https://github.com/gorhill/uBlock/issues/2050
-    //   Blanket-blocking websockets is exceptional, so we test whether the
-    //   page is whitelisted if and only if there is a hit against a websocket
-    //   filter.
-    if ( blockWebsocket && pageStore.getNetFilteringSwitch() === false ) {
-        websocketResult = '';
-        blockWebsocket = false;
-    }
 
-    var headersChanged = false;
-    if ( blockInlineScript || blockWebsocket ) {
+    var headersChanged;
+    if ( blockInlineScript || blockWebsocket || blockWorker ) {
         headersChanged = foilWithCSP(
             details.responseHeaders,
             blockInlineScript,
-            blockWebsocket
+            blockWebsocket,
+            blockWorker
         );
     }
 
-    if ( loggerEnabled ) {
-        µb.logger.writeOne(
-            tabId,
-            'net',
-            inlineScriptResult,
-            'inline-script',
-            requestURL,
-            context.rootHostname,
-            context.pageHostname
-        );
-    }
-
-    if ( loggerEnabled && blockWebsocket ) {
-        µb.logger.writeOne(
-            tabId,
-            'net',
-            websocketResult,
-            'websocket',
-            requestURL,
-            context.rootHostname,
-            context.pageHostname
-        );
+    if ( loggerEnabled && details.type !== 'script' ) {
+        if ( blockInlineScript !== undefined ) {
+            µb.logger.writeOne(
+                tabId,
+                'net',
+                inlineScriptResult,
+                'inline-script',
+                requestURL,
+                context.rootHostname,
+                context.pageHostname
+            );
+        }
+        if ( websocketResult ) {
+            µb.logger.writeOne(
+                tabId,
+                'net',
+                websocketResult,
+                'websocket',
+                requestURL,
+                context.rootHostname,
+                context.pageHostname
+            );
+        }
+        if ( workerResult ) {
+            µb.logger.writeOne(
+                tabId,
+                'net',
+                workerResult,
+                'worker',
+                requestURL,
+                context.rootHostname,
+                context.pageHostname
+            );
+        }
     }
 
     context.dispose();
 
-    if ( headersChanged !== true ) {
-        return;
-    }
+    if ( headersChanged !== true ) { return; }
 
     µb.updateBadgeAsync(tabId);
 
@@ -549,19 +535,14 @@ var processCSP = function(details, pageStore, context) {
 // https://github.com/gorhill/uBlock/issues/1163
 //   "Block elements by size"
 
-var foilLargeMediaElement = function(details) {
+var foilLargeMediaElement = function(pageStore, details) {
     var µb = µBlock;
 
     var i = headerIndexFromName('content-length', details.responseHeaders);
     if ( i === -1 ) { return; }
 
     var tabId = details.tabId,
-        pageStore = µb.pageStoreFromTabId(tabId);
-    if ( pageStore === null || pageStore.getNetFilteringSwitch() === false ) {
-        return;
-    }
-
-    var size = parseInt(details.responseHeaders[i].value, 10) || 0,
+        size = parseInt(details.responseHeaders[i].value, 10) || 0,
         result = pageStore.filterLargeMediaElement(size);
     if ( result === undefined ) { return; }
 
@@ -582,27 +563,22 @@ var foilLargeMediaElement = function(details) {
 
 /******************************************************************************/
 
-var foilWithCSP = function(headers, noInlineScript, noWebsocket) {
+var foilWithCSP = function(headers, noInlineScript, noWebsocket, noBlobWorker) {
     var i = headerIndexFromName('content-security-policy', headers),
-        before = i === -1 ? '' : headers[i].value.trim(),
-        after = before;
+        cspSubset = [];
 
     if ( noInlineScript ) {
-        after = foilWithCSPDirective(
-            after,
-            /script-src[^;]*;?\s*/,
-            "script-src 'unsafe-eval' *",
-            /'unsafe-inline'\s*|'nonce-[^']+'\s*/g
-        );
+        cspSubset.push("script-src 'unsafe-eval' *");
     }
 
     if ( noWebsocket ) {
-        after = foilWithCSPDirective(
-            after,
-            /connect-src[^;]*;?\s*/,
-            'connect-src http:',
-            /wss?:[^\s]*\s*/g
-        );
+        cspSubset.push('connect-src http: https:');
+    }
+
+    // https://www.w3.org/TR/CSP2/#directive-child-src
+    // https://www.w3.org/TR/CSP3/#directive-worker-src
+    if ( noBlobWorker ) {
+        cspSubset.push('child-src http: https:');
     }
 
     // https://bugs.chromium.org/p/chromium/issues/detail?id=513860
@@ -612,76 +588,29 @@ var foilWithCSP = function(headers, noInlineScript, noWebsocket) {
     //   contexts based on data:- or blob:-based URIs.
     if ( vAPI.chrome && (noInlineScript || noWebsocket) ) {
         // https://w3c.github.io/webappsec-csp/#directive-frame-src
-        after = foilWithCSPDirective(
-            after,
-            /frame-src[^;]*;?\s*/,
-            'frame-src http:',
-            /data:[^\s]*\s*|blob:[^\s]*\s*/g
-        );
+        cspSubset.push('frame-src http: https:');
     }
 
-    var changed = after !== before;
-    if ( changed ) {
-        if ( i !== -1 ) {
-            headers.splice(i, 1);
-        }
-        headers.push({ name: 'Content-Security-Policy', value: after });
+    if ( cspSubset.length === 0 ) { return; }
+
+    var csp;
+    if ( i !== -1 ) {
+        csp = headers[i].value.trim();
+        headers.splice(i, 1);
     }
 
-    return changed;
+    // Use comma to add a new subset to potentially existing one(s). This new
+    // subset has its own reporting options and won't cause spurious CSP
+    // reports to outside world.
+    // Ref.: https://www.w3.org/TR/CSP2/#implementation-considerations
+    cspSubset = cspSubset.join('; ');
+    headers.push({
+        name: 'Content-Security-Policy',
+        value: csp === undefined ? cspSubset : csp + ', ' + cspSubset
+    });
+
+    return true;
 };
-
-/******************************************************************************/
-
-// Past issues to keep in mind:
-// - https://github.com/gorhill/uMatrix/issues/129
-// - https://github.com/gorhill/uMatrix/issues/320
-// - https://github.com/gorhill/uBlock/issues/1909
-
-var foilWithCSPDirective = function(csp, toExtract, toAdd, toRemove) {
-    // Set
-    if ( csp === '' ) {
-        return toAdd;
-    }
-
-    var matches = toExtract.exec(csp);
-
-    // Add
-    if ( matches === null ) {
-        if ( csp.slice(-1) !== ';' ) {
-            csp += ';';
-        }
-        csp += ' ' + toAdd;
-        return csp.replace(reReportDirective, '');
-    }
-
-    var directive = matches[0];
-
-    // No change
-    if ( toRemove.test(directive) === false ) {
-        return csp;
-    }
-
-    // Remove
-    csp = csp.replace(toExtract, '').trim();
-    if ( csp.slice(-1) !== ';' ) {
-        csp += ';';
-    }
-    directive = directive.replace(toRemove, '').trim();
-
-    // Check for empty directive after removal
-    matches = reEmptyDirective.exec(directive);
-    if ( matches ) {
-        directive = matches[1] + " 'none';";
-    }
-
-    csp += ' ' + directive;
-    return csp.replace(reReportDirective, '');
-};
-
-// https://w3c.github.io/webappsec-csp/#directives-reporting
-var reReportDirective = /report-(?:to|uri)[^;]*;?\s*/;
-var reEmptyDirective = /^([a-z-]+)\s*;/;
 
 /******************************************************************************/
 
@@ -726,7 +655,8 @@ vAPI.net.onHeadersReceived = {
         'main_frame',
         'sub_frame',
         'image',
-        'media'
+        'media',
+        'script'
     ],
     extra: [ 'blocking', 'responseHeaders' ],
     callback: onHeadersReceived

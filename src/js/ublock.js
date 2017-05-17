@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2016 Raymond Hill
+    Copyright (C) 2014-2017 Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -302,17 +302,31 @@ var reInvalidHostname = /[^a-z0-9.\-\[\]:]/,
     return group;
 }
 
-µBlock.setFilters = function (group, value, callback) {
+µBlock.setFilters = function (callback) {
+    var isToggleEnabled = function(group) {
+        switch (group) {
+            case 'privacy':
+                return µBlock.userSettings.blockPrivacyEnabled;
+            case 'social':
+                return µBlock.userSettings.blockSocialEnabled;
+            case 'malware':
+                return µBlock.userSettings.blockMalwareEnabled;
+            case 'ads':
+                return µBlock.userSettings.blockAdsEnabled;
+            default:
+                return false;
+        }
+    }
+
     µBlock.getAvailableLists(function (list) {
         var switches = [];
-        for (var name in list) {
-            var element = list[name];
-            if (µBlock.getGroupName(element.group) == group) {
-                switches.push({ location: name, off: value });
+        for (var element in list) {
+            if (isToggleEnabled(µBlock.getGroupName(list[element]['group']))) {            
+                switches.push(element);
             }
         }
-        µBlock.selectFilterLists(switches);
-        µBlock.reloadAllFilters(callback);
+        µBlock.saveSelectedFilterLists(switches);
+        µBlock.loadFilterLists();
     });
 }
 
@@ -360,6 +374,9 @@ var reInvalidHostname = /[^a-z0-9.\-\[\]:]/,
         if ( value === true ) {
             us.dynamicFilteringEnabled = true;
         }
+        break;
+    case 'autoUpdate':
+        this.scheduleAssetUpdater(value ? 7 * 60 * 1000 : 0);
         break;
     case 'collapseBlocked':
         if ( value === false ) {

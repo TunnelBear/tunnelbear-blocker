@@ -274,7 +274,11 @@ vAPI.browserSettings = {
             // has a `media.peerconnection.ice.default_address_only` pref which
             // purpose is to prevent local IP address leakage.
             case 'webrtcIPAddress':
-                if ( this.getValue('media.peerconnection', 'ice.default_address_only') !== undefined ) {
+                // https://github.com/gorhill/uBlock/issues/2337
+                if ( this.getValue('media.peerconnection', 'ice.no_host') !== undefined ) {
+                    prefName = 'ice.no_host';
+                    prefVal = true;
+                } else if ( this.getValue('media.peerconnection', 'ice.default_address_only') !== undefined ) {
                     prefName = 'ice.default_address_only';
                     prefVal = true;
                 } else {
@@ -963,6 +967,8 @@ vAPI.tabs.open = function(details) {
 
         for ( tab of this.getAll() ) {
             var browser = tabWatcher.browserFromTarget(tab);
+            // https://github.com/gorhill/uBlock/issues/2558
+            if ( browser === null ) { continue; }
 
             // Or simply .equals if we care about the fragment
             if ( URI.equalsExceptRef(browser.currentURI) === false ) {
@@ -1009,9 +1015,9 @@ vAPI.tabs.open = function(details) {
     // Open in a standalone window
     if ( details.popup === true ) {
         Services.ww.openWindow(
-            self,
+            win,
             details.url,
-            null,
+            'uBO-logger',
             'location=1,menubar=1,personalbar=1,resizable=1,toolbar=1',
             null
         );

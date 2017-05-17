@@ -5,7 +5,11 @@
 echo "*** blockbear.chromium: Creating web store package"
 echo "*** blockbear.chromium: Copying files"
 
-DES=dist/build/blockbear.chromium
+if [ "$1" = experimental ]; then
+    DES=dist/build/experimental/blockbear.chromium
+else
+    DES=dist/build/blockbear.chromium
+fi
 rm -rf $DES
 mkdir -p $DES
 
