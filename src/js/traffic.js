@@ -300,7 +300,9 @@ var onBeforeRootFrameRequest = function(details) {
         return;
     }
 
-    var compiled = result.slice(3);
+    // Account for the appended group
+    var groupType = snfe.getGroupType();
+    var compiled = result.slice(3 + groupType.length);
 
     // Blocked
     var query = btoa(JSON.stringify({

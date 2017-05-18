@@ -2621,6 +2621,10 @@ FilterContainer.prototype.toResultString = function(verbose) {
     return s;
 };
 
+FilterContainer.prototype.getGroupType = function() {
+    return this.fRegister.group;
+};
+
 /******************************************************************************/
 
 FilterContainer.prototype.getFilterCount = function() {
