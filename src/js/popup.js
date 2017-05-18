@@ -1,14 +1,3 @@
-// https://github.com/gorhill/uBlock/issues/2550
-// Solution inspired from
-// - https://bugs.chromium.org/p/chromium/issues/detail?id=683314
-// - https://bugzilla.mozilla.org/show_bug.cgi?id=1332714#c17
-// Confusable character set from:
-// - http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%D0%B0%D1%81%D4%81%D0%B5%D2%BB%D1%96%D1%98%D3%8F%D0%BE%D1%80%D4%9B%D1%95%D4%9D%D1%85%D1%83%D1%8A%D0%AC%D2%BD%D0%BF%D0%B3%D1%B5%D1%A1%5D&g=gc&i=
-// Linked from:
-// - https://www.chromium.org/developers/design-documents/idn-in-google-chrome
-var reCyrillicNonAmbiguous = /[\u0400-\u042b\u042d-\u042f\u0431\u0432\u0434\u0436-\u043d\u0442\u0444\u0446-\u0449\u044b-\u0454\u0457\u0459-\u0460\u0462-\u0474\u0476-\u04ba\u04bc\u04be-\u04ce\u04d0-\u0500\u0502-\u051a\u051c\u051e-\u052f]/;
-var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u0443\u0445\u044a\u0455\u0456\u0458\u0461\u0475\u04bb\u04bd\u04cf\u0501\u051b\u051d]/;
-
 (function () {
     var messager = vAPI.messaging;
     messager.addChannelListener('popupPanel');
@@ -135,6 +124,112 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.socialEnabled = ko.observable(popupData.blockSocialEnabled);
         this.privacyEnabled = ko.observable(popupData.blockPrivacyEnabled);
         this.malwareEnabled = ko.observable(popupData.blockMalwareEnabled);
+        
+        this.twitterPromoEnabled = ko.observable(false); 
+
+        var self = this;
+        var dismissKey = 'dismissDate';
+        var completeKey = 'completeDate';
+
+        this.shouldShowTwitterPromo = function (completeDate, dismissDate, installDate) {
+            var daysBeforeShowing = 20;
+            var daysBeforeShowingIfDismissed = 180;
+            return self.shouldShowPromo(completeDate, dismissDate, installDate, daysBeforeShowing, daysBeforeShowingIfDismissed);
+        }
+
+        var promoList = [{
+            name: 'twitter',
+            shouldShow: this.shouldShowTwitterPromo,
+            completeDate: undefined,
+            dismissDate: undefined,
+            priority: 0
+        }];
+
+        // Returns promo object from promo list
+        this.findPromoFromList = function (promoName) {
+            for (var promo in promoList) {
+                if (promoList[promo].name === promoName) {
+                    return promoList[promo];
+                }
+            }
+            return undefined;
+        }
+
+        // Determines the highest priority promo to be shown
+        this.grabPromo = function (storagePromos, installDate) {
+            for (var item in storagePromos) {
+                var promoObj = this.findPromoFromList(storagePromos[item].name);
+                if (promoObj != null) {
+                    promoObj.completeDate = storagePromos[item].completeDate;
+                    promoObj.dismissDatse = storagePromos[item].dismissDate;
+                }
+            }
+            var promosToShow = promoList.filter(function (promo) {
+                return promo.shouldShow(promo.completeDate, promo.dismissDate, installDate) === true;
+            });
+            var sortedPromos = promosToShow.sort(function (current, previous) {
+                return current.priority < previous.priority;
+            });
+            if (sortedPromos && sortedPromos.length > 0) {
+                return sortedPromos[0];
+            }
+            return undefined;
+        }
+ 
+        // Begins promo placement procedure
+        this.placePromo = function (storagePromos, installDate) {
+            var promo;
+            if (storagePromos == null) {
+                promo = this.grabPromo([], installDate);
+            }
+            else {
+                promo = this.grabPromo(storagePromos, installDate);
+            } 
+            if (promo) {
+                this.activatePromo(promo.name);
+            }
+        }
+
+        // Determines if a promo should be shown based on three states: initial / dismissed / completed
+        this.shouldShowPromo = function (complete, dismiss, installDate, daysBeforeShowing, daysBeforeShowingIfDismissed) {
+            if (!complete && !dismiss) {
+                var interval = daysBeforeShowing * 24 * 60 * 60 * 1000;
+                return this.hasIntervalPassed(installDate, interval);
+            }
+            else if (!complete && dismiss) {
+                var dismissInterval = daysBeforeShowingIfDismissed * 24 * 60 * 60 * 1000;
+                return this.hasIntervalPassed(dismiss, dismissInterval);
+            }
+            return false;
+        }
+
+        // Activates the toggle for a given promo
+        this.activatePromo = function (name) {
+            if (name === 'twitter') {
+                this.twitterPromoEnabled(true);
+            }
+        }
+
+        // Calculates if a Date object + time interval is in the past
+        this.hasIntervalPassed = function (savedTime, interval) {
+            var dateObj = new Date(savedTime);
+            dateObj.setTime(dateObj.getTime() + interval);
+            if (Date.now() > dateObj) {
+                return true;
+            }
+            return false;
+        }
+
+        var installDateKey = 'installDate';
+        vAPI.storage.get(installDateKey, function (result) {
+            if (installDateKey in result && result[installDateKey] !== null) {
+                var installDate = result[installDateKey];
+                var promoKey = 'promos';
+                vAPI.storage.get(promoKey, function (promoResult) {
+                    self.placePromo(promoResult[promoKey], installDate);
+                });
+            }
+        });
 
         this.isToggledText = ko.computed(function () {
             return this.isToggled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
@@ -144,6 +239,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         }, this);
 
         var self = this;
+        var blockerBaseURL = "https://www.tunnelbear.com/blocker/info";
         this.pageDetails = ko.observableArray([{
                 id: 'ads',
                 title: vAPI.i18n("ads"),
@@ -151,7 +247,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedAdsPercentage,
                 enabled: self.blockAdsEnabled,
                 barClass: 'bar ads',
-                url: 'https://www.tunnelbear.com/blocker/info#ads',
+                url: blockerBaseURL + '#ads',
                 onClick: function () {
                     self.blockAdsEnabled(!self.blockAdsEnabled());
                     messager.send('popupPanel', { what: 'toggleBlockAds' });
@@ -166,7 +262,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedFlashPercentage,
                 enabled: self.flashEnabled,
                 barClass: 'bar flash',
-                url: 'https://www.tunnelbear.com/blocker/info#flash',
+                url: blockerBaseURL + '#flash',
                 onClick: function () {
                     self.flashEnabled(!self.flashEnabled());
                     messager.send('popupPanel', { what: 'toggleFlash' });
@@ -179,7 +275,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedFingerprintingPercentage,
                 enabled: self.browserFingerprintingEnabled,
                 barClass: 'bar fingerprinting',
-                url: 'https://www.tunnelbear.com/blocker/info#fingerprinting',
+                url: blockerBaseURL + '#fingerprinting',
                 onClick: function () {
                     self.browserFingerprintingEnabled(!self.browserFingerprintingEnabled());
                     messager.send('popupPanel', { what: 'toggleBrowserFingerprinting' });
@@ -192,7 +288,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedEmailPercentage,
                 enabled: self.blockEmailEnabled,
                 barClass: 'bar email',
-                url: 'https://www.tunnelbear.com/blocker/info#email-tracking',
+                url: blockerBaseURL + '#email-tracking',
                 onClick: function () {
                     self.blockEmailEnabled(!self.blockEmailEnabled());
                     messager.send('popupPanel', { what: 'toggleBlockEmail' });
@@ -206,7 +302,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
             //     percentage: self.pageBlockedKeyboardPercentage,
             //     enabled: self.blockKeyboardEnabled,
             //     barClass: 'bar keyboard',
-            //     url: 'https://www.tunnelbear.com/blocker/info#mouse-and-keyboard',
+            //     url: blockerBaseURL + '#mouse-and-keyboard',
             //     onClick: function () {
             //         self.blockKeyboardEnabled(!self.blockKeyboardEnabled());
             //         messager.send('popupPanel', { what: 'toggleBlockKeyboard' });
@@ -220,7 +316,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
             //     percentage: self.pageBlockedMousePercentage,
             //     enabled: self.blockMouseEnabled,
             //     barClass: 'bar mouse',
-            //     url: 'https://www.tunnelbear.com/blocker/info#mouse-and-keyboard',
+            //     url: blockerBaseURL + '#mouse-and-keyboard',
             //     onClick: function () {
             //         self.blockMouseEnabled(!self.blockMouseEnabled());
             //         messager.send('popupPanel', { what: 'toggleBlockMouse' });
@@ -234,20 +330,20 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedMicrophonePercentage,
                 enabled: self.blockMicrophoneEnabled,
                 barClass: 'bar microphone',
-                url: 'https://www.tunnelbear.com/blocker/info#ultrasonic-tracking',
+                url: blockerBaseURL + '#ultrasonic-tracking',
                 onClick: function () {
                     self.blockMicrophoneEnabled(!self.blockMicrophoneEnabled());
                     messager.send('popupPanel', { what: 'toggleBlockMicrophone' });
                     messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                 }
-            },{
+            }, {
                 id: 'social',
                 title: vAPI.i18n("social"),
                 count: self.pageBlockedSocialCount,
                 percentage: self.pageBlockedSocialPercentage,
                 enabled: self.socialEnabled,
                 barClass: 'bar social',
-                url: 'https://www.tunnelbear.com/blocker/info#social-buttons',
+                url: blockerBaseURL + '#soc-buttons',
                 onClick: function () {
                     self.socialEnabled(!self.socialEnabled());
                     messager.send('popupPanel', { what: 'toggleSocial' });
@@ -262,7 +358,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedPrivacyPercentage,
                 enabled: self.privacyEnabled,
                 barClass: 'bar privacy',
-                url: 'https://www.tunnelbear.com/blocker/info#scripts-trackers',
+                url: blockerBaseURL + '#scripts-trackers',
                 onClick: function () {
                     self.privacyEnabled(!self.privacyEnabled());
                     messager.send('popupPanel', { what: 'togglePrivacy' });
@@ -277,7 +373,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedMalwarePercentage,
                 enabled: self.malwareEnabled,
                 barClass: 'bar malware',
-                url: 'https://www.tunnelbear.com/blocker/info#scripts-trackers',
+                url: blockerBaseURL + '#malware',
                 onClick: function () {
                     self.malwareEnabled(!self.malwareEnabled());
                     messager.send('popupPanel', { what: 'toggleMalware' });
@@ -319,8 +415,10 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.setDetailsVisibility = function (visible) {
             if (visible) {
                 document.getElementsByClassName('tracker-details')[0].style.display = "block";
+                document.getElementsByClassName('count-tracker')[0].style.borderBottomStyle = "solid";
             } else {
                 document.getElementsByClassName('tracker-details')[0].style.display = "none";
+                document.getElementsByClassName('count-tracker')[0].style.borderBottomStyle = "hidden";
             }
             var self = this;
             setTimeout(function () {
@@ -336,7 +434,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 self.animateCount(0, self.pageBlockedSocialCount(), 1000, document.getElementById('social'));
                 self.animateCount(0, self.pageBlockedPrivacyCount(), 1000, document.getElementById('privacy'));
                 self.animateCount(0, self.pageBlockedMalwareCount(), 1000, document.getElementById('malware'));
-            }, 100);
+            }, 100);  
         }
 
         this.openSettings = function () {
@@ -346,6 +444,50 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.createTab = function (item) {
             console.log(item);
             chrome.tabs.create({ url: item.url });
+        }
+
+        this.writePromoToStorage = function (promoName, element, value) {
+            var promosKey = 'promos';
+            var storageDataFound = false;
+            vAPI.storage.get(promosKey, function (result) {
+                storageDataFound = promosKey in result ? true : false;
+                if (storageDataFound) {
+                    var data = result.promos;
+                    for (var promo in data) {
+                        if (data[promo].name === promoName) {
+                            data[promo][element] = value;
+                            vAPI.storage.set({
+                                promos: data
+                            });
+                        }
+                    }
+                }
+                else {
+                    var record = {
+                        name: promoName
+                    };
+                    record[element] = value;
+                    var data = [record];
+                    vAPI.storage.set({
+                        promos: data
+                    });
+                }
+            });
+        }
+
+        this.tweetNow = function () {
+            var twitterHeader = "https://twitter.com/intent/tweet?text=";
+            var twitterText = "Check out TunnelBear Blocker!";
+            var storeURL = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";
+            var twitterCompleteDate = new Date();
+            self.writePromoToStorage('twitter', completeKey, twitterCompleteDate.toString());
+            chrome.tabs.create( { url: twitterHeader + twitterText + ' ' + storeURL });
+        }
+
+        this.dismissTwitterPromo = function () {
+            var twitterDismissDate = new Date();
+            self.writePromoToStorage('twitter', dismissKey, twitterDismissDate.toString());
+            self.twitterPromoEnabled(false);
         }
 
         this.watchContentChanged = function () {
