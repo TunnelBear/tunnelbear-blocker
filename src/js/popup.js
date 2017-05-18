@@ -240,7 +240,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                     messager.send('popupPanel', { what: 'toggleBlockMicrophone' });
                     messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                 }
-            },{
+            }, {
                 id: 'social',
                 title: vAPI.i18n("social"),
                 count: self.pageBlockedSocialCount,
