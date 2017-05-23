@@ -319,8 +319,10 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.setDetailsVisibility = function (visible) {
             if (visible) {
                 document.getElementsByClassName('tracker-details')[0].style.display = "block";
+                document.getElementsByClassName('count-tracker')[0].style.borderBottomStyle = "solid";
             } else {
                 document.getElementsByClassName('tracker-details')[0].style.display = "none";
+                document.getElementsByClassName('count-tracker')[0].style.borderBottomStyle = "hidden";
             }
             var self = this;
             setTimeout(function () {
