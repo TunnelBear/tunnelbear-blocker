@@ -125,7 +125,7 @@ body[dir="rtl"] #theURL > p > span {
 </style>
 </head>
 <body>
-<a href="https://github.com/gorhill/uBlock/wiki/Strict-blocking" target="_blank"><div id="warningSign"><span class="fa">&#xf071;</span></div></a>
+<div id="warningSign"><span class="fa">&#xf071;</span></div>
 <div>
     <p data-i18n="docblockedPrompt1"></p>
     <div id="theURL" class="collapsed">
@@ -143,26 +143,6 @@ body[dir="rtl"] #theURL > p > span {
 <div>
     <p><button id="back" data-i18n="docblockedBack" type="button"></button>
     <button id="bye" data-i18n="docblockedClose" type="button"></button></p>
-    </div>
-
-<div>
-    <p id="proceed"></p>
-    <p><button id="proceedTemporary" data-i18n="docblockedDisableTemporary" type="button"></button>
-    <button id="proceedPermanent" data-i18n="docblockedDisablePermanent" type="button"></button></p>
-    </div>
-
-<div style="display: none;">
-    <span id="proceedTemplate">
-        <span></span>
-        <span class="proceedChoice">
-            <select>
-                <option class="hn" value="" selected>
-                <option class="dn" value="">
-            </select> 
-        </span>
-        <span class="proceedChoice code hn"></span>
-        <span></span>
-    </span>
     </div>
 
 <script src="js/vapi-common.js"></script>

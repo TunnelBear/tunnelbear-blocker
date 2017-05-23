@@ -300,8 +300,13 @@ var onBeforeRootFrameRequest = function(details) {
         return;
     }
 
+    // TB Blocker off: not blocked
+    if (!µb.userSettings.blockBearEnabled) {
+        return;
+    }
+
     // Account for the appended group
-    var groupType = snfe.getGroupType();
+    var groupType = snfe.getGroupType(result);
     var compiled = result.slice(3 + groupType.length);
 
     // Blocked
