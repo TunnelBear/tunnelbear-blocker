@@ -277,7 +277,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedMalwarePercentage,
                 enabled: self.malwareEnabled,
                 barClass: 'bar malware',
-                url: 'https://www.tunnelbear.com/blocker/info#scripts-trackers',
+                url: 'https://www.tunnelbear.com/blocker/info#malware',
                 onClick: function () {
                     self.malwareEnabled(!self.malwareEnabled());
                     messager.send('popupPanel', { what: 'toggleMalware' });
