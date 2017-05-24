@@ -247,7 +247,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedSocialPercentage,
                 enabled: self.socialEnabled,
                 barClass: 'bar social',
-                url: 'https://www.tunnelbear.com/blocker/info#social-buttons',
+                url: 'https://www.tunnelbear.com/blocker/info#soc-buttons',
                 onClick: function () {
                     self.socialEnabled(!self.socialEnabled());
                     messager.send('popupPanel', { what: 'toggleSocial' });
