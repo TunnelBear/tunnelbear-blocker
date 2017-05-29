@@ -135,6 +135,19 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.socialEnabled = ko.observable(popupData.blockSocialEnabled);
         this.privacyEnabled = ko.observable(popupData.blockPrivacyEnabled);
         this.malwareEnabled = ko.observable(popupData.blockMalwareEnabled);
+        
+        this.twitterPromoEnabled = ko.observable(false); 
+
+        var self = this;
+        chrome.storage.local.get('twitterPromoTimestamp', function (result) {
+            if ('twitterPromoTimestamp' in result) {
+                var twitterActivateDate = moment(result['twitterPromoTimestamp']);
+                if (moment().isAfter(twitterActivateDate)) {
+                    self.twitterPromoEnabled(true);
+                    chrome.storage.local.set({'twitterPromoEnabled': true});
+                }
+            }
+        });
 
         this.isToggledText = ko.computed(function () {
             return this.isToggled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
@@ -348,6 +361,30 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.createTab = function (item) {
             console.log(item);
             chrome.tabs.create({ url: item.url });
+        }
+
+        this.tweetNow = function () {
+            console.log("tweetNow");
+            chrome.tabs.create( { url: "https://twitter.com/intent/tweet?text=Try TunnelBear Blocker! https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk" });            
+            var twitterActivateDate = moment();
+            twitterActivateDate.add(2, 'minutes');      // change to 8-12 months
+            setTimeout(function () {
+                self.twitterPromoEnabled(false);
+                chrome.storage.local.set({
+                    'twitterPromoEnabled': false,
+                    'twitterPromoTimestamp': twitterActivateDate.toString()});
+            }, 250);
+        }
+
+        this.closeTwitterPromo = function () {
+            console.log("closeTwitterPromo");
+            this.twitterPromoEnabled(false);
+            var twitterActivateDate = moment();
+            twitterActivateDate.add(4, 'minutes');      // change to 4 months
+            chrome.storage.local.set({
+                'twitterPromoEnabled': false,
+                'twitterPromoTimestamp': twitterActivateDate.toString()
+            });
         }
 
         this.watchContentChanged = function () {

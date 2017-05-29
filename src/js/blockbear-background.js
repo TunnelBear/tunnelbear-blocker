@@ -17,4 +17,17 @@
     µb.userSettings.blockPrivacyEnabled = true;
     µb.userSettings.blockMalwareEnabled = true;
     µb.userSettings.sendStatsEnabled = true;
+
+    chrome.runtime.onInstalled.addListener(function (details) {
+        if (details.reason === 'install') {
+            console.log('This is a first install!');
+            var twitterActivateDate = moment();
+            twitterActivateDate.add(1, 'minutes');      // after initial install, give them 2-4 weeks before prompting
+            chrome.storage.local.set({
+                'twitterPromoEnabled': false,
+                'twitterPromoTimestamp': twitterActivateDate.toString()
+            });
+            console.log(twitterActivateDate);
+        }
+    });    
 })();

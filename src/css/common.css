@@ -574,6 +574,60 @@ input.toggle.mini:checked + label:after{
 
 /* End of connection component */
 
+/* Twitter */
+
+#twitter_promo {
+    height: 90px;
+    padding: 35px 75px 0 22px;
+    position: relative;
+}
+    #twitter_promo:after {
+        background: url(../img/graphic_twitter.png);
+        background-size: 72px 118px;
+        content: "";
+        display: block;
+        height: 118px;
+        position: absolute;
+        right: 0;
+        top: 15px;
+        width: 72px;
+    }
+
+#twitter_tweet {
+  cursor: pointer;
+  width: 100px;
+  margin-left: 22px;
+  margin-top: 12px;
+}
+
+#twitter_close {
+  background: url(../img/twitter_close.png);
+  background-size: 10px 10px;
+  height:10px;
+  width: 10px;
+  position: absolute;
+  margin-top: -23px;
+  margin-left: -12px;
+  cursor: pointer;
+}
+
+#p_twitter_promo {
+  width: 164px;
+}
+
+.banner_close {
+  background: url(../img/twitter_close.png);
+  background-size: 10px 10px;
+  height:10px;
+  width: 10px;
+  position: absolute;
+  margin-top: -23px;
+  margin-left: -12px;
+  cursor: pointer;
+}
+
+/* End Twitter */
+
 /* Tooltip */
 
 .tooltip {

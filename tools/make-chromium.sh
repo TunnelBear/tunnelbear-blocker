@@ -15,6 +15,8 @@ mkdir -p $DES
 
 echo "*** blockbear.chromium: bower install..."
 bower install
+echo "*** blockbear.chromium: npm install..."
+npm install
 
 bash ./tools/make-assets.sh $DES
 
@@ -31,6 +33,7 @@ cp platform/chromium/*.json $DES/
 cp LICENSE.txt              $DES/
 
 cp bower_components/knockout/dist/knockout.js $DES/js
+cp node_modules/moment/min/moment.min.js $DES/js
 
 if [ "$1" = all ]; then
     echo "*** blockbear.chromium: Creating package..."

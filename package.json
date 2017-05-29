@@ -3,7 +3,7 @@
   "description": "TunnelBear Blocker",
   "author": "TunnelBear",
   "version": "0.9.3",
-  "license" : "GPL-3.0",
+  "license": "GPL-3.0",
   "devDependencies": {
     "bower": ">=1.8.0"
   },
@@ -14,5 +14,8 @@
   "engines": {
     "npm": ">=1.2.10"
   },
-  "private" : true
+  "private": true,
+  "dependencies": {
+    "moment": "^2.18.1"
+  }
 }

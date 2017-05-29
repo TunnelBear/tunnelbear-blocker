@@ -99,9 +99,24 @@
                 <div class="table-cell"></div>
             </div>
         </div>
-    </div>
+
+        <script type="text/html" id="empty-template"></script>
+
+        <script type="text/html" id="twitter-promo-template">
+          <div id="twitter_promo" class="content_box panel">
+            <div data-bind="click: closeTwitterPromo" id="twitter_close"></div>
+            <p style="text-align:center">Spread the love on Twitter!</p>
+            <p><div class="button" id="twitter_tweet" data-bind="click: tweetNow">Tweet Now!</div></p>
+          </div>
+        </script>
+
+        <!-- ko if: isLoaded() -->        
+          <div data-bind="template: {name: (twitterPromoEnabled() ? 'twitter-promo-template' : 'empty-template')}"></div>
+        <!-- /ko -->
+
     <script src="lib/punycode.js"></script>
     <script src="js/knockout.js"></script>
+    <script src="js/moment.min.js"></script>
     <script src="js/vapi-common.js"></script>
     <script src="js/vapi-client.js"></script>
     <script src="js/udom.js"></script>
