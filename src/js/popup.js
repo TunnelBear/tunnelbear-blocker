@@ -411,7 +411,10 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
             var tb4cActivateDate = moment().add(30, 'seconds');
             setTimeout(function () {
                 self.tb4cPromoEnabled(false);
-                chrome.storage.local.set({'tb4cPromoEnabled': false});
+                chrome.storage.local.set({
+                    'tb4cPromoEnabled': false,
+                    'tb4cPromoTimestamp': tb4cActivateDate.toString()
+                });
             }, 250);
         }
 
