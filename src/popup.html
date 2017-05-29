@@ -11,6 +11,10 @@
 
 <body class="body-mode-normal">
     <div id="app" class="container" data-bind="css: {'loaded' : isLoaded}">
+        <!-- ko if: isLoaded() -->        
+          <div data-bind="template: {name: (twitterPromoEnabled() ? 'twitter-promo-template' :
+           (tb4cPromoEnabled() ? 'tb4c-promo-template' : 'empty-template'))}"></div>
+        <!-- /ko -->
         <div id="popup-div" class="table">
             <div class="caption medium-row">
                 <img src="img/logo.png" class="img-top-logo">
@@ -110,9 +114,13 @@
           </div>
         </script>
 
-        <!-- ko if: isLoaded() -->        
-          <div data-bind="template: {name: (twitterPromoEnabled() ? 'twitter-promo-template' : 'empty-template')}"></div>
-        <!-- /ko -->
+        <script type="text/html" id="tb4c-promo-template">
+          <div id="tb4c_promo" class="content_box panel">
+            <div data-bind="click: closeTB4CPromo" id="tb4c_close"></div>
+            <p style="text-align:center">Check out TunnelBear for Chrome!</p>
+            <p><div class="button" id="tb4c_store" data-bind="click: tb4cStore">Chrome Store</div></p>
+          </div>
+        </script>
 
     <script src="lib/punycode.js"></script>
     <script src="js/knockout.js"></script>

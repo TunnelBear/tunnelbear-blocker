@@ -22,10 +22,14 @@
         if (details.reason === 'install') {
             console.log('This is a first install!');
             var twitterActivateDate = moment();
+            var tb4cActivateDate = moment();
             twitterActivateDate.add(1, 'minutes');      // after initial install, give them 2-4 weeks before prompting
+            tb4cActivateDate.add(30, 'seconds');        // set to 2 weeks before prompting
             chrome.storage.local.set({
                 'twitterPromoEnabled': false,
-                'twitterPromoTimestamp': twitterActivateDate.toString()
+                'twitterPromoTimestamp': twitterActivateDate.toString(),
+                'tb4cPromoEnabled': false,
+                'tb4cPromoTimestamp': tb4cActivateDate.toString()
             });
             console.log(twitterActivateDate);
         }

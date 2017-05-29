@@ -137,6 +137,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.malwareEnabled = ko.observable(popupData.blockMalwareEnabled);
         
         this.twitterPromoEnabled = ko.observable(false); 
+        this.tb4cPromoEnabled = ko.observable(false);
 
         var self = this;
         chrome.storage.local.get('twitterPromoTimestamp', function (result) {
@@ -145,6 +146,15 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 if (moment().isAfter(twitterActivateDate)) {
                     self.twitterPromoEnabled(true);
                     chrome.storage.local.set({'twitterPromoEnabled': true});
+                }
+            }
+        });
+        chrome.storage.local.get('tb4cPromoTimestamp', function (result) {
+            if ('tb4cPromoTimestamp' in result) {
+                var tb4cActivateDate = moment(result['tb4cPromoTimestamp']);
+                if (moment().isAfter(tb4cActivateDate)) {
+                    self.tb4cPromoEnabled(true);
+                    chrome.storage.local.set({'tb4cPromoEnabled': true});
                 }
             }
         });
@@ -366,8 +376,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.tweetNow = function () {
             console.log("tweetNow");
             chrome.tabs.create( { url: "https://twitter.com/intent/tweet?text=Try TunnelBear Blocker! https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk" });            
-            var twitterActivateDate = moment();
-            twitterActivateDate.add(2, 'minutes');      // change to 8-12 months
+            var twitterActivateDate = moment().add(2, 'minutes');       // change to 8-12 months
             setTimeout(function () {
                 self.twitterPromoEnabled(false);
                 chrome.storage.local.set({
@@ -379,12 +388,31 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.closeTwitterPromo = function () {
             console.log("closeTwitterPromo");
             this.twitterPromoEnabled(false);
-            var twitterActivateDate = moment();
-            twitterActivateDate.add(4, 'minutes');      // change to 4 months
+            var twitterActivateDate = moment().add(4, 'minutes');       // change to 4 months
             chrome.storage.local.set({
                 'twitterPromoEnabled': false,
                 'twitterPromoTimestamp': twitterActivateDate.toString()
             });
+        }
+
+        this.closeTB4CPromo = function () {
+            console.log('closeTB4CPromo');
+            this.tb4cPromoEnabled(false);
+            var tb4cActivateDate = moment().add(1, 'minutes');
+            chrome.storage.local.set({
+                'tb4cPromoEnabled': false,
+                'tb4cPromoTimestamp': tb4cActivateDate.toString()
+            });
+        }
+
+        this.tb4cStore = function () {
+            console.log('tb4cStore');
+            chrome.tabs.create( {url: "https://chrome.google.com/webstore/detail/tunnelbear-vpn/omdakjcmkglenbhjadbccaookpfjihpa?hl=en"})
+            var tb4cActivateDate = moment().add(30, 'seconds');
+            setTimeout(function () {
+                self.tb4cPromoEnabled(false);
+                chrome.storage.local.set({'tb4cPromoEnabled': false});
+            }, 250);
         }
 
         this.watchContentChanged = function () {
