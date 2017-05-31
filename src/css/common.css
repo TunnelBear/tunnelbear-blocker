@@ -577,7 +577,7 @@ input.toggle.mini:checked + label:after{
 /* Twitter */
 
 #twitter_promo {
-    height: 90px;
+    height: 117px;
     padding: 35px 75px 0 22px;
     position: relative;
 }
@@ -586,18 +586,24 @@ input.toggle.mini:checked + label:after{
         background-size: 72px 118px;
         content: "";
         display: block;
-        height: 118px;
+        height: 111px;
         position: absolute;
         right: 0;
-        top: 15px;
+        top: 90px;
         width: 72px;
     }
 
 #twitter_tweet {
   cursor: pointer;
   width: 100px;
-  margin-left: 22px;
-  margin-top: 12px;
+  margin-left: 33px;
+  margin-top: 10px;
+}
+
+#twitter_text {
+  text-align: center;
+  margin-top: 10px;
+  margin-left: 5px;
 }
 
 #twitter_close {
@@ -606,8 +612,7 @@ input.toggle.mini:checked + label:after{
   height:10px;
   width: 10px;
   position: absolute;
-  margin-top: -23px;
-  margin-left: -12px;
+  margin-left: 2px;
   cursor: pointer;
 }
 
@@ -631,7 +636,7 @@ input.toggle.mini:checked + label:after{
 /* TB4C */
 
 #tb4c_promo {
-    height: 90px;
+    height: 117px;
     padding: 35px 75px 0 22px;
     position: relative;
 }
@@ -640,18 +645,24 @@ input.toggle.mini:checked + label:after{
         background-size: 72px 118px;
         content: "";
         display: block;
-        height: 118px;
+        height: 111px;
         position: absolute;
         right: 0;
-        top: 15px;
+        top: 90px;
         width: 72px;
     }
 
 #tb4c_store {
   cursor: pointer;
   width: 100px;
-  margin-left: 22px;
-  margin-top: 12px;
+  margin-left: 33px;
+  margin-top: 10px;
+}
+
+#tb4c_text {
+  text-align: center;
+  margin-top: 10px;
+  margin-left: 5px;
 }
 
 #tb4c_close {
@@ -660,8 +671,7 @@ input.toggle.mini:checked + label:after{
   height:10px;
   width: 10px;
   position: absolute;
-  margin-top: -23px;
-  margin-left: -12px;
+  margin-left: 2px;
   cursor: pointer;
 }
 

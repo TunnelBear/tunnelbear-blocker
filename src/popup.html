@@ -11,10 +11,6 @@
 
 <body class="body-mode-normal">
     <div id="app" class="container" data-bind="css: {'loaded' : isLoaded}">
-        <!-- ko if: isLoaded() -->        
-          <div data-bind="template: {name: (twitterPromoEnabled() ? 'twitter-promo-template' :
-           (tb4cPromoEnabled() ? 'tb4c-promo-template' : 'empty-template'))}"></div>
-        <!-- /ko -->
         <div id="popup-div" class="table">
             <div class="caption medium-row">
                 <img src="img/logo.png" class="img-top-logo">
@@ -38,6 +34,10 @@
                     </div>
                 </div>
             </div>
+            <!--ko if: isLoaded() -->        
+                <div data-bind="template: {name: (twitterPromoEnabled() ? 'twitter-promo-template' :
+                (tb4cPromoEnabled() ? 'tb4c-promo-template' : 'empty-template'))}"></div>
+            <!-- /ko -->
             <div class="table-row medium-row section-border whitelist">
                 <div class="table-cell status-cell">
                     <div class="status-label">
@@ -107,19 +107,23 @@
         <script type="text/html" id="empty-template"></script>
 
         <script type="text/html" id="twitter-promo-template">
-          <div id="twitter_promo" class="content_box panel">
-            <div data-bind="click: closeTwitterPromo" id="twitter_close"></div>
-            <p style="text-align:center">Spread the love on Twitter!</p>
-            <p><div class="button" id="twitter_tweet" data-bind="click: tweetNow">Tweet Now!</div></p>
-          </div>
+            <div id="twitter_promo" class="table-row medium-row">
+                <div class="table-cell status-cell">
+                    <div data-bind="click: closeTwitterPromo" id="twitter_close"></div>
+                    <p id="twitter_text">Spread the love on Twitter!</p>
+                    <p><div class="button" id="twitter_tweet" data-bind="click: tweetNow">Tweet Now!</div></p>
+                </div>
+            </div>
         </script>
 
         <script type="text/html" id="tb4c-promo-template">
-          <div id="tb4c_promo" class="content_box panel">
-            <div data-bind="click: closeTB4CPromo" id="tb4c_close"></div>
-            <p style="text-align:center">Check out TunnelBear for Chrome!</p>
-            <p><div class="button" id="tb4c_store" data-bind="click: tb4cStore">Chrome Store</div></p>
-          </div>
+            <div id="tb4c_promo" class="table-row medium-row">
+                <div class="table-cell status-cell">
+                    <div data-bind="click: closeTB4CPromo" id="tb4c_close"></div>
+                    <p id="tb4c_text">Check out TunnelBear for Chrome!</p>
+                    <p><div class="button" id="tb4c_store" data-bind="click: tb4cStore">Chrome Store</div></p>
+                </div>
+            </div>
         </script>
 
     <script src="lib/punycode.js"></script>
