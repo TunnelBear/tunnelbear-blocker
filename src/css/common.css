@@ -578,12 +578,12 @@ input.toggle.mini:checked + label:after{
 
 /* Twitter */
 
-#twitter_promo {
+.container .promo-banner {
     height: 92px;
     background-color: #ffffff;
 }
 
-#twitter_promo_graphic {
+#twitter-promo-graphic {
   background: url(../img/graphic_twitter.png);
   background-size: 75px 75px;
   content: "";
@@ -595,7 +595,7 @@ input.toggle.mini:checked + label:after{
   width: 75px;
 }
 
-#twitter_tweet_text {
+#twitter-tweet-text {
   width: 61px;
   height: 17px;
   font-family: OpenSans;
@@ -606,7 +606,7 @@ input.toggle.mini:checked + label:after{
   padding: 4px 8px 4px 8px;
 }
 
-#twitter_tweet {
+#twitter-tweet {
   cursor: pointer;
   width: 76.4px;
   height: 25px;
@@ -616,7 +616,7 @@ input.toggle.mini:checked + label:after{
   margin-top: 6px;
 }
 
-#twitter_text {
+.banner-text {
   width: 136.9px;
   height: 34px;
   font-family: OpenSans;
@@ -629,7 +629,7 @@ input.toggle.mini:checked + label:after{
   cursor: default;
 }
 
-#twitter_close {
+.banner-close {
   background: url(../img/twitter_close.png);
   background-size: 7.9px 7.9px;
   height: 7.9px;
@@ -640,63 +640,29 @@ input.toggle.mini:checked + label:after{
   cursor: pointer;
 }
 
-#p_twitter_promo {
-  width: 164px;
-}
-
-.banner_close {
-  background: url(../img/twitter_close.png);
-  background-size: 10px 10px;
-  height:10px;
-  width: 10px;
-  position: absolute;
-  margin-top: -23px;
-  margin-left: -12px;
-  cursor: pointer;
-}
-
 /* End Twitter */
 
 /* TB4C */
 
-#tb4c_promo {
-    height: 117px;
-    padding: 35px 75px 0 22px;
-    position: relative;
-}
-    #tb4c_promo:after {
-        background: url(../img/graphic_twitter.png);
-        background-size: 72px 118px;
-        content: "";
-        display: block;
-        height: 111px;
-        position: absolute;
-        right: 0;
-        top: 90px;
-        width: 72px;
-    }
-
-#tb4c_store {
+#tb4c-store {
   cursor: pointer;
-  width: 100px;
-  margin-left: 33px;
-  margin-top: 10px;
+  width: 90.4px;
+  height: 25px;
+  border-radius: 2px;
+  background-color: #55534e;
+  margin-left: 34px;
+  margin-top: 6px;
 }
 
-#tb4c_text {
+#tb4c-text {
+  width: 74px;
+  height: 17px;
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
   text-align: center;
-  margin-top: 10px;
-  margin-left: 5px;
-}
-
-#tb4c_close {
-  background: url(../img/twitter_close.png);
-  background-size: 10px 10px;
-  height:10px;
-  width: 10px;
-  position: absolute;
-  margin-left: 2px;
-  cursor: pointer;
+  color: #faf9f7;
+  padding: 4px 8px 4px 8px;
 }
 
 /* End TB4C */
