@@ -8,7 +8,7 @@
 }
 
 .table-row.progress-bar.hidden {
-  background: #faf9f7;
+  background: #f2f1f0;
 }
 
 .report {
@@ -18,7 +18,7 @@
   height: 16px;
   width: 16px;
   float: left;
-  margin-left: 5px;
+  margin-left: 9px;
 }
 
 .report:hover {
@@ -27,9 +27,17 @@
   background-repeat: no-repeat;
 }
 
+.container .caption {
+  background: #faf9f7;
+}
+
+.container .blocker-toggle {
+  background: #faf9f7;
+}
+
 .count-tracker {
   border-top-color: transparent;
-  background: #faf9f7;
+  background: #f2f1f0;
   border-bottom-color: #e5e2dc;
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -73,7 +81,7 @@
 
 .tracker-details .table-cell {
   vertical-align: top;
-  padding-top: 5px;
+  padding-top: 2px;
 }
 
 .tracker-details .table-row.first .table-cell {
@@ -141,6 +149,10 @@
   color: #ebaf38;
 }
 
+.tracker-details span {
+  font-size: 14px;
+}
+
 .tracker-details .bar.blocks input.toggle:checked + label:before {
   background: #72c4d2;
 }
@@ -188,7 +200,7 @@
 /* Whitelist */
 
 .container .whitelist {
-  background: #faf9f7;
+  background: #f2f1f0;
 }
 
 .container .whitelist input.toggle.mini + label {
@@ -196,14 +208,14 @@
 }
 
 .container .whitelist a {
-  color: #edaf19;
+  color: #dcb150;
   text-decoration: none;
   float: right;
   margin-right: 15px;
 }
 
 .container .whitelist input.toggle:checked + label:before {
-  background: #edaf19;
+  background: #dcb150;
 }
 
 .container .whitelist input.toggle:not(checked) + label:before {

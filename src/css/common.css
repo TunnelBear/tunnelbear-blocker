@@ -213,9 +213,11 @@ a {
 
 .container span{
   cursor: default;
-  font-family: Helvetica;
+  font-family: OpenSans;
   font-weight: normal;
   color: #55534e;
+  text-align: left;
+  letter-spacing: -0.6px;
   font-size: 15px;
 }
 
@@ -353,9 +355,9 @@ a {
   background-size: 14px 8px;
   background-repeat: no-repeat;
   height: 8px;
-  width: 14px;
+  width: 15px;
   float: left;
-  margin: 4px 0 0 20px;
+  margin: 4px 0 0 15px;
 }
 
 .arrow.close {
@@ -363,9 +365,9 @@ a {
   background-size: 14px 8px;
   background-repeat: no-repeat;
   height: 8px;
-  width: 14px;
+  width: 15px;
   float: left;
-  margin: 4px 0 0 20px;
+  margin: 4px 0 0 15px;
 }
 
 /* End of Status Icon */
@@ -498,7 +500,7 @@ input.toggle:not(checked) + label:before {
 
 input.toggle:checked + label:before {
 	width: 60px;
-	background: #edaf19;
+	background: #dcb150;
 }
 
 input.toggle:checked + label:after {
@@ -507,7 +509,7 @@ input.toggle:checked + label:after {
 
 .toggle-text {
   cursor: pointer !important;
-  color: white !important;
+  color: #faf9f7 !important;
   font-size: 11px !important;
 }
 
@@ -710,8 +712,8 @@ input.toggle.mini:checked + label:after{
   cursor: pointer;
   visibility: hidden;
   width: 70px;
-  height: 17px;
-  font-size: 15px;
+  height: 21px;
+  font-size: 14px;
   background-color: #575550;
   color: #fff;
   text-align: center;
