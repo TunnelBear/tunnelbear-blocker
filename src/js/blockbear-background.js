@@ -22,7 +22,7 @@
         if (details.reason === 'install') {
             var twitterActivateDate = moment();
             // var tb4cActivateDate = moment();
-            twitterActivateDate.add(30, 'seconds');
+            twitterActivateDate.add(20, 'days');
             // tb4cActivateDate.add(60, 'seconds');
             chrome.storage.local.set({
                 'twitterPromoTimestamp': twitterActivateDate.toString()
