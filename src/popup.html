@@ -35,8 +35,7 @@
                 </div>
             </div>
             <!--ko if: isLoaded() -->        
-                <div data-bind="template: {name: (twitterPromoEnabled() ? 'twitter-promo-template' :
-                (tb4cPromoEnabled() ? 'tb4c-promo-template' : 'empty-template'))}"></div>
+                <div data-bind="template: {name: (twitterPromoEnabled() ? 'twitter-promo-template' : 'empty-template')}"></div>
             <!-- /ko -->
             <div class="table-row medium-row section-border whitelist">
                 <div class="table-cell status-cell">
@@ -116,7 +115,7 @@
             </div>
         </script>
 
-        <script type="text/html" id="tb4c-promo-template">
+        <!--<script type="text/html" id="tb4c-promo-template">
             <div class="table-row promo-banner medium-row">
                 <div id="twitter-promo-graphic"></div>
                 <div data-bind="click: closeTB4CPromo" class="banner-close"></div>
@@ -124,7 +123,7 @@
                 <div id="tb4c-store" data-bind="click: tb4cStore">
                     <p id="tb4c-text">Chrome Store</p></div>
             </div>
-        </script>
+        </script>-->
 
     <script src="lib/punycode.js"></script>
     <script src="js/knockout.js"></script>

@@ -142,22 +142,25 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         var self = this;
         chrome.storage.local.get('twitterPromoTimestamp', function (result) {
             if ('twitterPromoTimestamp' in result) {
+                if (result['twitterPromoTimestamp'] === null) {
+                    self.twitterPromoEnabled(false);
+                    return;
+                }
                 var twitterActivateDate = moment(result['twitterPromoTimestamp']);
                 if (moment().isAfter(twitterActivateDate)) {
                     self.twitterPromoEnabled(true);
-                    chrome.storage.local.set({'twitterPromoEnabled': true});
                 }
             }
         });
-        chrome.storage.local.get('tb4cPromoTimestamp', function (result) {
-            if ('tb4cPromoTimestamp' in result) {
-                var tb4cActivateDate = moment(result['tb4cPromoTimestamp']);
-                if (moment().isAfter(tb4cActivateDate)) {
-                    self.tb4cPromoEnabled(true);
-                    chrome.storage.local.set({'tb4cPromoEnabled': true});
-                }
-            }
-        });
+        // chrome.storage.local.get('tb4cPromoTimestamp', function (result) {
+        //     if ('tb4cPromoTimestamp' in result) {
+        //         var tb4cActivateDate = moment(result['tb4cPromoTimestamp']);
+        //         if (moment().isAfter(tb4cActivateDate)) {
+        //             self.tb4cPromoEnabled(true);
+        //             chrome.storage.local.set({'tb4cPromoEnabled': true});
+        //         }
+        //     }
+        // });
 
         this.isToggledText = ko.computed(function () {
             return this.isToggled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
@@ -374,49 +377,46 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         }
 
         this.tweetNow = function () {
-            console.log("tweetNow");
-            chrome.tabs.create( { url: "https://twitter.com/intent/tweet?text=Try TunnelBear Blocker! https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk" });            
-            var twitterActivateDate = moment().add(2, 'minutes');       // change to 8-12 months
+            var twitter_header = "https://twitter.com/intent/tweet?text=";
+            var twitter_text = "Check out TunnelBear Blocker!";
+            var store_url = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";            
+            chrome.tabs.create( { url: twitter_header + twitter_text + ' ' + store_url });            
             setTimeout(function () {
                 self.twitterPromoEnabled(false);
                 chrome.storage.local.set({
-                    'twitterPromoEnabled': false,
-                    'twitterPromoTimestamp': twitterActivateDate.toString()});
+                    'twitterPromoTimestamp': null
+                });
             }, 250);
         }
 
         this.closeTwitterPromo = function () {
-            console.log("closeTwitterPromo");
             this.twitterPromoEnabled(false);
-            var twitterActivateDate = moment().add(4, 'minutes');       // change to 4 months
+            var twitterActivateDate = moment().add(180, 'days');
             chrome.storage.local.set({
-                'twitterPromoEnabled': false,
                 'twitterPromoTimestamp': twitterActivateDate.toString()
             });
         }
 
-        this.closeTB4CPromo = function () {
-            console.log('closeTB4CPromo');
-            this.tb4cPromoEnabled(false);
-            var tb4cActivateDate = moment().add(1, 'minutes');
-            chrome.storage.local.set({
-                'tb4cPromoEnabled': false,
-                'tb4cPromoTimestamp': tb4cActivateDate.toString()
-            });
-        }
+        // this.closeTB4CPromo = function () {
+        //     this.tb4cPromoEnabled(false);
+        //     var tb4cActivateDate = moment().add(1, 'minutes');
+        //     chrome.storage.local.set({
+        //         'tb4cPromoEnabled': false,
+        //         'tb4cPromoTimestamp': tb4cActivateDate.toString()
+        //     });
+        // }
 
-        this.tb4cStore = function () {
-            console.log('tb4cStore');
-            chrome.tabs.create( {url: "https://chrome.google.com/webstore/detail/tunnelbear-vpn/omdakjcmkglenbhjadbccaookpfjihpa?hl=en"})
-            var tb4cActivateDate = moment().add(30, 'seconds');
-            setTimeout(function () {
-                self.tb4cPromoEnabled(false);
-                chrome.storage.local.set({
-                    'tb4cPromoEnabled': false,
-                    'tb4cPromoTimestamp': tb4cActivateDate.toString()
-                });
-            }, 250);
-        }
+        // this.tb4cStore = function () {
+        //     chrome.tabs.create( {url: "https://chrome.google.com/webstore/detail/tunnelbear-vpn/omdakjcmkglenbhjadbccaookpfjihpa?hl=en"})
+        //     var tb4cActivateDate = moment().add(30, 'seconds');
+        //     setTimeout(function () {
+        //         self.tb4cPromoEnabled(false);
+        //         chrome.storage.local.set({
+        //             'tb4cPromoEnabled': false,
+        //             'tb4cPromoTimestamp': tb4cActivateDate.toString()
+        //         });
+        //     }, 250);
+        // }
 
         this.watchContentChanged = function () {
             var self = this;
