@@ -18,17 +18,38 @@
     µb.userSettings.blockMalwareEnabled = true;
     µb.userSettings.sendStatsEnabled = true;
 
-    chrome.runtime.onInstalled.addListener(function (details) {
-        if (details.reason === 'install') {
-            var twitterActivateDate = new Date();
-            // var tb4cActivateDate = moment();
+    var installDateKey = 'installDate';
+    chrome.storage.local.get(installDateKey, function (result) {
+        var setActivateDates = function setActivateDates(installDateStr) {
+            var installDate = new Date(installDateStr);
+            var twitterActivateDate = new Date(installDate.getTime());
+            // var tb4cActivateDate = new Date(installDate.getTime());
             twitterActivateDate.setTime(twitterActivateDate.getTime() + 20 * 86400000);     // prompt in 20 days
-            // tb4cActivateDate.add(60, 'seconds');
+            // tb4cActivateDate.setTime(tb4cActivateDate.getTime() + 8 * 86400000);     // prompt in 8 days
             chrome.storage.local.set({
                 'twitterPromoTimestamp': twitterActivateDate.toString()
-                // 'tb4cPromoEnabled': false,
                 // 'tb4cPromoTimestamp': tb4cActivateDate.toString()
             });
+        };
+        var setInstallDate = function setInstallDate() {
+            var installDate = new Date();
+            chrome.storage.local.set({
+                'installDate': installDate.toString()
+            });
+            return installDate;
+        };
+
+        if (installDateKey in result) {
+            if (result[installDateKey] === null) {
+                var installDate = setInstallDate();
+                setActivateDates(installDate.toString());
+                return;
+            }
+            setActivateDates(result[installDateKey]);
         }
-    });    
+        else {
+            var installDate = setInstallDate();
+            setActivateDates(installDate.toString());
+        }
+    });
 })();
