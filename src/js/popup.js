@@ -170,6 +170,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         }, this);
 
         var self = this;
+        var blockerBaseURL = "https://www.tunnelbear.com/blocker/info";
         this.pageDetails = ko.observableArray([{
                 id: 'ads',
                 title: vAPI.i18n("ads"),
@@ -177,7 +178,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedAdsPercentage,
                 enabled: self.blockAdsEnabled,
                 barClass: 'bar ads',
-                url: 'https://www.tunnelbear.com/blocker/info#ads',
+                url: blockerBaseURL + '#ads',
                 onClick: function () {
                     self.blockAdsEnabled(!self.blockAdsEnabled());
                     messager.send('popupPanel', { what: 'toggleBlockAds' });
@@ -192,7 +193,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedFlashPercentage,
                 enabled: self.flashEnabled,
                 barClass: 'bar flash',
-                url: 'https://www.tunnelbear.com/blocker/info#flash',
+                url: blockerBaseURL + '#flash',
                 onClick: function () {
                     self.flashEnabled(!self.flashEnabled());
                     messager.send('popupPanel', { what: 'toggleFlash' });
@@ -205,7 +206,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedFingerprintingPercentage,
                 enabled: self.browserFingerprintingEnabled,
                 barClass: 'bar fingerprinting',
-                url: 'https://www.tunnelbear.com/blocker/info#fingerprinting',
+                url: blockerBaseURL + '#fingerprinting',
                 onClick: function () {
                     self.browserFingerprintingEnabled(!self.browserFingerprintingEnabled());
                     messager.send('popupPanel', { what: 'toggleBrowserFingerprinting' });
@@ -218,7 +219,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedEmailPercentage,
                 enabled: self.blockEmailEnabled,
                 barClass: 'bar email',
-                url: 'https://www.tunnelbear.com/blocker/info#email-tracking',
+                url: blockerBaseURL + '#email-tracking',
                 onClick: function () {
                     self.blockEmailEnabled(!self.blockEmailEnabled());
                     messager.send('popupPanel', { what: 'toggleBlockEmail' });
@@ -232,7 +233,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
             //     percentage: self.pageBlockedKeyboardPercentage,
             //     enabled: self.blockKeyboardEnabled,
             //     barClass: 'bar keyboard',
-            //     url: 'https://www.tunnelbear.com/blocker/info#mouse-and-keyboard',
+            //     url: blockerBaseURL + '#mouse-and-keyboard',
             //     onClick: function () {
             //         self.blockKeyboardEnabled(!self.blockKeyboardEnabled());
             //         messager.send('popupPanel', { what: 'toggleBlockKeyboard' });
@@ -246,7 +247,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
             //     percentage: self.pageBlockedMousePercentage,
             //     enabled: self.blockMouseEnabled,
             //     barClass: 'bar mouse',
-            //     url: 'https://www.tunnelbear.com/blocker/info#mouse-and-keyboard',
+            //     url: blockerBaseURL + '#mouse-and-keyboard',
             //     onClick: function () {
             //         self.blockMouseEnabled(!self.blockMouseEnabled());
             //         messager.send('popupPanel', { what: 'toggleBlockMouse' });
@@ -260,7 +261,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedMicrophonePercentage,
                 enabled: self.blockMicrophoneEnabled,
                 barClass: 'bar microphone',
-                url: 'https://www.tunnelbear.com/blocker/info#ultrasonic-tracking',
+                url: blockerBaseURL + '#ultrasonic-tracking',
                 onClick: function () {
                     self.blockMicrophoneEnabled(!self.blockMicrophoneEnabled());
                     messager.send('popupPanel', { what: 'toggleBlockMicrophone' });
@@ -273,7 +274,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedSocialPercentage,
                 enabled: self.socialEnabled,
                 barClass: 'bar social',
-                url: 'https://www.tunnelbear.com/blocker/info#soc-buttons',
+                url: blockerBaseURL + '#soc-buttons',
                 onClick: function () {
                     self.socialEnabled(!self.socialEnabled());
                     messager.send('popupPanel', { what: 'toggleSocial' });
@@ -288,7 +289,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedPrivacyPercentage,
                 enabled: self.privacyEnabled,
                 barClass: 'bar privacy',
-                url: 'https://www.tunnelbear.com/blocker/info#scripts-trackers',
+                url: blockerBaseURL + '#scripts-trackers',
                 onClick: function () {
                     self.privacyEnabled(!self.privacyEnabled());
                     messager.send('popupPanel', { what: 'togglePrivacy' });
@@ -303,7 +304,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 percentage: self.pageBlockedMalwarePercentage,
                 enabled: self.malwareEnabled,
                 barClass: 'bar malware',
-                url: 'https://www.tunnelbear.com/blocker/info#malware',
+                url: blockerBaseURL + '#malware',
                 onClick: function () {
                     self.malwareEnabled(!self.malwareEnabled());
                     messager.send('popupPanel', { what: 'toggleMalware' });
