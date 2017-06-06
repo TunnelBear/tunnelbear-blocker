@@ -33,7 +33,6 @@ cp platform/chromium/*.json $DES/
 cp LICENSE.txt              $DES/
 
 cp bower_components/knockout/dist/knockout.js $DES/js
-cp node_modules/moment/min/moment.min.js $DES/js
 
 if [ "$1" = all ]; then
     echo "*** blockbear.chromium: Creating package..."

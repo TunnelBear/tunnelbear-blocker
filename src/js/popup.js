@@ -146,8 +146,8 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                     self.twitterPromoEnabled(false);
                     return;
                 }
-                var twitterActivateDate = moment(result['twitterPromoTimestamp']);
-                if (moment().isAfter(twitterActivateDate)) {
+                var twitterActivateDate = Date.parse(result['twitterPromoTimestamp']);
+                if (Date.now() > twitterActivateDate) {
                     self.twitterPromoEnabled(true);
                 }
             }
@@ -391,7 +391,8 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
 
         this.closeTwitterPromo = function () {
             this.twitterPromoEnabled(false);
-            var twitterActivateDate = moment().add(180, 'days');
+            var twitterActivateDate = new Date();
+            twitterActivateDate.setTime(twitterActivateDate.getTime() + 180 * 86400000);     // prompt in 180 days
             chrome.storage.local.set({
                 'twitterPromoTimestamp': twitterActivateDate.toString()
             });

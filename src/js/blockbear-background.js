@@ -20,9 +20,9 @@
 
     chrome.runtime.onInstalled.addListener(function (details) {
         if (details.reason === 'install') {
-            var twitterActivateDate = moment();
+            var twitterActivateDate = new Date();
             // var tb4cActivateDate = moment();
-            twitterActivateDate.add(20, 'days');
+            twitterActivateDate.setTime(twitterActivateDate.getTime() + 20 * 86400000);     // prompt in 20 days
             // tb4cActivateDate.add(60, 'seconds');
             chrome.storage.local.set({
                 'twitterPromoTimestamp': twitterActivateDate.toString()
