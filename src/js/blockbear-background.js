@@ -19,10 +19,10 @@
     µb.userSettings.sendStatsEnabled = true;
 
     var installDateKey = 'installDate';
-    chrome.storage.local.get(installDateKey, function (result) {
+    vAPI.storage.get(installDateKey, function (result) {
         var setInstallDate = function setInstallDate() {
             var installDate = new Date();
-            chrome.storage.local.set({
+            vAPI.storage.set({
                 'installDate': installDate.toString(),
                 'promoDate': {
                     'twitterActivate': null,

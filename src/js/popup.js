@@ -168,23 +168,23 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         }
 
         var installDateKey = 'installDate';
-        chrome.storage.local.get(installDateKey, function (result) {
+        vAPI.storage.get(installDateKey, function (result) {
             if (installDateKey in result && result[installDateKey] !== null) {
                 var installDate = new Date(result[installDateKey]);
                 var promoDateKey = 'promoDate';
-                chrome.storage.local.get(promoDateKey, function (promoResult) {
+                vAPI.storage.get(promoDateKey, function (promoResult) {
                     if (promoDateKey in promoResult) {
                         self.placePromo(promoDateKey, promoResult, installDate);    
                     }
                 });
             }
         });
-        // chrome.storage.local.get('tb4cPromoTimestamp', function (result) {
+        // vAPI.storage.get('tb4cPromoTimestamp', function (result) {
         //     if ('tb4cPromoTimestamp' in result) {
         //         var tb4cActivateDate = moment(result['tb4cPromoTimestamp']);
         //         if (moment().isAfter(tb4cActivateDate)) {
         //             self.tb4cPromoEnabled(true);
-        //             chrome.storage.local.set({'tb4cPromoEnabled': true});
+        //             vAPI.storage.set({'tb4cPromoEnabled': true});
         //         }
         //     }
         // });
@@ -405,10 +405,10 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         }
 
         this.setPromoDate = function (element, value) {
-            chrome.storage.local.get('promoDate', function (result) {
+            vAPI.storage.get('promoDate', function (result) {
                 var data = result['promoDate'];
                 data[element] = value;
-                chrome.storage.local.set({
+                vAPI.storage.set({
                     'promoDate': data
                 });
             });
@@ -435,7 +435,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         // this.closeTB4CPromo = function () {
         //     this.tb4cPromoEnabled(false);
         //     var tb4cActivateDate = moment().add(1, 'minutes');
-        //     chrome.storage.local.set({
+        //     vAPI.storage.set({
         //         'tb4cPromoEnabled': false,
         //         'tb4cPromoTimestamp': tb4cActivateDate.toString()
         //     });
@@ -446,7 +446,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         //     var tb4cActivateDate = moment().add(30, 'seconds');
         //     setTimeout(function () {
         //         self.tb4cPromoEnabled(false);
-        //         chrome.storage.local.set({
+        //         vAPI.storage.set({
         //             'tb4cPromoEnabled': false,
         //             'tb4cPromoTimestamp': tb4cActivateDate.toString()
         //         });
