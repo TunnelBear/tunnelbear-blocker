@@ -140,16 +140,43 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.tb4cPromoEnabled = ko.observable(false);
 
         var self = this;
-        chrome.storage.local.get('twitterPromoTimestamp', function (result) {
-            if ('twitterPromoTimestamp' in result) {
-                if (result['twitterPromoTimestamp'] === null) {
-                    self.twitterPromoEnabled(false);
+        var twitterDismissKey = 'twitterDismiss';
+        var twitterActivateKey = 'twitterActivate';
+        this.placePromo = function (key, result, installDate) {
+            var data = result[key];
+            // Initial state
+            if (data[twitterActivateKey] === null && data[twitterDismissKey] === null) {
+                var twitterPromptDate = new Date(installDate.getTime());
+                twitterPromptDate.setTime(twitterPromptDate.getTime() + 20 * 24 * 60 * 60 * 1000);     // prompt in 20 days
+                if (Date.now() > twitterPromptDate) {
+                    self.twitterPromoEnabled(true);
                     return;
                 }
-                var twitterActivateDate = Date.parse(result['twitterPromoTimestamp']);
-                if (Date.now() > twitterActivateDate) {
+            }
+            // User has dismissed prompt
+            if (data[twitterActivateKey] === null && data[twitterDismissKey] !== null) {
+                var twitterDismissDate = new Date(data[twitterDismissKey]);
+                twitterDismissDate.setTime(twitterDismissDate.getTime() + 180 * 24 * 60 * 60 * 1000);       // prompt in 180 days
+                if (Date.now() > twitterDismissDate) {
+                    // Dismiss interval is now over, show the promo
                     self.twitterPromoEnabled(true);
+                    self.setPromoDate(twitterDismissKey, null);
+                    return;
                 }
+            }
+            self.twitterPromoEnabled(false);
+        }
+
+        var installDateKey = 'installDate';
+        chrome.storage.local.get(installDateKey, function (result) {
+            if (installDateKey in result && result[installDateKey] !== null) {
+                var installDate = new Date(result[installDateKey]);
+                var promoDateKey = 'promoDate';
+                chrome.storage.local.get(promoDateKey, function (promoResult) {
+                    if (promoDateKey in promoResult) {
+                        self.placePromo(promoDateKey, promoResult, installDate);    
+                    }
+                });
             }
         });
         // chrome.storage.local.get('tb4cPromoTimestamp', function (result) {
@@ -377,26 +404,32 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
             chrome.tabs.create({ url: item.url });
         }
 
+        this.setPromoDate = function (element, value) {
+            chrome.storage.local.get('promoDate', function (result) {
+                var data = result['promoDate'];
+                data[element] = value;
+                chrome.storage.local.set({
+                    'promoDate': data
+                });
+            });
+        }
+
         this.tweetNow = function () {
             var twitter_header = "https://twitter.com/intent/tweet?text=";
             var twitter_text = "Check out TunnelBear Blocker!";
             var store_url = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";            
-            chrome.tabs.create( { url: twitter_header + twitter_text + ' ' + store_url });            
+            chrome.tabs.create( { url: twitter_header + twitter_text + ' ' + store_url });
+            var twitterActivateDate = new Date();
             setTimeout(function () {
                 self.twitterPromoEnabled(false);
-                chrome.storage.local.set({
-                    'twitterPromoTimestamp': null
-                });
+                self.setPromoDate(twitterActivateKey, twitterActivateDate.toString());
             }, 250);
         }
 
         this.closeTwitterPromo = function () {
-            this.twitterPromoEnabled(false);
-            var twitterActivateDate = new Date();
-            twitterActivateDate.setTime(twitterActivateDate.getTime() + 180 * 86400000);     // prompt in 180 days
-            chrome.storage.local.set({
-                'twitterPromoTimestamp': twitterActivateDate.toString()
-            });
+            self.twitterPromoEnabled(false);
+            var twitterDismissDate = new Date();
+            self.setPromoDate(twitterDismissKey, twitterDismissDate.toString());    
         }
 
         // this.closeTB4CPromo = function () {
