@@ -24,19 +24,14 @@
             var installDate = new Date();
             vAPI.storage.set({
                 'installDate': installDate.toString(),
-                'promoDate': {
-                    'twitterActivate': null,
-                    'twitterDismiss': null
+                'promos': {
+                    'twitterCompleteDate': null,
+                    'twitterDismissDate': null
                 }
             });
         };
 
-        if (installDateKey in result) {
-            if (result[installDateKey] === null) {
-                setInstallDate();
-            }
-        }
-        else {
+        if (!result || !result[installDateKey]) {
             setInstallDate();
         }
     });

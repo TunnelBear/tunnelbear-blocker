@@ -140,12 +140,12 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.tb4cPromoEnabled = ko.observable(false);
 
         var self = this;
-        var twitterDismissKey = 'twitterDismiss';
-        var twitterActivateKey = 'twitterActivate';
+        var twitterDismissKey = 'twitterDismissDate';
+        var twitterCompleteKey = 'twitterCompleteDate';
         this.placePromo = function (key, result, installDate) {
             var data = result[key];
             // Initial state
-            if (data[twitterActivateKey] === null && data[twitterDismissKey] === null) {
+            if (data[twitterCompleteKey] === null && data[twitterDismissKey] === null) {
                 var twitterPromptDate = new Date(installDate.getTime());
                 twitterPromptDate.setTime(twitterPromptDate.getTime() + 20 * 24 * 60 * 60 * 1000);     // prompt in 20 days
                 if (Date.now() > twitterPromptDate) {
@@ -154,7 +154,7 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
                 }
             }
             // User has dismissed prompt
-            if (data[twitterActivateKey] === null && data[twitterDismissKey] !== null) {
+            if (data[twitterCompleteKey] === null && data[twitterDismissKey] !== null) {
                 var twitterDismissDate = new Date(data[twitterDismissKey]);
                 twitterDismissDate.setTime(twitterDismissDate.getTime() + 180 * 24 * 60 * 60 * 1000);       // prompt in 180 days
                 if (Date.now() > twitterDismissDate) {
@@ -171,10 +171,10 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         vAPI.storage.get(installDateKey, function (result) {
             if (installDateKey in result && result[installDateKey] !== null) {
                 var installDate = new Date(result[installDateKey]);
-                var promoDateKey = 'promoDate';
-                vAPI.storage.get(promoDateKey, function (promoResult) {
-                    if (promoDateKey in promoResult) {
-                        self.placePromo(promoDateKey, promoResult, installDate);    
+                var promoKey = 'promos';
+                vAPI.storage.get(promoKey, function (promoResult) {
+                    if (promoKey in promoResult) {
+                        self.placePromo(promoKey, promoResult, installDate);    
                     }
                 });
             }
@@ -405,11 +405,11 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         }
 
         this.setPromoDate = function (element, value) {
-            vAPI.storage.get('promoDate', function (result) {
-                var data = result['promoDate'];
+            vAPI.storage.get('promos', function (result) {
+                var data = result['promos'];
                 data[element] = value;
                 vAPI.storage.set({
-                    'promoDate': data
+                    'promos': data
                 });
             });
         }
@@ -418,12 +418,10 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
             var twitter_header = "https://twitter.com/intent/tweet?text=";
             var twitter_text = "Check out TunnelBear Blocker!";
             var store_url = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";            
+            var twitterCompleteDate = new Date();
+            self.twitterPromoEnabled(false);
+            self.setPromoDate(twitterCompleteKey, twitterCompleteDate.toString());
             chrome.tabs.create( { url: twitter_header + twitter_text + ' ' + store_url });
-            var twitterActivateDate = new Date();
-            setTimeout(function () {
-                self.twitterPromoEnabled(false);
-                self.setPromoDate(twitterActivateKey, twitterActivateDate.toString());
-            }, 250);
         }
 
         this.closeTwitterPromo = function () {
