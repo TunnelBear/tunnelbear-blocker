@@ -135,40 +135,34 @@
 
         // Get corresponding observable for a given promo
         this.getToggleFromPromoName = function (name) {
-            switch (name) {
-                case 'twitter':
-                    return self.twitterPromoEnabled;
+            if (name === 'twitter') {
+                return self.twitterPromoEnabled;
             }
         }
 
         // Calculates if a Date object + time interval is in the past
-        this.calculateTime = function (toggle, savedTime, interval) {
+        this.hasIntervalPassed = function (savedTime, interval) {
             var dateObj = new Date(savedTime);
             dateObj.setTime(dateObj.getTime() + interval);
             if (Date.now() > dateObj) {
-                toggle(true);
                 return true;
             }
             return false;
         }
 
-        // Determines the state the promo is in: initial / dismissed / completed
-        this.showPromo = function (promoName, complete, dismiss, installDate, toggle, initialInterval) {
+        // Determines if the promo should be shown based on three states: initial / dismissed / completed
+        this.shouldShowPromo = function (promoName, complete, dismiss, installDate, initialInterval) {
             if (complete === null && dismiss === null) {
-                var intervalPassed = this.calculateTime(toggle, installDate, initialInterval);
-                if (intervalPassed) {
-                    return true;
-                }
+                return this.hasIntervalPassed(installDate, initialInterval);
             }
             if (complete === null && dismiss !== null) {
-                var dismissInterval = 180 * 24 * 60 * 60 * 1000;    // 180 days 
-                var intervalPassed = this.calculateTime(toggle, dismiss, dismissInterval);
+                let dismissInterval = 180 * 24 * 60 * 60 * 1000;    // 180 days
+                let intervalPassed = this.hasIntervalPassed(dismiss, dismissInterval);
                 if (intervalPassed) {
                     self.setPromoDate(promoName, dismissKey, null);
                     return true;
-                }                
+                }
             }
-            toggle(false);
             return false;
         }
 
@@ -176,13 +170,14 @@
         this.placePromo = function (key, result, installDate) {
             var data = result[key];
             for (var promoName in data) {
-                var promo = data[promoName];
-                var dismiss = promo[dismissKey];
-                var complete = promo[completeKey];
-                var initialInterval = promo[initialIntervalKey];
-                var toggle = self.getToggleFromPromoName(promoName);
-                var shown = this.showPromo(promoName, complete, dismiss, installDate, toggle, initialInterval);
-                if (shown) {
+                let promo = data[promoName];
+                let dismiss = promo[dismissKey];
+                let complete = promo[completeKey];
+                let initialInterval = promo[initialIntervalKey];
+                let toggle = self.getToggleFromPromoName(promoName);
+                let shown = this.shouldShowPromo(promoName, complete, dismiss, installDate, initialInterval);
+                toggle(shown);
+                if (shown === true) {
                     return;
                 }
             }
@@ -200,15 +195,6 @@
                 });
             }
         });
-        // vAPI.storage.get('tb4cPromoTimestamp', function (result) {
-        //     if ('tb4cPromoTimestamp' in result) {
-        //         var tb4cActivateDate = moment(result['tb4cPromoTimestamp']);
-        //         if (moment().isAfter(tb4cActivateDate)) {
-        //             self.tb4cPromoEnabled(true);
-        //             vAPI.storage.set({'tb4cPromoEnabled': true});
-        //         }
-        //     }
-        // });
 
         this.isToggledText = ko.computed(function () {
             return this.isToggled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
