@@ -25,8 +25,11 @@
             vAPI.storage.set({
                 'installDate': installDate.toString(),
                 'promos': {
-                    'twitterCompleteDate': null,
-                    'twitterDismissDate': null
+                    'twitter': {
+                        'completeDate': null,
+                        'dismissDate': null,
+                        'initialInterval': 20 * 24 * 60 * 60 * 1000     // 20 days
+                    }
                 }
             });
         };

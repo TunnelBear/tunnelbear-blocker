@@ -129,8 +129,17 @@
         this.tb4cPromoEnabled = ko.observable(false);
 
         var self = this;
-        var twitterDismissKey = 'twitterDismissDate';
-        var twitterCompleteKey = 'twitterCompleteDate';
+        var dismissKey = 'dismissDate';
+        var completeKey = 'completeDate';
+        var initialIntervalKey = 'initialInterval';
+
+        // Get corresponding observable for a given promo
+        this.getToggleFromPromoName = function (name) {
+            switch (name) {
+                case 'twitter':
+                    return self.twitterPromoEnabled;
+            }
+        }
 
         // Calculates if a Date object + time interval is in the past
         this.calculateTime = function (toggle, savedTime, interval) {
@@ -144,9 +153,7 @@
         }
 
         // Determines the state the promo is in: initial / dismissed / completed
-        this.showPromo = function (data, completeKey, dismissKey, installDate, toggle, initialInterval) {
-            var dismiss = data[dismissKey];
-            var complete = data[completeKey];
+        this.showPromo = function (promoName, complete, dismiss, installDate, toggle, initialInterval) {
             if (complete === null && dismiss === null) {
                 var intervalPassed = this.calculateTime(toggle, installDate, initialInterval);
                 if (intervalPassed) {
@@ -157,7 +164,7 @@
                 var dismissInterval = 180 * 24 * 60 * 60 * 1000;    // 180 days 
                 var intervalPassed = this.calculateTime(toggle, dismiss, dismissInterval);
                 if (intervalPassed) {
-                    self.setPromoDate(dismissKey, null);
+                    self.setPromoDate(promoName, dismissKey, null);
                     return true;
                 }                
             }
@@ -168,9 +175,17 @@
         // Cycles through the promos and determines if one should be displayed
         this.placePromo = function (key, result, installDate) {
             var data = result[key];
-            var initialInterval = 20 * 24 * 60 * 60 * 1000;     // 20 days
-            this.showPromo(data, twitterCompleteKey, twitterDismissKey, installDate,
-                self.twitterPromoEnabled, initialInterval);
+            for (var promoName in data) {
+                var promo = data[promoName];
+                var dismiss = promo[dismissKey];
+                var complete = promo[completeKey];
+                var initialInterval = promo[initialIntervalKey];
+                var toggle = self.getToggleFromPromoName(promoName);
+                var shown = this.showPromo(promoName, complete, dismiss, installDate, toggle, initialInterval);
+                if (shown) {
+                    return;
+                }
+            }
         }
 
         var installDateKey = 'installDate';
@@ -410,10 +425,10 @@
             chrome.tabs.create({ url: item.url });
         }
 
-        this.setPromoDate = function (element, value) {
+        this.setPromoDate = function (promo, element, value) { 
             vAPI.storage.get('promos', function (result) {
                 var data = result['promos'];
-                data[element] = value;
+                data[promo][element] = value;
                 vAPI.storage.set({
                     'promos': data
                 });
@@ -421,17 +436,17 @@
         }
 
         this.tweetNow = function () {
-            var twitter_header = "https://twitter.com/intent/tweet?text=";
-            var twitter_text = "Check out TunnelBear Blocker!";
-            var store_url = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";
+            var twitterHeader = "https://twitter.com/intent/tweet?text=";
+            var twitterText = "Check out TunnelBear Blocker!";
+            var storeURL = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";
             var twitterCompleteDate = new Date();
-            self.setPromoDate(twitterCompleteKey, twitterCompleteDate.toString());
-            chrome.tabs.create( { url: twitter_header + twitter_text + ' ' + store_url });
+            self.setPromoDate('twitter', completeKey, twitterCompleteDate.toString());
+            chrome.tabs.create( { url: twitterHeader + twitterText + ' ' + storeURL });
         }
 
         this.dismissTwitterPromo = function () {
             var twitterDismissDate = new Date();
-            self.setPromoDate(twitterDismissKey, twitterDismissDate.toString());
+            self.setPromoDate('twitter', dismissKey, twitterDismissDate.toString());
             self.twitterPromoEnabled(false);
         }
 
