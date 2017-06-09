@@ -2621,20 +2621,6 @@ FilterContainer.prototype.toResultString = function(verbose) {
     return s;
 };
 
-FilterContainer.prototype.getGroupType = function(result) {
-    if (this.fRegister !== null) {
-        return this.fRegister.group;
-    }
-    var groups = ['social', 'privacy', 'ads', 'malware'];
-    for (var i = 0; i < groups.length; i++) {
-        var group = groups[i];
-        if (result.indexOf(group) === 3) {
-            return group;
-        }
-    }
-    return "";
-};
-
 /******************************************************************************/
 
 FilterContainer.prototype.getFilterCount = function() {

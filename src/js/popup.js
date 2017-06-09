@@ -436,27 +436,6 @@
             self.twitterPromoEnabled(false);
         }
 
-        // this.closeTB4CPromo = function () {
-        //     this.tb4cPromoEnabled(false);
-        //     var tb4cActivateDate = moment().add(1, 'minutes');
-        //     vAPI.storage.set({
-        //         'tb4cPromoEnabled': false,
-        //         'tb4cPromoTimestamp': tb4cActivateDate.toString()
-        //     });
-        // }
-
-        // this.tb4cStore = function () {
-        //     chrome.tabs.create( {url: "https://chrome.google.com/webstore/detail/tunnelbear-vpn/omdakjcmkglenbhjadbccaookpfjihpa?hl=en"})
-        //     var tb4cActivateDate = moment().add(30, 'seconds');
-        //     setTimeout(function () {
-        //         self.tb4cPromoEnabled(false);
-        //         vAPI.storage.set({
-        //             'tb4cPromoEnabled': false,
-        //             'tb4cPromoTimestamp': tb4cActivateDate.toString()
-        //         });
-        //     }, 250);
-        // }
-
         this.watchContentChanged = function () {
             var self = this;
             setTimeout(function () {

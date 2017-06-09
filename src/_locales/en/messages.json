@@ -71,30 +71,6 @@
 		"message": "Malware protection",
 		"description": ""
 	},
-	"docblockedPrompt1": {
-		"message": "TunnelBear Blocker has prevented the following page from loading:",
-		"description": "English: TunnelBear Blocker has prevented the following page from loading:"
-	},
-	"docblockedPrompt2": {
-		"message": "Because of the following filter",
-		"description": "English: Because of the following filter"
-	},
-	"docblockedNoParamsPrompt": {
-		"message": "without parameters",
-		"description": "label to be used for the parameter-less URL: https://cloud.githubusercontent.com/assets/585534/9832014/bfb1b8f0-593b-11e5-8a27-fba472a5529a.png"
-	},
-	"docblockedFoundIn": {
-		"message": "Found in:",
-		"description": "English: List of filter list names follows"
-	},
-	"docblockedBack": {
-		"message": "Go back",
-		"description": "English: Go back"
-	},
-	"docblockedClose": {
-		"message": "Close this window",
-		"description": "English: Close this window"
-	},
 	"whitelist": {
 		"message": "whitelist",
 		"description": ""
