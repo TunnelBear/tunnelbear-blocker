@@ -1,14 +1,3 @@
-// https://github.com/gorhill/uBlock/issues/2550
-// Solution inspired from
-// - https://bugs.chromium.org/p/chromium/issues/detail?id=683314
-// - https://bugzilla.mozilla.org/show_bug.cgi?id=1332714#c17
-// Confusable character set from:
-// - http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%D0%B0%D1%81%D4%81%D0%B5%D2%BB%D1%96%D1%98%D3%8F%D0%BE%D1%80%D4%9B%D1%95%D4%9D%D1%85%D1%83%D1%8A%D0%AC%D2%BD%D0%BF%D0%B3%D1%B5%D1%A1%5D&g=gc&i=
-// Linked from:
-// - https://www.chromium.org/developers/design-documents/idn-in-google-chrome
-var reCyrillicNonAmbiguous = /[\u0400-\u042b\u042d-\u042f\u0431\u0432\u0434\u0436-\u043d\u0442\u0444\u0446-\u0449\u044b-\u0454\u0457\u0459-\u0460\u0462-\u0474\u0476-\u04ba\u04bc\u04be-\u04ce\u04d0-\u0500\u0502-\u051a\u051c\u051e-\u052f]/;
-var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u0443\u0445\u044a\u0455\u0456\u0458\u0461\u0475\u04bb\u04bd\u04cf\u0501\u051b\u051d]/;
-
 (function () {
     var messager = vAPI.messaging;
     messager.addChannelListener('popupPanel');
@@ -142,35 +131,52 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         var self = this;
         var twitterDismissKey = 'twitterDismissDate';
         var twitterCompleteKey = 'twitterCompleteDate';
+
+        // Calculates if a Date object + time interval is in the past
+        this.calculateTime = function (toggle, savedTime, interval) {
+            var dateObj = new Date(savedTime);
+            dateObj.setTime(dateObj.getTime() + interval);
+            if (Date.now() > dateObj) {
+                toggle(true);
+                return true;
+            }
+            return false;
+        }
+
+        // Determines the state the promo is in: initial / dismissed / completed
+        this.showPromo = function (data, completeKey, dismissKey, installDate, toggle, initialInterval) {
+            var dismiss = data[dismissKey];
+            var complete = data[completeKey];
+            if (complete === null && dismiss === null) {
+                var intervalPassed = this.calculateTime(toggle, installDate, initialInterval);
+                if (intervalPassed) {
+                    return true;
+                }
+            }
+            if (complete === null && dismiss !== null) {
+                var dismissInterval = 180 * 24 * 60 * 60 * 1000;    // 180 days 
+                var intervalPassed = this.calculateTime(toggle, dismiss, dismissInterval);
+                if (intervalPassed) {
+                    self.setPromoDate(dismissKey, null);
+                    return true;
+                }                
+            }
+            toggle(false);
+            return false;
+        }
+
+        // Cycles through the promos and determines if one should be displayed
         this.placePromo = function (key, result, installDate) {
             var data = result[key];
-            // Initial state
-            if (data[twitterCompleteKey] === null && data[twitterDismissKey] === null) {
-                var twitterPromptDate = new Date(installDate.getTime());
-                twitterPromptDate.setTime(twitterPromptDate.getTime() + 20 * 24 * 60 * 60 * 1000);     // prompt in 20 days
-                if (Date.now() > twitterPromptDate) {
-                    self.twitterPromoEnabled(true);
-                    return;
-                }
-            }
-            // User has dismissed prompt
-            if (data[twitterCompleteKey] === null && data[twitterDismissKey] !== null) {
-                var twitterDismissDate = new Date(data[twitterDismissKey]);
-                twitterDismissDate.setTime(twitterDismissDate.getTime() + 180 * 24 * 60 * 60 * 1000);       // prompt in 180 days
-                if (Date.now() > twitterDismissDate) {
-                    // Dismiss interval is now over, show the promo
-                    self.twitterPromoEnabled(true);
-                    self.setPromoDate(twitterDismissKey, null);
-                    return;
-                }
-            }
-            self.twitterPromoEnabled(false);
+            var initialInterval = 20 * 24 * 60 * 60 * 1000;     // 20 days
+            this.showPromo(data, twitterCompleteKey, twitterDismissKey, installDate,
+                self.twitterPromoEnabled, initialInterval);
         }
 
         var installDateKey = 'installDate';
         vAPI.storage.get(installDateKey, function (result) {
             if (installDateKey in result && result[installDateKey] !== null) {
-                var installDate = new Date(result[installDateKey]);
+                var installDate = result[installDateKey];
                 var promoKey = 'promos';
                 vAPI.storage.get(promoKey, function (promoResult) {
                     if (promoKey in promoResult) {
@@ -417,17 +423,16 @@ var reCyrillicAmbiguous = /[\u042c\u0430\u0433\u0435\u043e\u043f\u0440\u0441\u04
         this.tweetNow = function () {
             var twitter_header = "https://twitter.com/intent/tweet?text=";
             var twitter_text = "Check out TunnelBear Blocker!";
-            var store_url = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";            
+            var store_url = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";
             var twitterCompleteDate = new Date();
-            self.twitterPromoEnabled(false);
             self.setPromoDate(twitterCompleteKey, twitterCompleteDate.toString());
             chrome.tabs.create( { url: twitter_header + twitter_text + ' ' + store_url });
         }
 
-        this.closeTwitterPromo = function () {
-            self.twitterPromoEnabled(false);
+        this.dismissTwitterPromo = function () {
             var twitterDismissDate = new Date();
-            self.setPromoDate(twitterDismissKey, twitterDismissDate.toString());    
+            self.setPromoDate(twitterDismissKey, twitterDismissDate.toString());
+            self.twitterPromoEnabled(false);
         }
 
         // this.closeTB4CPromo = function () {
