@@ -126,7 +126,6 @@
         this.malwareEnabled = ko.observable(popupData.blockMalwareEnabled);
         
         this.twitterPromoEnabled = ko.observable(false); 
-        this.tb4cPromoEnabled = ko.observable(false);
 
         var self = this;
         var dismissKey = 'dismissDate';
@@ -158,7 +157,7 @@
             if (complete === null && dismiss !== null) {
                 let dismissInterval = 180 * 24 * 60 * 60 * 1000;    // 180 days
                 let intervalPassed = this.hasIntervalPassed(dismiss, dismissInterval);
-                if (intervalPassed) {
+                if (intervalPassed === true) {
                     self.setPromoDate(promoName, dismissKey, null);
                     return true;
                 }

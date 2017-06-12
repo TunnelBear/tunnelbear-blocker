@@ -642,31 +642,6 @@ input.toggle.mini:checked + label:after{
 
 /* End Twitter */
 
-/* TB4C */
-
-#tb4c-store {
-  cursor: pointer;
-  width: 90.4px;
-  height: 25px;
-  border-radius: 2px;
-  background-color: #55534e;
-  margin-left: 34px;
-  margin-top: 6px;
-}
-
-#tb4c-text {
-  width: 74px;
-  height: 17px;
-  font-family: OpenSans;
-  font-size: 12px;
-  letter-spacing: -0.5px;
-  text-align: center;
-  color: #faf9f7;
-  padding: 4px 8px 4px 8px;
-}
-
-/* End TB4C */
-
 /* Tooltip */
 
 .tooltip {
