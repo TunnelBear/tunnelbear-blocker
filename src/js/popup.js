@@ -130,7 +130,6 @@
         var self = this;
         var dismissKey = 'dismissDate';
         var completeKey = 'completeDate';
-        var initialIntervalKey = 'initialInterval';
 
         // Get corresponding observable for a given promo
         this.getToggleFromPromoName = function (name) {
@@ -155,8 +154,8 @@
                 return this.hasIntervalPassed(installDate, initialInterval);
             }
             if (complete === null && dismiss !== null) {
-                let dismissInterval = 180 * 24 * 60 * 60 * 1000;    // 180 days
-                let intervalPassed = this.hasIntervalPassed(dismiss, dismissInterval);
+                var dismissInterval = 180 * 24 * 60 * 60 * 1000;    // 180 days
+                var intervalPassed = this.hasIntervalPassed(dismiss, dismissInterval);
                 if (intervalPassed === true) {
                     self.setPromoDate(promoName, dismissKey, null);
                     return true;
@@ -169,12 +168,12 @@
         this.placePromo = function (key, result, installDate) {
             var data = result[key];
             for (var promoName in data) {
-                let promo = data[promoName];
-                let dismiss = promo[dismissKey];
-                let complete = promo[completeKey];
-                let initialInterval = promo[initialIntervalKey];
-                let toggle = self.getToggleFromPromoName(promoName);
-                let shown = this.shouldShowPromo(promoName, complete, dismiss, installDate, initialInterval);
+                var promo = data[promoName];
+                var dismiss = promo.dismissDate;
+                var complete = promo.completeDate;
+                var initialInterval = promo.initialInterval;
+                var toggle = self.getToggleFromPromoName(promoName);
+                var shown = this.shouldShowPromo(promoName, complete, dismiss, installDate, initialInterval);
                 toggle(shown);
                 if (shown === true) {
                     return;
@@ -410,12 +409,13 @@
             chrome.tabs.create({ url: item.url });
         }
 
-        this.setPromoDate = function (promo, element, value) { 
-            vAPI.storage.get('promos', function (result) {
-                var data = result['promos'];
+        this.setPromoDate = function (promo, element, value) {
+            var promosKey = 'promos';            
+            vAPI.storage.get(promosKey, function (result) {
+                var data = result.promos;
                 data[promo][element] = value;
                 vAPI.storage.set({
-                    'promos': data
+                    promos: data
                 });
             });
         }

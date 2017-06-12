@@ -21,14 +21,14 @@
     var installDateKey = 'installDate';
     vAPI.storage.get(installDateKey, function (result) {
         var setInstallDate = function setInstallDate() {
-            var installDate = new Date();
+            var installDateObj = new Date();
             vAPI.storage.set({
-                'installDate': installDate.toString(),
-                'promos': {
-                    'twitter': {
-                        'completeDate': null,
-                        'dismissDate': null,
-                        'initialInterval': 20 * 24 * 60 * 60 * 1000     // 20 days
+                installDate: installDateObj.toString(),
+                promos: {
+                    twitter: {
+                        completeDate: null,
+                        dismissDate: null,
+                        initialInterval: 20 * 24 * 60 * 60 * 1000     // 20 days
                     }
                 }
             });
