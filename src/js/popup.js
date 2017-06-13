@@ -131,6 +131,82 @@
         var dismissKey = 'dismissDate';
         var completeKey = 'completeDate';
 
+
+        var promos = [ 
+            {name: "twitter", 
+            shouldShow: shouldShowTwitterPromo,
+            completeDate: undefined,
+            dismissDate: undefined,
+            priority: 0}];
+
+
+        this.shouldShowTwitterPromo(completeDate, dismissDate) = function() {
+            var installDate = Date();
+            var daysBeforeShowing = 20;
+            var daysBeforeShowingIfDismissed = 180;
+            return this.shouldShowPromo(completeDate, dismissDate, daysBeforeShowing, daysBeforeShowingIfDismissed);
+        }
+
+        this.grabPromo() = function (promos) {
+            vAPI.storage.get("promos", function (result) {
+                //TODO foreach promo fill in promo.complete + dismiss dates
+
+                var promosToShow = promos.filter(function (promo) {
+                    return promo.shouldShow(promo.completeDate, promo.dismissDate) === true;
+                });
+                var sortedPromos = promosToShow.sort(function (promo) { return promo.priority });
+                if (sortedPromos && sortedPromos.length > 0) {
+                    return sortedPromos[0];
+                }
+                return undefined;
+            });
+        }
+
+        this.placePromo() = function() {
+            var promo = this.grabPromo(promos);
+            if(promo) {
+                if (promo.name === "twitter") {
+                    this.twitterPromoEnabled(true);
+                }
+            }
+        }
+
+        /**
+         * 
+         * 
+         *    this.placePromo = function (key, result, installDate) {
+            var data = result[key];
+            for (var promoName in data) {
+                var promo = data[promoName];
+                var dismiss = promo.dismissDate;
+                var complete = promo.completeDate;
+                var initialInterval = promo.initialInterval;
+                var toggle = self.getToggleFromPromoName(promoName);
+                var shown = this.shouldShowPromo(promoName, complete, dismiss, installDate, initialInterval);
+                toggle(shown);
+                if (shown === true) {
+                    return;
+                }
+            }
+        }
+         */
+
+        // Determines if the promo should be shown based on three states: initial / dismissed / completed
+        this.shouldShowPromo = function (complete, dismiss, installDate, daysBeforeShowing, daysBeforeShowingIfDismissed) {
+            if (!complete && !dismiss) {
+                return this.hasIntervalPassed(installDate, daysBeforeShowing);
+            }
+            if (!complete && dismiss) {
+                var dismissInterval = daysBeforeShowingIfDismissed * 24 * 60 * 60 * 1000;    // 180 days
+                var intervalPassed = this.hasIntervalPassed(dismiss, dismissInterval);
+                if (intervalPassed === true) {
+                    // self.setPromoDate(promoName, dismissKey, null);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         // Get corresponding observable for a given promo
         this.getToggleFromPromoName = function (name) {
             if (name === 'twitter') {
