@@ -18,8 +18,7 @@
     µb.userSettings.blockMalwareEnabled = true;
     µb.userSettings.sendStatsEnabled = true;
 
-    var installDateKey = 'installDate';
-    vAPI.storage.get(installDateKey, function (result) {
+    vAPI.storage.get('installDate', function (result) {
         var setInstallDate = function setInstallDate() {
             var installDateObj = new Date();
             vAPI.storage.set({
@@ -34,7 +33,7 @@
             });
         };
 
-        if (!result || !result[installDateKey]) {
+        if (!result || !result.installDate) {
             setInstallDate();
         }
     });

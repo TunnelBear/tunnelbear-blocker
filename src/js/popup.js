@@ -410,8 +410,7 @@
         }
 
         this.setPromoDate = function (promo, element, value) {
-            var promosKey = 'promos';            
-            vAPI.storage.get(promosKey, function (result) {
+            vAPI.storage.get('promos', function (result) {
                 var data = result.promos;
                 data[promo][element] = value;
                 vAPI.storage.set({
