@@ -22,14 +22,7 @@
         var setInstallDate = function setInstallDate() {
             var installDateObj = new Date();
             vAPI.storage.set({
-                installDate: installDateObj.toString(),
-                promos: {
-                    twitter: {
-                        completeDate: null,
-                        dismissDate: null,
-                        initialInterval: 20 * 24 * 60 * 60 * 1000     // 20 days
-                    }
-                }
+                installDate: installDateObj.toString()
             });
         };
 

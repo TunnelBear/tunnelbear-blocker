@@ -131,86 +131,82 @@
         var dismissKey = 'dismissDate';
         var completeKey = 'completeDate';
 
-
-        var promos = [ 
-            {name: "twitter", 
-            shouldShow: shouldShowTwitterPromo,
-            completeDate: undefined,
-            dismissDate: undefined,
-            priority: 0}];
-
-
-        this.shouldShowTwitterPromo(completeDate, dismissDate) = function() {
-            var installDate = Date();
+        this.shouldShowTwitterPromo = function (completeDate, dismissDate, installDate) {
             var daysBeforeShowing = 20;
             var daysBeforeShowingIfDismissed = 180;
-            return this.shouldShowPromo(completeDate, dismissDate, daysBeforeShowing, daysBeforeShowingIfDismissed);
+            return self.shouldShowPromo(completeDate, dismissDate, installDate, daysBeforeShowing, daysBeforeShowingIfDismissed);
         }
 
-        this.grabPromo() = function (promos) {
-            vAPI.storage.get("promos", function (result) {
-                //TODO foreach promo fill in promo.complete + dismiss dates
+        var promoList = [{
+            name: 'twitter',
+            shouldShow: this.shouldShowTwitterPromo,
+            completeDate: undefined,
+            dismissDate: undefined,
+            priority: 0
+        }];
 
-                var promosToShow = promos.filter(function (promo) {
-                    return promo.shouldShow(promo.completeDate, promo.dismissDate) === true;
-                });
-                var sortedPromos = promosToShow.sort(function (promo) { return promo.priority });
-                if (sortedPromos && sortedPromos.length > 0) {
-                    return sortedPromos[0];
+        // Returns promo object from promo list
+        this.findPromoFromList = function (promoName) {
+            for (var promo in promoList) {
+                if (promoList[promo].name === promoName) {
+                    return promoList[promo];
                 }
-                return undefined;
+            }
+            return undefined;
+        }
+
+        // Determines the highest priority promo to be shown
+        this.grabPromo = function (promos, installDate) {
+            for (var item in promos) {
+                var promoObj = this.findPromoFromList(promos[item].name);
+                if (promoObj != null) {
+                    promoObj.completeDate = promos[item].completeDate;
+                    promoObj.dismissDatse = promos[item].dismissDate;
+                }
+            }
+            var promosToShow = promoList.filter(function (promo) {
+                return promo.shouldShow(promo.completeDate, promo.dismissDate, installDate) === true;
             });
+            var sortedPromos = promosToShow.sort(function (promo) { 
+                return promo.priority;
+            });
+            if (sortedPromos && sortedPromos.length > 0) {
+                return sortedPromos[0];
+            }
+            return undefined;
         }
-
-        this.placePromo() = function() {
-            var promo = this.grabPromo(promos);
-            if(promo) {
-                if (promo.name === "twitter") {
-                    this.twitterPromoEnabled(true);
-                }
+ 
+        // Begins promo placement procedure
+        this.placePromo = function (promos, installDate) {
+            var promo;
+            if (promos == null) {
+                promo = this.grabPromo([], installDate);
+            }
+            else {
+                promo = this.grabPromo(promos, installDate);
+            } 
+            if (promo) {
+                this.activatePromo(promo.name);
             }
         }
 
-        /**
-         * 
-         * 
-         *    this.placePromo = function (key, result, installDate) {
-            var data = result[key];
-            for (var promoName in data) {
-                var promo = data[promoName];
-                var dismiss = promo.dismissDate;
-                var complete = promo.completeDate;
-                var initialInterval = promo.initialInterval;
-                var toggle = self.getToggleFromPromoName(promoName);
-                var shown = this.shouldShowPromo(promoName, complete, dismiss, installDate, initialInterval);
-                toggle(shown);
-                if (shown === true) {
-                    return;
-                }
-            }
-        }
-         */
-
-        // Determines if the promo should be shown based on three states: initial / dismissed / completed
+        // Determines if a promo should be shown based on three states: initial / dismissed / completed
         this.shouldShowPromo = function (complete, dismiss, installDate, daysBeforeShowing, daysBeforeShowingIfDismissed) {
             if (!complete && !dismiss) {
-                return this.hasIntervalPassed(installDate, daysBeforeShowing);
+                var interval = daysBeforeShowing * 24 * 60 * 60 * 1000;
+                return this.hasIntervalPassed(installDate, interval);
             }
             if (!complete && dismiss) {
-                var dismissInterval = daysBeforeShowingIfDismissed * 24 * 60 * 60 * 1000;    // 180 days
-                var intervalPassed = this.hasIntervalPassed(dismiss, dismissInterval);
-                if (intervalPassed === true) {
-                    // self.setPromoDate(promoName, dismissKey, null);
-                    return true;
-                }
+                var dismissInterval = daysBeforeShowingIfDismissed * 24 * 60 * 60 * 1000;
+                return this.hasIntervalPassed(dismiss, dismissInterval);
             }
             return false;
         }
 
-        // Get corresponding observable for a given promo
-        this.getToggleFromPromoName = function (name) {
+        // Activates the toggle for a given promo
+        this.activatePromo = function (name) {
             if (name === 'twitter') {
-                return self.twitterPromoEnabled;
+                this.twitterPromoEnabled(true);
             }
         }
 
@@ -224,48 +220,13 @@
             return false;
         }
 
-        // Determines if the promo should be shown based on three states: initial / dismissed / completed
-        this.shouldShowPromo = function (promoName, complete, dismiss, installDate, initialInterval) {
-            if (complete === null && dismiss === null) {
-                return this.hasIntervalPassed(installDate, initialInterval);
-            }
-            if (complete === null && dismiss !== null) {
-                var dismissInterval = 180 * 24 * 60 * 60 * 1000;    // 180 days
-                var intervalPassed = this.hasIntervalPassed(dismiss, dismissInterval);
-                if (intervalPassed === true) {
-                    self.setPromoDate(promoName, dismissKey, null);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Cycles through the promos and determines if one should be displayed
-        this.placePromo = function (key, result, installDate) {
-            var data = result[key];
-            for (var promoName in data) {
-                var promo = data[promoName];
-                var dismiss = promo.dismissDate;
-                var complete = promo.completeDate;
-                var initialInterval = promo.initialInterval;
-                var toggle = self.getToggleFromPromoName(promoName);
-                var shown = this.shouldShowPromo(promoName, complete, dismiss, installDate, initialInterval);
-                toggle(shown);
-                if (shown === true) {
-                    return;
-                }
-            }
-        }
-
         var installDateKey = 'installDate';
         vAPI.storage.get(installDateKey, function (result) {
             if (installDateKey in result && result[installDateKey] !== null) {
                 var installDate = result[installDateKey];
                 var promoKey = 'promos';
                 vAPI.storage.get(promoKey, function (promoResult) {
-                    if (promoKey in promoResult) {
-                        self.placePromo(promoKey, promoResult, installDate);    
-                    }
+                    self.placePromo(promoResult[promoKey], installDate);
                 });
             }
         });
@@ -473,7 +434,7 @@
                 self.animateCount(0, self.pageBlockedSocialCount(), 1000, document.getElementById('social'));
                 self.animateCount(0, self.pageBlockedPrivacyCount(), 1000, document.getElementById('privacy'));
                 self.animateCount(0, self.pageBlockedMalwareCount(), 1000, document.getElementById('malware'));
-            }, 100);
+            }, 100);  
         }
 
         this.openSettings = function () {
@@ -485,13 +446,32 @@
             chrome.tabs.create({ url: item.url });
         }
 
-        this.setPromoDate = function (promo, element, value) {
-            vAPI.storage.get('promos', function (result) {
-                var data = result.promos;
-                data[promo][element] = value;
-                vAPI.storage.set({
-                    promos: data
-                });
+        this.writePromoToStorage = function (promoName, element, value) {
+            var promosKey = 'promos';
+            var storageDataFound = false;
+            vAPI.storage.get(promosKey, function (result) {
+                storageDataFound = promosKey in result ? true : false;
+                if (storageDataFound) {
+                    var data = result.promos;
+                    for (var promo in data) {
+                        if (data[promo].name === promoName) {
+                            data[promo][element] = value;
+                            vAPI.storage.set({
+                                promos: data
+                            });
+                        }
+                    }
+                }
+                else {
+                    var record = {
+                        name: promoName
+                    };
+                    record[element] = value;
+                    var data = [record];
+                    vAPI.storage.set({
+                        promos: data
+                    });
+                }
             });
         }
 
@@ -500,13 +480,13 @@
             var twitterText = "Check out TunnelBear Blocker!";
             var storeURL = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";
             var twitterCompleteDate = new Date();
-            self.setPromoDate('twitter', completeKey, twitterCompleteDate.toString());
+            self.writePromoToStorage('twitter', completeKey, twitterCompleteDate.toString());
             chrome.tabs.create( { url: twitterHeader + twitterText + ' ' + storeURL });
         }
 
         this.dismissTwitterPromo = function () {
             var twitterDismissDate = new Date();
-            self.setPromoDate('twitter', dismissKey, twitterDismissDate.toString());
+            self.writePromoToStorage('twitter', dismissKey, twitterDismissDate.toString());
             self.twitterPromoEnabled(false);
         }
 
