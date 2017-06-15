@@ -156,19 +156,19 @@
         }
 
         // Determines the highest priority promo to be shown
-        this.grabPromo = function (promos, installDate) {
-            for (var item in promos) {
-                var promoObj = this.findPromoFromList(promos[item].name);
+        this.grabPromo = function (storagePromos, installDate) {
+            for (var item in storagePromos) {
+                var promoObj = this.findPromoFromList(storagePromos[item].name);
                 if (promoObj != null) {
-                    promoObj.completeDate = promos[item].completeDate;
-                    promoObj.dismissDatse = promos[item].dismissDate;
+                    promoObj.completeDate = storagePromos[item].completeDate;
+                    promoObj.dismissDatse = storagePromos[item].dismissDate;
                 }
             }
             var promosToShow = promoList.filter(function (promo) {
                 return promo.shouldShow(promo.completeDate, promo.dismissDate, installDate) === true;
             });
-            var sortedPromos = promosToShow.sort(function (promo) { 
-                return promo.priority;
+            var sortedPromos = promosToShow.sort(function (current, previous) {
+                return current.priority < previous.priority;
             });
             if (sortedPromos && sortedPromos.length > 0) {
                 return sortedPromos[0];
@@ -177,13 +177,13 @@
         }
  
         // Begins promo placement procedure
-        this.placePromo = function (promos, installDate) {
+        this.placePromo = function (storagePromos, installDate) {
             var promo;
-            if (promos == null) {
+            if (storagePromos == null) {
                 promo = this.grabPromo([], installDate);
             }
             else {
-                promo = this.grabPromo(promos, installDate);
+                promo = this.grabPromo(storagePromos, installDate);
             } 
             if (promo) {
                 this.activatePromo(promo.name);
@@ -196,7 +196,7 @@
                 var interval = daysBeforeShowing * 24 * 60 * 60 * 1000;
                 return this.hasIntervalPassed(installDate, interval);
             }
-            if (!complete && dismiss) {
+            else if (!complete && dismiss) {
                 var dismissInterval = daysBeforeShowingIfDismissed * 24 * 60 * 60 * 1000;
                 return this.hasIntervalPassed(dismiss, dismissInterval);
             }
