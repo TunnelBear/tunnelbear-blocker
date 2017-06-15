@@ -15,6 +15,8 @@ mkdir -p $DES
 
 echo "*** blockbear.chromium: bower install..."
 bower install
+echo "*** blockbear.chromium: npm install..."
+npm install
 
 bash ./tools/make-assets.sh $DES
 

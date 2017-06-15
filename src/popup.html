@@ -18,7 +18,7 @@
                     <img src="img/icon_gear.png" class="img-top-settings">
                 </div>
             </div>
-            <div class="table-row medium-row section-border">
+            <div class="table-row medium-row section-border blocker-toggle">
                 <div class="table-cell status-cell">
                     <div class="status-label">
                         <span>Blocker</span>
@@ -34,6 +34,9 @@
                     </div>
                 </div>
             </div>
+            <!--ko if: isLoaded() -->        
+                <div data-bind="template: {name: (twitterPromoEnabled() ? 'twitter-promo-template' : 'empty-template')}"></div>
+            <!-- /ko -->
             <div class="table-row medium-row section-border whitelist">
                 <div class="table-cell status-cell">
                     <div class="status-label">
@@ -99,10 +102,23 @@
                 <div class="table-cell"></div>
             </div>
         </div>
-    </div>
+
+        <script type="text/html" id="empty-template"></script>
+
+        <script type="text/html" id="twitter-promo-template">
+            <div class="table-row promo-banner medium-row">
+                <div id="twitter-promo-graphic"></div>
+                <div data-bind="click: dismissTwitterPromo" class="banner-close"></div>
+                <p class="banner-text">Rawwrrrr! Spread the love on Twitter!</p>
+                <div id="twitter-tweet" data-bind="click: tweetNow">
+                    <p id="twitter-tweet-text">Tweet Now!</p></div>
+            </div>
+        </script>
+
     <script src="lib/punycode.js"></script>
     <script src="js/knockout.js"></script>
     <script src="js/vapi-common.js"></script>
+    <script src="js/vapi-background.js"></script>
     <script src="js/vapi-client.js"></script>
     <script src="js/udom.js"></script>
     <script src="js/i18n.js"></script>
