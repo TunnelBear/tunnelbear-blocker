@@ -862,6 +862,9 @@ var onMessage = function(request, sender, callback) {
         case 'toggleSendStats':
             µb.changeUserSettings("sendStatsEnabled", !µb.userSettings.sendStatsEnabled);
             break;
+        case 'toggleBlockerBadgeAnimation':
+            µb.changeUserSettings("blockerBadgeAnimationEnabled", !µb.userSettings.blockerBadgeAnimationEnabled);
+            break;
         default:
             return vAPI.messaging.UNHANDLED;
     }
