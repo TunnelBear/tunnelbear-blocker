@@ -16,7 +16,6 @@
     µb.userSettings.blockSocialEnabled = true;
     µb.userSettings.blockPrivacyEnabled = true;
     µb.userSettings.blockMalwareEnabled = true;
-    µb.userSettings.sendStatsEnabled = true;
     µb.userSettings.blockerBadgeAnimationEnabled = true;
 
     vAPI.storage.get('installDate', function (result) {

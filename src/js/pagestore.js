@@ -487,10 +487,7 @@ PageStore.prototype.createContextFromFrameHostname = function(frameHostname) {
 //     return µb.tabContextManager.mustLookup(this.tabId).getNetFilteringSwitch();
 // };
 PageStore.prototype.getNetFilteringSwitch = function () {
-    if (µb.userSettings.sendStatsEnabled){
-        this.sendStats();
-    }
-    return µb.userSettings.blockBearEnabled && this.netFilteringSwitchEnabled(); 
+    return µb.userSettings.blockBearEnabled && this.netFilteringSwitchEnabled();
 };
 
 PageStore.prototype.netFilteringSwitchEnabled = function () {
@@ -511,9 +508,6 @@ PageStore.prototype.netFilteringSwitchEnabled = function () {
     this.netFilteringReadTime = Date.now();
     return this.netFiltering;
 };
-
-PageStore.prototype.sendStats = function () {
-}
 
 /******************************************************************************/
 
