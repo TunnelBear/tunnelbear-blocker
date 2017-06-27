@@ -25,8 +25,8 @@
         this.pageBlockedPrivacyCount = ko.observable(popupData.pageBlockedPrivacyCount);
         this.pageBlockedMalwareCount = ko.observable(popupData.pageBlockedMalwareCount);
         this.pageBlockedCount = ko.computed(function () {
-            return this.pageBlockedRequestCount() 
-            + this.pageBlockedFlashCount() 
+            return this.pageBlockedRequestCount()
+            + this.pageBlockedFlashCount()
             + this.pageBlockedFingerprintingCount()
             + this.pageBlockedEmailCount()
             + this.pageBlockedKeyboardCount()
@@ -124,20 +124,49 @@
         this.socialEnabled = ko.observable(popupData.blockSocialEnabled);
         this.privacyEnabled = ko.observable(popupData.blockPrivacyEnabled);
         this.malwareEnabled = ko.observable(popupData.blockMalwareEnabled);
-        
-        this.twitterPromoEnabled = ko.observable(false); 
+
+        this.twitterPromoEnabled = ko.observable(false);
+        this.tb4cPromoEnabled = ko.observable(false);
+        this.reviewPromoEnabled = ko.observable(false);
+        this.reviewPromoStg2Enabled = ko.observable(false);
 
         var self = this;
         var dismissKey = 'dismissDate';
         var completeKey = 'completeDate';
 
-        this.shouldShowTwitterPromo = function (completeDate, dismissDate, installDate) {
-            var daysBeforeShowing = 20;
+        this.shouldShowTwitterPromo = function (completeDate, dismissDate, referenceDate) {
+            var daysBeforeShowingAfterLastPromo = 20;
+            var daysBeforeShowingIfDismissed = 200;
+            return self.shouldShowPromo(completeDate, dismissDate, referenceDate, daysBeforeShowingAfterLastPromo, daysBeforeShowingIfDismissed);
+        }
+
+        this.shouldShowTB4CPromo = function (completeDate, dismissDate, referenceDate) {
+            var daysBeforeShowingAfterLastPromo = 10;
+            var daysBeforeShowingIfDismissed = 190;
+            return self.shouldShowPromo(completeDate, dismissDate, referenceDate, daysBeforeShowingAfterLastPromo, daysBeforeShowingIfDismissed);
+        }
+
+        this.shouldShowReviewPromo = function (completeDate, dismissDate, referenceDate) {
+            var daysBeforeShowingAfterLastPromo = 5;
             var daysBeforeShowingIfDismissed = 180;
-            return self.shouldShowPromo(completeDate, dismissDate, installDate, daysBeforeShowing, daysBeforeShowingIfDismissed);
+            return self.shouldShowPromo(completeDate, dismissDate, referenceDate, daysBeforeShowingAfterLastPromo, daysBeforeShowingIfDismissed);
         }
 
         var promoList = [{
+            name: 'review',
+            shouldShow: this.shouldShowReviewPromo,
+            completeDate: undefined,
+            dismissDate: undefined,
+            priority: 2
+        },
+        {
+            name: 'tb4c',
+            shouldShow: this.shouldShowTB4CPromo,
+            completeDate: undefined,
+            dismissDate: undefined,
+            priority: 1
+        },
+        {
             name: 'twitter',
             shouldShow: this.shouldShowTwitterPromo,
             completeDate: undefined,
@@ -156,16 +185,16 @@
         }
 
         // Determines the highest priority promo to be shown
-        this.grabPromo = function (storagePromos, installDate) {
+        this.grabPromo = function (storagePromos, referenceDate) {
             for (var item in storagePromos) {
                 var promoObj = this.findPromoFromList(storagePromos[item].name);
                 if (promoObj != null) {
                     promoObj.completeDate = storagePromos[item].completeDate;
-                    promoObj.dismissDatse = storagePromos[item].dismissDate;
+                    promoObj.dismissDate = storagePromos[item].dismissDate;
                 }
             }
             var promosToShow = promoList.filter(function (promo) {
-                return promo.shouldShow(promo.completeDate, promo.dismissDate, installDate) === true;
+                return promo.shouldShow(promo.completeDate, promo.dismissDate, referenceDate) === true;
             });
             var sortedPromos = promosToShow.sort(function (current, previous) {
                 return current.priority < previous.priority;
@@ -175,26 +204,26 @@
             }
             return undefined;
         }
- 
+
         // Begins promo placement procedure
-        this.placePromo = function (storagePromos, installDate) {
+        this.placePromo = function (storagePromos, referenceDate) {
             var promo;
             if (storagePromos == null) {
-                promo = this.grabPromo([], installDate);
+                promo = this.grabPromo([], referenceDate);
             }
             else {
-                promo = this.grabPromo(storagePromos, installDate);
-            } 
+                promo = this.grabPromo(storagePromos, referenceDate);
+            }
             if (promo) {
                 this.activatePromo(promo.name);
             }
         }
 
         // Determines if a promo should be shown based on three states: initial / dismissed / completed
-        this.shouldShowPromo = function (complete, dismiss, installDate, daysBeforeShowing, daysBeforeShowingIfDismissed) {
+        this.shouldShowPromo = function (complete, dismiss, referenceDate, daysBeforeShowingAfterLastPromo, daysBeforeShowingIfDismissed) {
             if (!complete && !dismiss) {
-                var interval = daysBeforeShowing * 24 * 60 * 60 * 1000;
-                return this.hasIntervalPassed(installDate, interval);
+                var interval = daysBeforeShowingAfterLastPromo * 24 * 60 * 60 * 1000;
+                return this.hasIntervalPassed(referenceDate, interval);
             }
             else if (!complete && dismiss) {
                 var dismissInterval = daysBeforeShowingIfDismissed * 24 * 60 * 60 * 1000;
@@ -208,6 +237,12 @@
             if (name === 'twitter') {
                 this.twitterPromoEnabled(true);
             }
+            else if (name === 'tb4c') {
+                this.tb4cPromoEnabled(true);
+            }
+            else if (name === 'review') {
+                this.reviewPromoEnabled(true);
+            }
         }
 
         // Calculates if a Date object + time interval is in the past
@@ -220,13 +255,13 @@
             return false;
         }
 
-        var installDateKey = 'installDate';
-        vAPI.storage.get(installDateKey, function (result) {
-            if (installDateKey in result && result[installDateKey] !== null) {
-                var installDate = result[installDateKey];
+        var referenceDateKey = 'promoReferenceDate';
+        vAPI.storage.get(referenceDateKey, function (result) {
+            if (referenceDateKey in result && result[referenceDateKey] !== null) {
+                var referenceDate = result[referenceDateKey];
                 var promoKey = 'promos';
                 vAPI.storage.get(promoKey, function (promoResult) {
-                    self.placePromo(promoResult[promoKey], installDate);
+                    self.placePromo(promoResult[promoKey], referenceDate);
                 });
             }
         });
@@ -294,7 +329,7 @@
                     messager.send('popupPanel', { what: 'toggleBlockEmail' });
                     messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
                 }
-            }, 
+            },
             // {
             //     id: 'keyboard',
             //     title: vAPI.i18n("keyboard"),
@@ -308,7 +343,7 @@
             //         messager.send('popupPanel', { what: 'toggleBlockKeyboard' });
             //         messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
             //     }
-            // }, 
+            // },
             // {
             //     id: 'mouse',
             //     title: vAPI.i18n("mouse"),
@@ -322,7 +357,7 @@
             //         messager.send('popupPanel', { what: 'toggleBlockMouse' });
             //         messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
             //     }
-            // }, 
+            // },
             {
                 id: 'microphone',
                 title: vAPI.i18n("microphone"),
@@ -411,7 +446,7 @@
                 chrome.tabs.create({ url: url });
             });
         }
-        
+
         this.setDetailsVisibility = function (visible) {
             if (visible) {
                 document.getElementsByClassName('tracker-details')[0].style.display = "block";
@@ -423,7 +458,7 @@
             var self = this;
             setTimeout(function () {
                 self.isToggleShowDetails(visible);
-                
+
                 self.animateCount(0, self.pageBlockedFlashCount(), 1000, document.getElementById('flash'));
                 self.animateCount(0, self.pageBlockedFingerprintingCount(), 1000, document.getElementById('fingerprinting'));
                 self.animateCount(0, self.pageBlockedEmailCount(), 1000, document.getElementById('email'));
@@ -434,7 +469,7 @@
                 self.animateCount(0, self.pageBlockedSocialCount(), 1000, document.getElementById('social'));
                 self.animateCount(0, self.pageBlockedPrivacyCount(), 1000, document.getElementById('privacy'));
                 self.animateCount(0, self.pageBlockedMalwareCount(), 1000, document.getElementById('malware'));
-            }, 100);  
+            }, 100);
         }
 
         this.openSettings = function () {
@@ -446,32 +481,51 @@
             chrome.tabs.create({ url: item.url });
         }
 
-        this.writePromoToStorage = function (promoName, element, value) {
+        this.writeDateToStorage = function (promoName, element) {
             var promosKey = 'promos';
             var storageDataFound = false;
+            var d = new Date();
             vAPI.storage.get(promosKey, function (result) {
                 storageDataFound = promosKey in result ? true : false;
                 if (storageDataFound) {
                     var data = result.promos;
                     for (var promo in data) {
                         if (data[promo].name === promoName) {
-                            data[promo][element] = value;
+                            data[promo][element] = d.toString();
                             vAPI.storage.set({
                                 promos: data
                             });
+                            return;
                         }
                     }
+                    // Storage data exists, but not for this particular promo
+                    var record = {
+                        name: promoName
+                    };
+                    record[element] = d.toString();
+                    data.push(record);
+                    vAPI.storage.set({
+                        promos: data
+                    });
                 }
                 else {
                     var record = {
                         name: promoName
                     };
-                    record[element] = value;
+                    record[element] = d.toString();
                     var data = [record];
                     vAPI.storage.set({
                         promos: data
                     });
                 }
+            });
+            this.setReferenceDate();
+        }
+
+        this.setReferenceDate = function () {
+            var dateObj = new Date();
+            vAPI.storage.set({
+                promoReferenceDate: dateObj.toString()
             });
         }
 
@@ -479,15 +533,55 @@
             var twitterHeader = "https://twitter.com/intent/tweet?text=";
             var twitterText = "Check out TunnelBear Blocker!";
             var storeURL = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";
-            var twitterCompleteDate = new Date();
-            self.writePromoToStorage('twitter', completeKey, twitterCompleteDate.toString());
-            chrome.tabs.create( { url: twitterHeader + twitterText + ' ' + storeURL });
+            self.writeDateToStorage('twitter', completeKey);
+            chrome.tabs.create({ url: twitterHeader + twitterText + ' ' + storeURL });
         }
 
         this.dismissTwitterPromo = function () {
-            var twitterDismissDate = new Date();
-            self.writePromoToStorage('twitter', dismissKey, twitterDismissDate.toString());
+            self.writeDateToStorage('twitter', dismissKey);
             self.twitterPromoEnabled(false);
+        }
+
+        this.chromeStoreTB4C = function () {
+            var tb4cURL = "https://chrome.google.com/webstore/detail/tunnelbear-vpn/omdakjcmkglenbhjadbccaookpfjihpa";
+            self.writeDateToStorage('tb4c', completeKey);
+            chrome.tabs.create({ url: tb4cURL });
+        }
+
+        this.dismissTB4CPromo = function () {
+            self.writeDateToStorage('tb4c', dismissKey);
+            this.tb4cPromoEnabled(false);
+        }
+
+        this.reviewStg1Yes = function () {
+            // Advance to 2nd stage of review prompt
+            this.reviewPromoEnabled(false);
+            this.reviewPromoStg2Enabled(true);
+        }
+
+        this.reviewStg1No = function () {
+            // Review prompt complete: close prompt
+            this.reviewPromoEnabled(false);
+            self.writeDateToStorage('review', completeKey);
+        }
+
+        this.reviewStg2Yes = function () {
+            // Review prompt complete: redirect to Chrome Store
+            var reviewURL = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk/reviews";
+            self.writeDateToStorage('review', completeKey);
+            chrome.tabs.create({ url: reviewURL });
+        }
+
+        this.reviewStg2No = function () {
+            // Review prompt complete: close prompt
+            this.reviewPromoStg2Enabled(false);
+            self.writeDateToStorage('review', completeKey);
+        }
+
+        this.dismissReviewPromo = function () {
+            this.reviewPromoEnabled(false);
+            this.reviewPromoStg2Enabled(false);
+            self.writeDateToStorage('review', dismissKey);
         }
 
         this.watchContentChanged = function () {
@@ -495,15 +589,15 @@
             setTimeout(function () {
                 getPopupData(function (resp) {
                     var start = self.pageBlockedCount();
-                    
+
                     self.pageBlockedRequestCount(resp.pageBlockedRequestCount);
-                    
+
                     var startFlashCount = self.pageBlockedFlashCount();
                     if (startFlashCount != resp.pageBlockedFlashCount) {
                         self.pageBlockedFlashCount(resp.pageBlockedFlashCount);
                         self.animateCount(startFlashCount, resp.pageBlockedFlashCount, 1000, document.getElementById('flash'));
                     }
-                    
+
                     var startFingerprintingCount = self.pageBlockedFingerprintingCount();
                     if (startFingerprintingCount != resp.pageBlockedFingerprintingCount) {
                         self.pageBlockedFingerprintingCount(resp.pageBlockedFingerprintingCount);
@@ -533,33 +627,33 @@
                         self.pageBlockedMicrophoneCount(resp.pageBlockedMicrophoneCount);
                         self.animateCount(startMicrophoneCount, resp.pageBlockedMicrophoneCount, 1000, document.getElementById('microphone'));
                     }
-                    
+
                     var startAdsCount = self.pageBlockedAdsCount();
                     if (startAdsCount != resp.pageBlockedAdsCount) {
                         self.pageBlockedAdsCount(resp.pageBlockedAdsCount);
                         self.animateCount(startAdsCount, resp.pageBlockedAdsCount, 1000, document.getElementById('ads'));
                     }
-                    
+
                     var startSocialCount = self.pageBlockedSocialCount();
                     if (startSocialCount != resp.pageBlockedSocialCount) {
                         self.pageBlockedSocialCount(resp.pageBlockedSocialCount);
                         self.animateCount(startSocialCount, resp.pageBlockedSocialCount, 1000, document.getElementById('social'));
                     }
-                    
+
                     var startPrivacyCount = self.pageBlockedPrivacyCount();
                     if (startPrivacyCount != resp.pageBlockedPrivacyCount) {
                         self.pageBlockedPrivacyCount(resp.pageBlockedPrivacyCount);
                         self.animateCount(startPrivacyCount, resp.pageBlockedPrivacyCount, 1000, document.getElementById('privacy'));
                     }
-                    
+
                     var startMalwareCount = self.pageBlockedMalwareCount();
                     if (startMalwareCount != resp.pageBlockedMalwareCount) {
                         self.pageBlockedMalwareCount(resp.pageBlockedMalwareCount);
                         self.animateCount(startMalwareCount, resp.pageBlockedMalwareCount, 1000, document.getElementById('malware'));
                     }
-                    
+
                     var end = self.pageBlockedCount();
-                    
+
                     if (start != end) {
                         self.animateCount(start, end, 1000, document.getElementById('pageBlockedCount'));
                     }
@@ -567,7 +661,7 @@
                 self.watchContentChanged();
             }, 1500);
         }
-        
+
         this.animateCount = function (start, end, duration, obj) {
             var range = end - start;
             var minTimer = 50;
@@ -576,7 +670,7 @@
             var startTime = new Date().getTime();
             var endTime = startTime + duration;
             var timer;
-        
+
             function run() {
                 var now = new Date().getTime();
                 var remaining = Math.max((endTime - now) / duration, 0);
@@ -586,11 +680,11 @@
                     clearInterval(timer);
                 }
             }
-            
+
             timer = setInterval(run, stepTime);
             run();
         };
-        
+
         this.animateCount(0, this.pageBlockedCount(), 1000, document.getElementById('pageBlockedCount'));
         this.watchContentChanged();
         if (window.devicePixelRatio > 1) {
@@ -599,7 +693,7 @@
                 var src = images[index].src;
                 if(src && src.indexOf("2x.") == -1) {
                     images[index].src = src.replace(".png", "2x.png");
-                }   
+                }
             }
         }
         var self = this;
