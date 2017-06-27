@@ -180,9 +180,9 @@ var onBeforeRequest = function(details) {
 
 /******************************************************************************/
 var onBeforeSendHeaders = function (details) {
-    
+
     var µb = µBlock;
-    
+
     // Check if this request came from gmail
     var gmail = false;
     for (var i = 0; i < details.requestHeaders.length; i++) {
@@ -193,12 +193,12 @@ var onBeforeSendHeaders = function (details) {
             }
         }
     }
-    
+
     var safe = !µb.userSettings.blockEmailEnabled || !gmail || details.url.indexOf('blockbear=img-safe') > 0 ? true : false;
     if (!safe && details.type == 'image') {
         return { cancel: true };
     }
-    
+
     return { requestHeaders: details.requestHeaders };
 };
 
@@ -300,7 +300,14 @@ var onBeforeRootFrameRequest = function(details) {
         return;
     }
 
-    var compiled = result.slice(3);
+    // TB Blocker off: not blocked
+    if (!µb.userSettings.blockBearEnabled) {
+        return;
+    }
+
+    // Account for the appended group
+    var groupType = snfe.getGroupType(result);
+    var compiled = result.slice(3 + groupType.length);
 
     // Blocked
     var query = btoa(JSON.stringify({
