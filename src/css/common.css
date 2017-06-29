@@ -651,13 +651,13 @@ input.toggle.mini:checked + label:after{
   display: block;
   height: 84px;
   position: absolute;
-  right: 25px;
+  right: 20px;
   margin-top: 7px;
   width: 68px;
 }
 
 #tb4c-banner-text {
-  width: 136.9px;
+  width: 144.9px;
   height: 34px;
   font-family: OpenSans;
   font-size: 12px;
@@ -665,23 +665,23 @@ input.toggle.mini:checked + label:after{
   text-align: center;
   color: #afa194;
   margin-top: 8px;
-  margin-left: 12px;
+  margin-left: 6px;
   cursor: default;
   padding: 4px 8px 4px 8px;
 }
 
 #tb4c-store {
   cursor: pointer;
-  width: 115px;
+  width: 127px;
   height: 25px;
   border-radius: 2px;
   background-color: #55534e;
-  margin-left: 32px;
+  margin-left: 25px;
   margin-top: 4px;
 }
 
 #tb4c-text {
-  width: 97px;
+  width: 110px;
   height: 17px;
   font-family: OpenSans;
   font-size: 12px;
