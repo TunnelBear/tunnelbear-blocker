@@ -58,7 +58,7 @@ textarea {
 
 #settings-gear {
   margin-left: 208px;
-  margin-top: -18px; 
+  margin-top: -18px;
   cursor: pointer;
 }
 .img-top-settings {
@@ -222,7 +222,7 @@ a {
 }
 
 .container span.disabled {
- color: #bdbbb6; 
+ color: #bdbbb6;
 }
 
 .container .medium-row{
@@ -352,22 +352,22 @@ a {
 
 .arrow.open {
   background: url('../img/arrow_open2x.png');
-  background-size: 14px 8px;
+  background-size: 18px 17px;
   background-repeat: no-repeat;
-  height: 8px;
-  width: 15px;
+  height: 17px;
+  width: 19px;
   float: left;
-  margin: 4px 0 0 15px;
+  margin: 1px 0 0 15px;
 }
 
 .arrow.close {
   background: url('../img/arrow_close2x.png');
-  background-size: 14px 8px;
+  background-size: 18px 17px;
   background-repeat: no-repeat;
-  height: 8px;
-  width: 15px;
+  height: 17px;
+  width: 19px;
   float: left;
-  margin: 4px 0 0 15px;
+  margin: 1px 0 0 15px;
 }
 
 /* End of Status Icon */

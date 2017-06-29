@@ -1,5 +1,5 @@
 .body-mode-normal {
-  -webkit-transition: width 0.3s, height 0.3s; 
+  -webkit-transition: width 0.3s, height 0.3s;
   transition: width 0.3s, height 0.3s;
   -webkit-transform: translateX(0);
   transform: translateX(0);
@@ -13,17 +13,17 @@
 
 .report {
   background: url('../img/report_icon_normal2x.png');
-  background-size: 16px 16px;
+  background-size: 18px 18px;
   background-repeat: no-repeat;
-  height: 16px;
-  width: 16px;
+  height: 18px;
+  width: 18px;
   float: left;
-  margin-left: 9px;
+  margin-left: 5px;
 }
 
 .report:hover {
   background: url('../img/report_icon_hover2x.png');
-  background-size: 16px 16px;
+  background-size: 18px 18px;
   background-repeat: no-repeat;
 }
 
@@ -225,7 +225,7 @@
 /* End of Whitelist */
 
 /*.body-mode-settings {
-  -webkit-transition: width 0.3s, height 0.3s; 
+  -webkit-transition: width 0.3s, height 0.3s;
   transition: width 0.3s, height 0.3s;
   -webkit-transform: translateX(-258px);
   transform: translateX(-258px);
