@@ -174,7 +174,7 @@
                         };
                     });
                 }
-                if (webkitAudioContext) {
+                if (window.webkitAudioContext) {
                     setApi(window, "webkitAudioContext", function () { return window.blockMicrophone }, function () {
                         return function () {
                             window.top.postMessage({ message: 'microphone', source: 'blockbear' }, '*');
