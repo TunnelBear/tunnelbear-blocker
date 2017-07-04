@@ -161,7 +161,7 @@
                 var promoObj = this.findPromoFromList(storagePromos[item].name);
                 if (promoObj != null) {
                     promoObj.completeDate = storagePromos[item].completeDate;
-                    promoObj.dismissDatse = storagePromos[item].dismissDate;
+                    promoObj.dismissDate = storagePromos[item].dismissDate;
                 }
             }
             var promosToShow = promoList.filter(function (promo) {
