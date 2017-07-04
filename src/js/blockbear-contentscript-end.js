@@ -136,7 +136,7 @@
             messager.send('blockbear-contentscript-end.js', {
                 what: 'blockFlash'
             }, function (response) {
-                if (response.result) {
+                if (response && response.result) {
                     blockFlash();
                 } else {
                     unblockFlash();
@@ -150,7 +150,7 @@
             applyFlashbear();
         }
     })();
-    
+
     messager.send('blockbear-contentscript-end.js', {
         what: 'blockEmailEnabled'
     }, function (response) {
