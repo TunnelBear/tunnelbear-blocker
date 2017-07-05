@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "TunnelBear Blocker",
-    "version": "0.9.4",
+    "version": "0.9.5",
 
     "default_locale": "en",
     "description": "__MSG_extShortDesc__",
@@ -15,7 +15,7 @@
     "browser_action": {
         "default_icon": {
             "16": "img/browsericons/icon_off.png",
-            "32": "img/browsericons/icon_off@2x.png"  
+            "32": "img/browsericons/icon_off@2x.png"
         },
         "default_title": "TunnelBear Blocker",
         "default_popup": "popup.html"
