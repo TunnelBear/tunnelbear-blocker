@@ -18,15 +18,16 @@
     µb.userSettings.blockMalwareEnabled = true;
     µb.userSettings.sendStatsEnabled = true;
 
-    vAPI.storage.get('installDate', function (result) {
+    vAPI.storage.get(['installDate', 'promoReferenceDate'], function (result) {
         var setInstallDate = function setInstallDate() {
             var installDateObj = new Date();
             vAPI.storage.set({
-                installDate: installDateObj.toString()
+                installDate: installDateObj.toString(),
+                promoReferenceDate: installDateObj.toString()
             });
         };
 
-        if (!result || !result.installDate) {
+        if (!result || !result.installDate || !result.promoReferenceDate) {
             setInstallDate();
         }
     });
