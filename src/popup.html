@@ -34,8 +34,11 @@
                     </div>
                 </div>
             </div>
-            <!--ko if: isLoaded() -->        
-                <div data-bind="template: {name: (twitterPromoEnabled() ? 'twitter-promo-template' : 'empty-template')}"></div>
+            <!--ko if: isLoaded() -->
+                <div data-bind="template: {name: (reviewPromoEnabled() ? 'review-stg1-template' :
+                 (reviewPromoStg2Enabled() ? 'review-stg2-template' :
+                 (tb4cPromoEnabled() ? 'tb4c-promo-template' :
+                 (twitterPromoEnabled() ? 'twitter-promo-template' : 'empty-template'))))}"></div>
             <!-- /ko -->
             <div class="table-row medium-row section-border whitelist">
                 <div class="table-cell status-cell">
@@ -112,6 +115,40 @@
                 <p class="banner-text">Rawwrrrr! Spread the love on Twitter!</p>
                 <div id="twitter-tweet" data-bind="click: tweetNow">
                     <p id="twitter-tweet-text">Tweet Now!</p></div>
+            </div>
+        </script>
+
+        <script type="text/html" id="tb4c-promo-template">
+            <div class="table-row promo-banner medium-row">
+                <div id="tb4c-promo-graphic"></div>
+                <div data-bind="click: dismissTB4CPromo" class="banner-close"></div>
+                <p id="tb4c-banner-text">Want to keep your browsing private from your ISP?</p>
+                <div id="tb4c-store" data-bind="click: chromeStoreTB4C">
+                    <p id="tb4c-text">Get TunnelBear VPN</p></div>
+            </div>
+        </script>
+
+        <script type="text/html" id="review-stg1-template">
+            <div class="table-row promo-banner medium-row">
+                <div id="review-promo-graphic"></div>
+                <div data-bind="click: dismissReviewPromo" class="banner-close"></div>
+                <p id="review-banner-text">Rawwrrrr! Is Blocker doing a good job keeping you private?</p>
+                <div class="review" data-bind="click: reviewStg1Yes">
+                    <p class="review-text">Yes</p></div>
+                <div class="review" data-bind="click: reviewStg1No">
+                    <p class="review-text">No</p></div>
+            </div>
+        </script>
+
+        <script type="text/html" id="review-stg2-template">
+            <div class="table-row promo-banner medium-row">
+                <div id="review-promo-graphic"></div>
+                <div data-bind="click: dismissReviewPromo" class="banner-close"></div>
+                <p id="review-banner-text">How about a quick rating on the Chrome Store?</p>
+                <div class="review" data-bind="click: reviewStg2Yes">
+                    <p class="review-text">Yes</p></div>
+                <div class="review" data-bind="click: reviewStg2No">
+                    <p class="review-text">No</p></div>
             </div>
         </script>
 
