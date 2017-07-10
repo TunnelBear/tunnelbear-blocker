@@ -293,7 +293,6 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         blockBearEnabled: µb.userSettings.blockBearEnabled,
         blockAdsEnabled: µb.userSettings.blockAdsEnabled,
         flashbearEnabled: µb.userSettings.flashbearEnabled,
-        sendStatsEnabled: µb.userSettings.sendStatsEnabled,
         blockBrowserFingerprintingEnabled: µb.userSettings.blockBrowserFingerprintingEnabled,
         blockMicrophoneEnabled: µb.userSettings.blockMicrophoneEnabled,
         blockKeyboardEnabled: µb.userSettings.blockKeyboardEnabled,
@@ -859,8 +858,8 @@ var onMessage = function(request, sender, callback) {
             µb.changeUserSettings("blockMalwareEnabled", !µb.userSettings.blockMalwareEnabled);
             µb.setFilters(callback);
             break;
-        case 'toggleSendStats':
-            µb.changeUserSettings("sendStatsEnabled", !µb.userSettings.sendStatsEnabled);
+        case 'toggleBlockerBadgeAnimation':
+            µb.changeUserSettings("blockerBadgeAnimationEnabled", !µb.userSettings.blockerBadgeAnimationEnabled);
             break;
         default:
             return vAPI.messaging.UNHANDLED;

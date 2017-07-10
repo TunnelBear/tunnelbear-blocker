@@ -8,7 +8,7 @@
         };
         messager.send('settings', { what: 'getSettingsData', tabId: null }, onDataReceived);
     };
-    
+
     function SettingsViewModel(settingsData) {
         this.reload = false;
         this.isLoaded = ko.observable(true);
@@ -25,6 +25,7 @@
         this.settingsSocialEnabled = ko.observable(settingsData.blockSocialEnabled);
         this.settingsPrivacyEnabled = ko.observable(settingsData.blockPrivacyEnabled);
         this.settingsMalwareEnabled = ko.observable(settingsData.blockMalwareEnabled);
+        this.settingsBlockerBadgeAnimationEnabled = ko.observable(settingsData.blockerBadgeAnimationEnabled);
 
         this.settingsBlockAdsText = ko.computed(function () {
             return this.settingsBlockAdsEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
@@ -52,6 +53,9 @@
         }, this);
         this.settingsBlockBlockAdBlockText = ko.computed(function () {
             return this.settingsBlockBlockAdBlockEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
+        }, this);
+        this.settingsBlockerBadgeAnimationText = ko.computed(function () {
+            return this.settingsBlockerBadgeAnimationEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
         }, this);
         this.settingsSocialText = ko.computed(function () {
             return this.settingsSocialEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
@@ -112,6 +116,11 @@
             messager.send('settings', { what: 'toggleBlockBlockAdBlock' });
             this.reload = true;
         };
+        this.toggleBlockerBadgeAnimation = function() {
+            this.settingsBlockerBadgeAnimationEnabled(!this.settingsBlockerBadgeAnimationEnabled());
+            messager.send('settings', { what: 'toggleBlockerBadgeAnimation' });
+            this.reload = true;
+        };
         this.toggleSocial = function () {
             var self = this;
             this.settingsSocialEnabled(!this.settingsSocialEnabled());
@@ -140,7 +149,7 @@
             }, 500);
         };
     }
-    
+
     uDom.onLoad(function () {
         getSettingsData(function (response) {
             ko.applyBindings(new SettingsViewModel(response));
