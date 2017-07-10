@@ -681,6 +681,7 @@ vAPI.setIcon = function (tabId, iconStatus, badge) {
         });
     }
     var state = iconStateForTabId[tabId];
+    var µb = µBlock;
     if (typeof state === "undefined") {
         state = iconStateForTabId[tabId] = new IconState(badge, iconStatus);
     }
@@ -693,10 +694,12 @@ vAPI.setIcon = function (tabId, iconStatus, badge) {
     if ((state.dirty & 1) || (state.dirty & 2)) { // got a new icon?
         if (badge && state.oldBadge < badge) {
             console.log('SET BADGE: ' + badge);
-            if (iconAnimated) {
-                iconAnimations.push({ tabId: tabId, badge: badge });
-            } else {
-                playIconAnimation(tabId, 0, badge);
+            if (µb.userSettings.blockerBadgeAnimationEnabled) {
+                if (iconAnimated) {
+                    iconAnimations.push({ tabId: tabId, badge: badge });
+                } else {
+                    playIconAnimation(tabId, 0, badge);
+                }
             }
         } else {
             chrome.browserAction.setIcon({ tabId: tabId, path: ICON_PATHS[iconStatus] });
@@ -797,7 +800,7 @@ vAPI.messaging.onPortMessage = (function() {
             wrapper = callbackWrapperFactory(portFrom, details, 1023);
         }
 
-        // Destination not found: 
+        // Destination not found:
         if ( portTo === undefined ) {
             if ( wrapper !== undefined ) {
                 wrapper.callback();
