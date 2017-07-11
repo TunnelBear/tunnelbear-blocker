@@ -531,10 +531,10 @@
 
         this.tweetNow = function () {
             var twitterHeader = "https://twitter.com/intent/tweet?text=";
-            var twitterText = "Check out TunnelBear Blocker!";
-            var storeURL = "https://chrome.google.com/webstore/detail/tunnelbear-blocker/bebdhgdigjiiamnkcenegafmfjoghafk";
+            var twitterText = "Check out TunnelBear Blocker. A simple Chrome extension to browse a little more privately online @theTunnelBear";
+            var url = "https://www.tunnelbear.com/apps/blocker";
             self.writeDateToStorage('twitter', completeKey);
-            chrome.tabs.create({ url: twitterHeader + twitterText + ' ' + storeURL });
+            chrome.tabs.create({ url: twitterHeader + twitterText + ' ' + url });
         }
 
         this.dismissTwitterPromo = function () {
