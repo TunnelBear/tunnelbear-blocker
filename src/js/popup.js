@@ -532,9 +532,9 @@
         this.tweetNow = function () {
             var twitterHeader = "https://twitter.com/intent/tweet?text=";
             var twitterText = "Check out TunnelBear Blocker. A simple Chrome extension to browse a little more privately online @theTunnelBear";
-            var url = "https://www.tunnelbear.com/apps/blocker";
+            var blockerURL = "https://www.tunnelbear.com/apps/blocker";
             self.writeDateToStorage('twitter', completeKey);
-            chrome.tabs.create({ url: twitterHeader + twitterText + ' ' + url });
+            chrome.tabs.create({ url: twitterHeader + twitterText + ' ' + blockerURL });
         }
 
         this.dismissTwitterPromo = function () {
