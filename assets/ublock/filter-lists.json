@@ -164,7 +164,6 @@
 		"supportURL": "http://www.certyficate.it/adblock-ublock-polish-filters/"
 	},
 	"https://easylist-downloads.adblockplus.org/antiadblockfilters.txt": {
-		"off": true,
 		"title": "Adblock Warning Removal List",
 		"group": "ads",
 		"supportURL": "https://forums.lanik.us/"
@@ -250,7 +249,6 @@
 		"supportURL": "https://github.com/easylist/EasyListHebrew"
 	},
 	"https://raw.githubusercontent.com/reek/anti-adblock-killer/master/anti-adblock-killer-filters.txt": {
-		"off": true,
 		"title": "Anti-Adblock Killer | Reek",
 		"group": "ads",
 		"supportURL": "https://github.com/reek/anti-adblock-killer",
@@ -371,5 +369,10 @@
 		"group": "regions",
 		"lang": "sl",
 		"supportURL": "https://github.com/betterwebleon/slovenian-list"
+	},
+	"https://raw.githubusercontent.com/jspenguin2017/uBlockProtector/master/uBlockProtectorList.txt": {
+		"title": "uBlock Protector List",
+		"group": "ads",
+		"supportURL": "https://github.com/jspenguin2017/uBlockProtector"
 	}
 }
