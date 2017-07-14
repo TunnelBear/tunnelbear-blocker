@@ -44,7 +44,7 @@ TunnelBear Blocker is an ongoing project, and we are definitely looking to suppo
 
 TunnelBear Blocker is based off of [uBlock Origin](https://github.com/gorhill/uBlock), and we would like to thank its developers for all the tremendous hard work they have put in to make such a fantastic blocker.
 
-Additionally, we would like to thank the maintainers of the various list filters for their tremendous work and contribution to the community, along with the developers behind [F\*\*\*F\*\*\*AdBlock](https://github.com/Mechazawa/FuckFuckAdblock) and [PixelBlock](https://github.com/ramoq/PixelBlock), whose works are used as part of TunnelBear Blocker.
+Additionally, we would like to thank the maintainers of the various list filters for their tremendous work and contribution to the community, along with the developers behind [PixelBlock](https://github.com/ramoq/PixelBlock), whose works are used as part of TunnelBear Blocker.
 
 The goal of TunnelBear Blocker is **NOT** to supersede uBlock Origin, but to offer a simpler, user-friendly alternative for a broader audience.
 
