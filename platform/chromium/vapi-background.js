@@ -632,7 +632,7 @@ var iconAnimated = false;
 
 vAPI.setIcon = function (tabId, iconStatus, badge) {
     var µb = µBlock;
-    if (!µb.userSettings.blockerBadgeAnimationEnabled) {
+    if (µb.userSettings.blockerBadgeAnimationEnabled === false) {
         chrome.browserAction.setIcon({ path: ICON_PATHS['on'] });
         return;
     }
