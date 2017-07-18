@@ -1112,7 +1112,7 @@
             what: 'assetUpdated',
             key: details.assetKey,
             cached: cached
-            
+
         });
         // https://github.com/gorhill/uBlock/issues/2585
         // Whenever an asset is overwritten, the current selfie is quite
@@ -1171,24 +1171,26 @@
             details[name].off = false;
         }
 
-        if (details[name].off == false) {
-            switch (details[name].group) {
-                case 'privacy':
-                    details[name].off = !µBlock.userSettings.blockPrivacyEnabled;
-                    break;
-                case 'social':
-                    details[name].off = !µBlock.userSettings.blockSocialEnabled;
-                    break;
-                case 'malware':
-                    details[name].off = !µBlock.userSettings.blockMalwareEnabled;
-                    break;
-                case 'ads':
-                    details[name].off = !µBlock.userSettings.blockAdsEnabled;
-                    break;
-                default:
-                    details[name].off = true;
-                    break;
-            }
+        switch (details[name].group) {
+            case 'privacy':
+                details[name].off = !µBlock.userSettings.blockPrivacyEnabled;
+                break;
+            case 'social':
+                details[name].off = !µBlock.userSettings.blockSocialEnabled;
+                break;
+            case 'malware':
+                details[name].off = !µBlock.userSettings.blockMalwareEnabled;
+                break;
+            case 'ads':
+                details[name].off = !µBlock.userSettings.blockAdsEnabled;
+                break;
+            case 'default':
+                // uBlock Origin filter lists
+                details[name].off = !µBlock.userSettings.blockAdsEnabled;
+                break;
+            default:
+                details[name].off = true;
+                break;
         }
     }
     var listKeys = µBlock.newListKeysFromOldData(details);

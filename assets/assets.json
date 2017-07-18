@@ -25,7 +25,7 @@
 	},
 	"ublock-filters": {
 		"content": "filters",
-		"group": "ads",
+		"group": "default",
 		"title": "uBlock filters",
 		"contentURL": [
 			"https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters.txt",
@@ -58,7 +58,7 @@
 	},
 	"ublock-privacy": {
 		"content": "filters",
-		"group": "privacy",
+		"group": "default",
 		"title": "uBlock filters – Privacy",
 		"contentURL": [
 			"https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/privacy.txt",
