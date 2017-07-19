@@ -585,14 +585,14 @@ input.toggle.mini:checked + label:after{
 
 #twitter-promo-graphic {
   background: url(../img/graphic_twitter.png);
-  background-size: 75px 75px;
+  background-size: 81px 75px;
   content: "";
   display: block;
   height: 75px;
   position: absolute;
-  right: 28px;
+  right: 25px;
   margin-top: 9px;
-  width: 75px;
+  width: 81px;
 }
 
 #twitter-tweet-text {
@@ -641,6 +641,105 @@ input.toggle.mini:checked + label:after{
 }
 
 /* End Twitter */
+
+/* TB4C */
+
+#tb4c-promo-graphic {
+  background: url(../img/graphic_tb4c.png);
+  background-size: 68px 84px;
+  content: "";
+  display: block;
+  height: 84px;
+  position: absolute;
+  right: 20px;
+  margin-top: 7px;
+  width: 68px;
+}
+
+#tb4c-banner-text {
+  width: 144.9px;
+  height: 34px;
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #afa194;
+  margin-top: 8px;
+  margin-left: 6px;
+  cursor: default;
+  padding: 4px 8px 4px 8px;
+}
+
+#tb4c-store {
+  cursor: pointer;
+  width: 127px;
+  height: 25px;
+  border-radius: 2px;
+  background-color: #55534e;
+  margin-left: 25px;
+  margin-top: 4px;
+}
+
+#tb4c-text {
+  width: 110px;
+  height: 17px;
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #faf9f7;
+  padding: 4px 8px 4px 8px;
+}
+
+/* End TB4C */
+
+/* Chrome Store review */
+
+#review-banner-text {
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #afa194;
+  margin-top: 14px;
+  margin-left: 12px;
+  cursor: default;
+}
+
+#review-promo-graphic {
+  background: url(../img/graphic_blocky.png);
+  background-size: 68px 85px;
+  content: "";
+  display: block;
+  width: 68px;
+  height: 85px;
+  position: absolute;
+  right: 11px;
+  margin-top: 7px;
+}
+
+.review {
+  cursor: pointer;
+  width: 49px;
+  height: 25px;
+  border-radius: 2px;
+  background-color: #55534e;
+  margin-left: 32px;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.review-text {
+  height: 17px;
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #faf9f7;
+  padding-top: 3px;
+}
+
+/* End Chrome Store review */
 
 /* Tooltip */
 

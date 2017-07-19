@@ -631,6 +631,11 @@ var iconAnimations = [];
 var iconAnimated = false;
 
 vAPI.setIcon = function (tabId, iconStatus, badge) {
+    var µb = µBlock;
+    if (µb.userSettings.blockerBadgeAnimationEnabled === false) {
+        chrome.browserAction.setIcon({ path: ICON_PATHS['on'] });
+        return;
+    }
     tabId = toChromiumTabId(tabId);
     if (tabId === 0) {
         return;
@@ -797,7 +802,7 @@ vAPI.messaging.onPortMessage = (function() {
             wrapper = callbackWrapperFactory(portFrom, details, 1023);
         }
 
-        // Destination not found: 
+        // Destination not found:
         if ( portTo === undefined ) {
             if ( wrapper !== undefined ) {
                 wrapper.callback();

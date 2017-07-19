@@ -79,6 +79,23 @@
                 <div class="table-row medium-row section-border">
                     <div class="table-cell status-cell">
                         <div class="status-label">
+                            <span data-i18n="settingsBlockEmail"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockEmail">
+                            <input class="toggle" type="checkbox" name="toggleBlockEmail" id="toggleBlockEmail" data-bind="checked: settingsBlockEmailEnabled"
+                            enabled="false">
+                            <label for="toggleBrowserFingerprinting"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockEmailEnabled(), 'toggle-box-unchecked': !settingsBlockEmailEnabled()}, click: toggleBlockEmail">
+                            <span class="toggle-text" data-bind="text: settingsBlockEmailText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
                             <span data-i18n="settingsBlockMicrophone"></span>
                         </div>
                     </div>
@@ -130,17 +147,16 @@
                 <div class="table-row medium-row section-border">
                     <div class="table-cell status-cell">
                         <div class="status-label">
-                            <span data-i18n="settingsBlockEmail"></span>
+                            <span data-i18n="settingsBlockSocial"></span>
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleBlockEmail">
-                            <input class="toggle" type="checkbox" name="toggleBlockEmail" id="toggleBlockEmail" data-bind="checked: settingsBlockEmailEnabled"
-                            enabled="false">
-                            <label for="toggleBrowserFingerprinting"></label>
+                        <div data-bind="click: toggleSocial">
+                            <input class="toggle" type="checkbox" name="toggleSocial" id="toggleSocial" data-bind="checked: settingsSocialEnabled" enabled="false">
+                            <label for="toggleSocial"></label>
                         </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsBlockEmailEnabled(), 'toggle-box-unchecked': !settingsBlockEmailEnabled()}, click: toggleBlockEmail">
-                            <span class="toggle-text" data-bind="text: settingsBlockEmailText"></span>
+                        <div data-bind="css: { 'toggle-box-checked': settingsSocialEnabled(), 'toggle-box-unchecked': !settingsSocialEnabled()}, click: toggleSocial">
+                            <span class="toggle-text" data-bind="text: settingsSocialText"></span>
                         </div>
                     </div>
                 </div>
@@ -181,16 +197,17 @@
                 <div class="table-row medium-row section-border section-tail">
                     <div class="table-cell status-cell">
                         <div class="status-label">
-                            <span data-i18n="settingsBlockSocial"></span>
+                            <span data-i18n="settingsBlockerBadgeAnimation"></span>
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleSocial">
-                            <input class="toggle" type="checkbox" name="toggleSocial" id="toggleSocial" data-bind="checked: settingsSocialEnabled" enabled="false">
-                            <label for="toggleSocial"></label>
+                        <div data-bind="click: toggleBlockerBadgeAnimation">
+                            <input class="toggle" type="checkbox" name="toggleBlockerBadgeAnimation" id="toggleBlockerBadgeAnimation" data-bind="checked: settingsBlockerBadgeAnimationEnabled"
+                            enabled="false">
+                            <label for="toggleBlockerBadgeAnimation"></label>
                         </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsSocialEnabled(), 'toggle-box-unchecked': !settingsSocialEnabled()}, click: toggleSocial">
-                            <span class="toggle-text" data-bind="text: settingsSocialText"></span>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockerBadgeAnimationEnabled(), 'toggle-box-unchecked': !settingsBlockerBadgeAnimationEnabled()}, click: toggleBlockerBadgeAnimation">
+                            <span class="toggle-text" data-bind="text: settingsBlockerBadgeAnimationText"></span>
                         </div>
                     </div>
                 </div>

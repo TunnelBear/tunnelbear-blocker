@@ -20,7 +20,7 @@
 		"description": ""
 	},
 	"settingsBlockAds": {
-		"message": "Block Ads",
+		"message": "Block ads",
 		"description": ""
 	},
 	"settingsBlockFlash": {
@@ -31,8 +31,16 @@
 		"message": "Block browser fingerprinting",
 		"description": ""
 	},
+	"settingsBlockEmail": {
+		"message": "Block pixel tracking (Gmail)",
+		"description": ""
+	},
     "settingsBlockMicrophone": {
 		"message": "Block microphone",
+		"description": ""
+	},
+	"settingsBlockSocial": {
+		"message": "Block social buttons",
 		"description": ""
 	},
 	"settingsBlockKeyboard": {
@@ -43,10 +51,6 @@
 		"message": "Block mouse tracking",
 		"description": ""
 	},
-    "settingsBlockEmail": {
-		"message": "Block pixel tracking (gmail)",
-		"description": ""
-	},
     "settingsBlockwebRTC": {
 		"message": "Prevent leak webRTC",
 		"description": ""
@@ -55,16 +59,16 @@
 		"message": "F***F***Adblock",
 		"description": ""
 	},
-	"settingsBlockSocial": {
-		"message": "Block Social Buttons",
+	"settingsBlockerBadgeAnimation": {
+		"message": "Animated extension badge",
 		"description": ""
 	},
 	"settingsAdditionalList": {
-		"message": "Additional Block lists",
+		"message": "Additional Block Lists",
 		"description": ""
 	},
 	"settingsBlockPrivacy": {
-		"message": "Privacy protection (Recommended)",
+		"message": "Privacy protection (recommended)",
 		"description": ""
 	},
 	"settingsBlockMalware": {
