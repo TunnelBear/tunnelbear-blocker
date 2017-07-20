@@ -1184,10 +1184,6 @@
             case 'ads':
                 details[name].off = !µBlock.userSettings.blockAdsEnabled;
                 break;
-            case 'default':
-                // uBlock Origin filter lists
-                details[name].off = !µBlock.userSettings.blockAdsEnabled;
-                break;
             default:
                 details[name].off = true;
                 break;
