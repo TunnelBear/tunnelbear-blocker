@@ -166,7 +166,6 @@ var proceedPermanent = function() {
 
 var pos = details.url.indexOf('?');
 uDom.nodeFromSelector('#theURL > p').textContent = details.url.slice(0, pos);
-uDom.nodeFromId('why').textContent = details.fs;
 
 /******************************************************************************/
 
@@ -251,24 +250,6 @@ uDom.nodeFromId('why').textContent = details.fs;
     if ( renderParams(uDom.nodeFromId('parsed'), details.url) === false ) {
         return;
     }
-
-    var toggler = document.createElement('span');
-    toggler.className = 'fa';
-    uDom('#theURL > p').append(toggler);
-
-    uDom(toggler).on('click', function() {
-        var cl = uDom.nodeFromId('theURL').classList;
-        cl.toggle('collapsed');
-        vAPI.localStorage.setItem(
-            'document-blocked-expand-url',
-            (cl.contains('collapsed') === false).toString()
-        );
-    });
-
-    uDom.nodeFromId('theURL').classList.toggle(
-        'collapsed',
-        vAPI.localStorage.getItem('document-blocked-expand-url') !== 'true'
-    );
 })();
 
 /******************************************************************************/

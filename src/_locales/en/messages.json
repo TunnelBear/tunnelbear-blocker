@@ -72,8 +72,8 @@
 		"description": ""
 	},
 	"docblockedPrompt1": {
-		"message": "TunnelBear Blocker has prevented the following page from loading:",
-		"description": "English: TunnelBear Blocker has prevented the following page from loading:"
+		"message": "Blocker has prevented the following page from loading:",
+		"description": "English: Blocker has prevented the following page from loading:"
 	},
 	"docblockedPrompt2": {
 		"message": "Because of the following filter",
@@ -92,8 +92,12 @@
 		"description": "English: Go back"
 	},
 	"docblockedClose": {
-		"message": "Close this window",
-		"description": "English: Close this window"
+		"message": "Close",
+		"description": "English: Close"
+	},
+	"docblockedTitle": {
+		"message": "Page Blocked",
+		"description": "English: Page Blocked"
 	},
 	"whitelist": {
 		"message": "whitelist",
