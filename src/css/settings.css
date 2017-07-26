@@ -8,7 +8,7 @@ body#global-settings {
 #settings-top-banner {
   height: 70px;
   background-color: #EBEAE8;
-  background-image: url('../img/logo2x.png');
+  background-image: url('../img/logo_page.png');
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -32,6 +32,15 @@ body#global-settings {
   font-size: 32px;
   letter-spacing: -0.5;
   -webkit-font-smoothing: antialiased;
+}
+
+#settings-title p {
+  cursor: default;
+  font-family: OpenSans;
+  font-weight: normal;
+  color: #55534e;
+  letter-spacing: -0.6px;
+  font-size: 15px;
 }
 
 .section-header {
