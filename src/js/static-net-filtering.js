@@ -2060,7 +2060,7 @@ FilterContainer.prototype.fromCompiledContent = function(lineIter, group) {
         }
         entry = bucket.get(token);
         if (entry) {
-            if (!entry.group 
+            if (!entry.group
                 || entry.group == 'malware'
                 || entry.group == 'privacy') {
                 entry.group = group;
@@ -2619,6 +2619,20 @@ FilterContainer.prototype.toResultString = function(verbose) {
         s += this.fRegister.rtfid + '\v' + this.fRegister.rtCompile();
     }
     return s;
+};
+
+FilterContainer.prototype.getGroupType = function(result) {
+    if (this.fRegister !== null) {
+        return this.fRegister.group;
+    }
+    var groups = ['social', 'privacy', 'ads', 'malware'];
+    for (var i = 0; i < groups.length; i++) {
+        var group = groups[i];
+        if (result.indexOf(group) === 3) {
+            return group;
+        }
+    }
+    return "";
 };
 
 /******************************************************************************/
