@@ -34,6 +34,14 @@ body#global-settings {
   -webkit-font-smoothing: antialiased;
 }
 
+#settings-title p {
+  margin: 10px 0;
+}
+
+#settings-title a {
+  color: #dcb150;
+}
+
 .section-header {
   border-top: none;
 }
