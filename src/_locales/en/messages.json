@@ -55,10 +55,6 @@
 		"message": "Prevent leak webRTC",
 		"description": ""
 	},
-    "settingsBlockBlockAdBlock": {
-		"message": "F***F***Adblock",
-		"description": ""
-	},
 	"settingsBlockerBadgeAnimation": {
 		"message": "Animated extension badge",
 		"description": ""

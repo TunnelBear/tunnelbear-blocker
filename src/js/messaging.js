@@ -299,7 +299,6 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         blockMouseEnabled: µb.userSettings.blockMouseEnabled,
         blockEmailEnabled: µb.userSettings.blockEmailEnabled,
         blockWebRTCEnabled: µb.userSettings.blockWebRTCEnabled,
-        blockBlockAdBlockEnabled: µb.userSettings.blockBlockAdBlockEnabled,
         blockSocialEnabled: µb.userSettings.blockSocialEnabled,
         blockPrivacyEnabled: µb.userSettings.blockPrivacyEnabled,
         blockMalwareEnabled: µb.userSettings.blockMalwareEnabled,
@@ -842,9 +841,6 @@ var onMessage = function(request, sender, callback) {
         case 'toggleBlockWebRTC':
             µb.changeUserSettings("blockWebRTCEnabled", !µb.userSettings.blockWebRTCEnabled);
             µb.setBlockWebRTC(µb.userSettings.blockWebRTCEnabled);
-            break;
-        case 'toggleBlockBlockAdBlock':
-            µb.changeUserSettings("blockBlockAdBlockEnabled", !µb.userSettings.blockBlockAdBlockEnabled);
             break;
         case 'toggleSocial':
             µb.changeUserSettings("blockSocialEnabled", !µb.userSettings.blockSocialEnabled);

@@ -1,12 +1,4 @@
 {
-	"assets.json": {
-		"content": "internal",
-		"updateAfter": 13,
-		"contentURL": [
-			"https://raw.githubusercontent.com/gorhill/uBlock/master/assets/assets.json",
-			"assets/assets.json"
-		]
-	},
 	"public_suffix_list.dat": {
 		"content": "internal",
 		"updateAfter": 19,
@@ -25,7 +17,7 @@
 	},
 	"ublock-filters": {
 		"content": "filters",
-		"group": "ads",
+		"group": "default",
 		"title": "uBlock filters",
 		"contentURL": [
 			"https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters.txt",
@@ -58,7 +50,7 @@
 	},
 	"ublock-privacy": {
 		"content": "filters",
-		"group": "privacy",
+		"group": "default",
 		"title": "uBlock filters – Privacy",
 		"contentURL": [
 			"https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/privacy.txt",
@@ -74,19 +66,34 @@
 			"assets/ublock/unbreak.txt"
 		]
 	},
+	"blocker-filters": {
+		"content": "filters",
+		"group": "ads",
+		"title": "TunnelBear Blocker filters",
+		"contentURL": [
+			"https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters.txt"
+		],
+		"supportURL": "https://github.com/uBlockOrigin/uAssets/issues"
+	},
+	"blocker-privacy": {
+		"content": "filters",
+		"group": "privacy",
+		"title": "TunnelBear Blocker filters – Privacy",
+		"contentURL": [
+			"https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/privacy.txt"
+		]
+	},
 	"abprotector-0": {
 		"content": "filters",
 		"group": "ads",
-		"off": true,
-		"title": "Adblock Protector List",
-		"contentURL": "https://raw.githubusercontent.com/jspenguin2017/AdBlockProtector/master/AdBlockProtectorList.txt",
-		"supportURL": "https://github.com/jspenguin2017/AdBlockProtector",
-		"instructionURL": "https://jspenguin2017.github.io/AdBlockProtector/"
+		"title": "uBlock Protector List",
+		"contentURL": "https://raw.githubusercontent.com/jspenguin2017/uBlockProtector/master/uBlockProtectorList.txt",
+		"supportURL": "https://github.com/jspenguin2017/uBlockProtector",
+		"instructionURL": "https://jspenguin2017.github.io/uBlockProtector/"
 	},
 	"awrl-0": {
 		"content": "filters",
 		"group": "ads",
-		"off": true,
 		"title": "Adblock Warning Removal List",
 		"contentURL": "https://easylist-downloads.adblockplus.org/antiadblockfilters.txt",
 		"supportURL": "https://forums.lanik.us/"
@@ -94,7 +101,6 @@
 	"reek-0": {
 		"content": "filters",
 		"group": "ads",
-		"off": true,
 		"title": "Anti-Adblock Killer | Reek",
 		"contentURL": "https://raw.githubusercontent.com/reek/anti-adblock-killer/master/anti-adblock-killer-filters.txt",
 		"supportURL": "https://github.com/reek/anti-adblock-killer",
@@ -172,7 +178,6 @@
 		"contentURL": [
 			"https://mirror.cedia.org.ec/malwaredomains/justdomains",
 			"https://mirror1.malwaredomains.com/files/justdomains",
-			"assets/thirdparties/mirror1.malwaredomains.com/files/justdomains.txt",
 			"assets/thirdparties/mirror1.malwaredomains.com/files/justdomains"
 		],
 		"supportURL": "https://www.malwaredomains.com/"

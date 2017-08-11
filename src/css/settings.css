@@ -35,12 +35,17 @@ body#global-settings {
 }
 
 #settings-title p {
+  margin: 10px 0;
   cursor: default;
   font-family: OpenSans;
   font-weight: normal;
   color: #55534e;
   letter-spacing: -0.6px;
   font-size: 15px;
+}
+
+#settings-title a {
+  color: #dcb150;
 }
 
 .section-header {
