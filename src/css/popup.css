@@ -29,6 +29,8 @@
 
 .container .caption {
   background: #faf9f7;
+  padding-top: 14px;
+  box-sizing: border-box;
 }
 
 .container .blocker-toggle {

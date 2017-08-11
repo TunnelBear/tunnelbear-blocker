@@ -306,7 +306,6 @@ a {
 
 /* Popup Header */
 .container .img-top-logo {
-  padding-top: 12px;
   width: 84px;
 }
 /* End of Popup Header */
@@ -585,14 +584,14 @@ input.toggle.mini:checked + label:after{
 
 #twitter-promo-graphic {
   background: url(../img/graphic_twitter.png);
-  background-size: 75px 75px;
+  background-size: 81px 75px;
   content: "";
   display: block;
   height: 75px;
   position: absolute;
-  right: 28px;
+  right: 25px;
   margin-top: 9px;
-  width: 75px;
+  width: 81px;
 }
 
 #twitter-tweet-text {
