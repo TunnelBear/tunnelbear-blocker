@@ -11,6 +11,7 @@ body#global-settings {
   background-image: url('../img/logo_page.png');
   background-repeat: no-repeat;
   background-position: center;
+  background-size: 207px 56px;
 }
 
 #settings-div {
