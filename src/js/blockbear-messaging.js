@@ -50,7 +50,7 @@
     };
 
     vAPI.messaging.listen('blockbear-contentscript-end.js', onMessage);
-    
+
 })();
 
 (function () {
@@ -81,7 +81,6 @@
                     blockMicrophone: pageStore && pageStore.netFilteringSwitchEnabled() && µb.userSettings.blockBearEnabled && µb.userSettings.blockMicrophoneEnabled,
                     blockKeyboard: pageStore && pageStore.netFilteringSwitchEnabled() && µb.userSettings.blockBearEnabled && µb.userSettings.blockKeyboardEnabled,
                     blockMouse: pageStore && pageStore.netFilteringSwitchEnabled() && µb.userSettings.blockBearEnabled && µb.userSettings.blockMouseEnabled,
-                    blockBlockAdBlock: pageStore && pageStore.netFilteringSwitchEnabled() && µb.userSettings.blockBearEnabled && µb.userSettings.blockBlockAdBlockEnabled,
                 };
                 if (!response.blockFingerprinting && pageStore.perLoadBlockedFingerprintingCount > 0) {
                     pageStore.perLoadBlockedFingerprintingCount = 0;
@@ -151,5 +150,5 @@
     };
 
     vAPI.messaging.listen('blockbear-contentscript-start.js', onMessage);
-    
+
 })();

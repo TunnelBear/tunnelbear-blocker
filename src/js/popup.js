@@ -119,7 +119,6 @@
         this.blockKeyboardEnabled = ko.observable(popupData.blockKeyboardEnabled);
         this.blockMouseEnabled = ko.observable(popupData.blockMouseEnabled);
         this.blockEmailEnabled = ko.observable(popupData.blockEmailEnabled);
-        this.blockBlockAdBlockEnabled = ko.observable(popupData.blockBlockAdBlockEnabled);
         this.blockBlockWebRTCEnabled = ko.observable(popupData.blockBlockWebRTCEnabled);
         this.socialEnabled = ko.observable(popupData.blockSocialEnabled);
         this.privacyEnabled = ko.observable(popupData.blockPrivacyEnabled);

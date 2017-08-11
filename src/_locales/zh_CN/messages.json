@@ -51,10 +51,6 @@
 		"message": "防止 webRTC 漏泄",
 		"description": ""
 	},
-    "settingsBlockBlockAdBlock": {
-		"message": "阻挡 F***Adblock",
-		"description": ""
-	},
 	"settingsBlockSocial": {
 		"message": "阻挡社交网站按钮",
 		"description": ""
