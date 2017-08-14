@@ -51,10 +51,6 @@
 		"message": "Empêcher les fuites WebRTC",
 		"description": ""
 	},
-    "settingsBlockBlockAdBlock": {
-		"message": "F***F***Adblock",
-		"description": ""
-	},
 	"settingsBlockSocial": {
 		"message": "Bloquer les boutons sociaux",
 		"description": ""

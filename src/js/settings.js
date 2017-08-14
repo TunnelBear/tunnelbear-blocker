@@ -21,7 +21,6 @@
         this.settingsBlockMouseEnabled = ko.observable(settingsData.blockMouseEnabled);
         this.settingsBlockEmailEnabled = ko.observable(settingsData.blockEmailEnabled);
         this.settingsBlockWebRTCEnabled = ko.observable(settingsData.blockWebRTCEnabled);
-        this.settingsBlockBlockAdBlockEnabled = ko.observable(settingsData.blockBlockAdBlockEnabled);
         this.settingsSocialEnabled = ko.observable(settingsData.blockSocialEnabled);
         this.settingsPrivacyEnabled = ko.observable(settingsData.blockPrivacyEnabled);
         this.settingsMalwareEnabled = ko.observable(settingsData.blockMalwareEnabled);
@@ -50,9 +49,6 @@
         }, this);
         this.settingsBlockWebRTCText = ko.computed(function () {
             return this.settingsBlockWebRTCEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
-        }, this);
-        this.settingsBlockBlockAdBlockText = ko.computed(function () {
-            return this.settingsBlockBlockAdBlockEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
         }, this);
         this.settingsBlockerBadgeAnimationText = ko.computed(function () {
             return this.settingsBlockerBadgeAnimationEnabled() ? chrome.i18n.getMessage("on") : chrome.i18n.getMessage("off");
@@ -109,11 +105,6 @@
         this.toggleBlockWebRTC = function () {
             this.settingsBlockWebRTCEnabled(!this.settingsBlockWebRTCEnabled());
             messager.send('settings', { what: 'toggleBlockWebRTC' });
-            this.reload = true;
-        };
-        this.toggleBlockBlockAdBlock = function () {
-            this.settingsBlockBlockAdBlockEnabled(!this.settingsBlockBlockAdBlockEnabled());
-            messager.send('settings', { what: 'toggleBlockBlockAdBlock' });
             this.reload = true;
         };
         this.toggleBlockerBadgeAnimation = function() {

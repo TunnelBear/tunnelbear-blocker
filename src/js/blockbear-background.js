@@ -12,7 +12,6 @@
     µb.userSettings.blockMouseEnabled = true;
     µb.userSettings.blockEmailEnabled = true;
     µb.userSettings.blockWebRTCEnabled = true;
-    µb.userSettings.blockBlockAdBlockEnabled = false;
     µb.userSettings.blockSocialEnabled = true;
     µb.userSettings.blockPrivacyEnabled = true;
     µb.userSettings.blockMalwareEnabled = true;

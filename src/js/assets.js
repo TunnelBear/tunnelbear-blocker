@@ -145,7 +145,7 @@ api.fetchText = function(url, onLoad, onError) {
         if ( ev.loaded === contentLoaded ) { return; }
         contentLoaded = ev.loaded;
         if ( timeoutTimer !== undefined ) {
-            clearTimeout(timeoutTimer); 
+            clearTimeout(timeoutTimer);
         }
         timeoutTimer = vAPI.setTimeout(onTimeout, timeoutAfter);
     };
@@ -253,7 +253,8 @@ api.listKeyAliases = {
     "https://adguard.com/filter-rules.html?id=13": "TUR-0",
     "https://www.fanboy.co.nz/fanboy-vietnam.txt": "VIE-0",
     "https://www.void.gr/kargig/void-gr-filters.txt": "GRC-0",
-    "https://raw.githubusercontent.com/betterwebleon/slovenian-list/master/filters.txt": "SVN-0"
+    "https://raw.githubusercontent.com/betterwebleon/slovenian-list/master/filters.txt": "SVN-0",
+    "https://raw.githubusercontent.com/jspenguin2017/uBlockProtector/master/uBlockProtectorList.txt": "abprotector-0"
 };
 
 var migrate = function(callback) {
