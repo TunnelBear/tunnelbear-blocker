@@ -2,7 +2,7 @@
   "name": "com.tunnelbear.blocker",
   "description": "TunnelBear Blocker",
   "author": "TunnelBear",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "license": "GPL-3.0",
   "devDependencies": {
     "bower": ">=1.8.0"
