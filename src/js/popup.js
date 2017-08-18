@@ -679,9 +679,7 @@
 
         var self = this;
         this.animateCount = function (start, end, duration, obj) {
-            self.animateCountTracker[obj.id] = ( self.animateCountTracker[obj.id] + 1 ) % 500;
-            var currCountNum = self.animateCountTracker[obj.id];
-
+            var currCountNum = self.animateCountTracker[obj.id] = ( self.animateCountTracker[obj.id] + 1 ) % 500;
             var range = end - start;
             var minTimer = 50;
             var stepTime = Math.abs(Math.floor(duration / range));
