@@ -458,16 +458,18 @@
             setTimeout(function () {
                 self.isToggleShowDetails(visible);
 
-                self.animateCount(0, self.pageBlockedFlashCount(), 1000, document.getElementById('flash'));
-                self.animateCount(0, self.pageBlockedFingerprintingCount(), 1000, document.getElementById('fingerprinting'));
-                self.animateCount(0, self.pageBlockedEmailCount(), 1000, document.getElementById('email'));
-                // self.animateCount(0, self.pageBlockedKeyboardCount(), 1000, document.getElementById('keyboard'));
-                // self.animateCount(0, self.pageBlockedMouseCount(), 1000, document.getElementById('mouse'));
-                self.animateCount(0, self.pageBlockedMicrophoneCount(), 1000, document.getElementById('microphone'));
-                self.animateCount(0, self.pageBlockedAdsCount(), 1000, document.getElementById('ads'));
-                self.animateCount(0, self.pageBlockedSocialCount(), 1000, document.getElementById('social'));
-                self.animateCount(0, self.pageBlockedPrivacyCount(), 1000, document.getElementById('privacy'));
-                self.animateCount(0, self.pageBlockedMalwareCount(), 1000, document.getElementById('malware'));
+                if (visible) {
+                    self.animateCount(0, self.pageBlockedFlashCount(), 1000, document.getElementById('flash'));
+                    self.animateCount(0, self.pageBlockedFingerprintingCount(), 1000, document.getElementById('fingerprinting'));
+                    self.animateCount(0, self.pageBlockedEmailCount(), 1000, document.getElementById('email'));
+                    // self.animateCount(0, self.pageBlockedKeyboardCount(), 1000, document.getElementById('keyboard'));
+                    // self.animateCount(0, self.pageBlockedMouseCount(), 1000, document.getElementById('mouse'));
+                    self.animateCount(0, self.pageBlockedMicrophoneCount(), 1000, document.getElementById('microphone'));
+                    self.animateCount(0, self.pageBlockedAdsCount(), 1000, document.getElementById('ads'));
+                    self.animateCount(0, self.pageBlockedSocialCount(), 1000, document.getElementById('social'));
+                    self.animateCount(0, self.pageBlockedPrivacyCount(), 1000, document.getElementById('privacy'));
+                    self.animateCount(0, self.pageBlockedMalwareCount(), 1000, document.getElementById('malware'));
+                }
             }, 100);
         }
 
@@ -661,7 +663,25 @@
             }, 1500);
         }
 
+        this.animateCountTracker = {
+            flash: 0,
+            fingerprinting: 0,
+            email: 0,
+            keyboard: 0,
+            mouse: 0,
+            microphone: 0,
+            ads: 0,
+            social: 0,
+            privacy: 0,
+            malware: 0,
+            pageBlockedCount: 0
+        };
+
+        var self = this;
         this.animateCount = function (start, end, duration, obj) {
+            self.animateCountTracker[obj.id] = ( self.animateCountTracker[obj.id] + 1 ) % 500;
+            var currCountNum = self.animateCountTracker[obj.id];
+
             var range = end - start;
             var minTimer = 50;
             var stepTime = Math.abs(Math.floor(duration / range));
@@ -671,6 +691,10 @@
             var timer;
 
             function run() {
+                if (self.animateCountTracker[obj.id] != currCountNum) {
+                    clearInterval(timer);
+                    return;
+                }
                 var now = new Date().getTime();
                 var remaining = Math.max((endTime - now) / duration, 0);
                 var value = Math.round(end - (remaining * range));
