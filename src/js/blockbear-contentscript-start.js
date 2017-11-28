@@ -1,5 +1,5 @@
 (function () {
-    if (!vAPI) {
+    if (typeof vAPI === 'undefined' || !vAPI) {
         return;
     }
 
