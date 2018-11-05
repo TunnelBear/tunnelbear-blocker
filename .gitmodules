@@ -1,0 +1,6 @@
+[submodule "uBlock"]
+	path = uBlock
+	url = https://github.com/gorhill/uBlock.git
+[submodule "uAssets"]
+	path = uAssets
+	url = https://github.com/uBlockOrigin/uAssets.git
