@@ -39,8 +39,8 @@ bb.loadSettingsFromStorage = function (callback) {
   vAPI.storage.get(settingsKey, function (result) {
     if (settingsKey in result) {
       let settings = result[settingsKey]
-      for ( let key in Object.keys(settings) ) {
-        if (bb.settings.hasOwnProperty(key)) {
+      for (let key in settings) {
+        if (settings.hasOwnProperty(key) && bb.settings.hasOwnProperty(key)) {
           bb.settings[key] = settings[key]
         }
       }
@@ -49,8 +49,8 @@ bb.loadSettingsFromStorage = function (callback) {
   })
 }
 
-bb.saveSettingsToStorage = function (settings) {
-  vAPI.storage.set({ blockbearSettings: settings })
+bb.saveSettingsToStorage = function () {
+  vAPI.storage.set({ blockbearSettings: bb.settings });
 }
 
 /******************************************************************************/
