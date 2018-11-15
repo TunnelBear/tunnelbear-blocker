@@ -1,0 +1,42 @@
+.tb-container {
+  display: block;
+}
+
+.tb-block{
+  border: none;
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+  cursor: pointer;
+  display: block;
+  min-width: 48px;
+  min-height: 48px;
+  overflow: hidden;
+  padding: 0px;
+  position: relative;
+  visibility: visible;
+}
+
+.tb-block:hover::after {
+  display: block;
+}
+
+.tb-block::after {
+    color: white!important;
+    background-color: #4a4a4a!important;
+    border-radius: 10px!important;
+    content: "unblock flash"!important;
+    top: 50%!important;
+    position: absolute!important;
+    text-align: center!important;
+    left: 50%!important;
+    right: 0!important;
+    margin: 40px -50px!important;
+    width: 100px!important;
+    font-size: 12px!important;
+    line-height: 18px!important;
+    font-family: Helvetica,Arial,sans-serif!important;
+    display: none;
+}

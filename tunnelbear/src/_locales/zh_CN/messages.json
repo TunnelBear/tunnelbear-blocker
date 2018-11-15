@@ -1,0 +1,114 @@
+{
+	"extShortDesc": {
+		"message": "简单又英俊。TunnelBear Blocker 咬住跟踪您的网站不放，帮助保护您的网络安全与隐私。",
+		"description": ""
+	},
+	"back": {
+		"message": "后退",
+		"description": ""
+	},
+	"on": {
+		"message": "开",
+		"description": ""
+	},
+	"off": {
+		"message": "关",
+		"description": ""
+	},
+	"settingsTitle": {
+		"message": "TunnelBear Blocker 设置",
+		"description": ""
+	},
+	"settingsBlockAds": {
+		"message": "阻挡广告",
+		"description": ""
+	},
+	"settingsBlockFlash": {
+		"message": "Flash 需要通过我的允许",
+		"description": ""
+	},
+	"settingsBlockBrowserFingerprinting": {
+		"message": "阻挡浏览器跟踪指纹",
+		"description": ""
+	},
+    "settingsBlockMicrophone": {
+		"message": "阻挡麦克风",
+		"description": ""
+	},
+	"settingsBlockKeyboard": {
+		"message": "阻挡键盘跟踪",
+		"description": ""
+	},
+	"settingsBlockMouse": {
+		"message": "阻挡鼠标跟踪",
+		"description": ""
+	},
+    "settingsBlockEmail": {
+		"message": "阻挡像素跟踪 (gmail)",
+		"description": ""
+	},
+    "settingsBlockwebRTC": {
+		"message": "防止 webRTC 漏泄",
+		"description": ""
+	},
+	"settingsBlockSocial": {
+		"message": "阻挡社交网站按钮",
+		"description": ""
+	},
+	"settingsAdditionalList": {
+		"message": "额外的阻挡列表",
+		"description": ""
+	},
+	"settingsBlockPrivacy": {
+		"message": "隐私保护（推荐开启）",
+		"description": ""
+	},
+	"settingsBlockMalware": {
+		"message": "恶意软件保护",
+		"description": ""
+	},
+	"whitelist": {
+		"message": "白名单",
+		"description": ""
+	},
+	"blacklist": {
+		"message": "黑名单",
+		"description": ""
+	},
+	"popupBlocked": {
+		"message": "项已被阻挡"
+	},
+	"ads": {
+		"message": "广告"
+	},
+	"flash": {
+		"message": "Flash"
+	},
+	"fingerprinting": {
+		"message": "指纹跟踪"
+	},
+	"keyboard": {
+		"message": "键盘"
+	},
+	"mouse": {
+		"message": "鼠标"
+	},
+	"microphone": {
+		"message": "超声波（麦克风）"
+	},
+	"social": {
+		"message": "社交按钮"
+	},
+	"privacy": {
+		"message": "脚本与跟踪软件"
+	},
+	"malware": {
+		"message": "恶意软件"
+	},
+	"email": {
+		"message": "电子邮件"
+	},
+	"tooltipReport": {
+		"message": "提交报告"
+	}
+}

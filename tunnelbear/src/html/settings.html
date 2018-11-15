@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=470">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <link rel="stylesheet" href="css/settings.css" type="text/css">
+    <title>TunnelBear Blocker</title>
+</head>
+
+<body id="global-settings">
+    <div id="app" class="container" data-bind="css: {'loaded' : isLoaded}">
+        <header id="settings-top-banner"></header>
+        <div id="settings-div" class="table">
+            <div id="settings-title">
+              <h1>Blocker Global Settings</h1>
+              <p>Settings below apply to all websites. If you want to change settings for just one website, then just do that from within the extension.</p>
+              <p>To enhance your privacy, install <a href="https://jspenguin2017.github.io/uBlockProtector/">uBlock Protector</a> and help protect Blocker from anti-adblock scripts.</p>
+            </div>
+            <div class="table">
+                <div class="table-row medium-row section-border section-header">
+                    <div class="table-cell status-cell">
+                        <div class="settings-category-label">
+                            <span data-i18n="settingsTitle"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell"></div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockAds"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockAds">
+                            <input class="toggle" type="checkbox" name="toggleBlockAds" id="toggleBlockAds" data-bind="checked: settingsBlockAdsEnabled"
+                            enabled="false">
+                            <label for="toggleBlockAds"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockAdsEnabled(), 'toggle-box-unchecked': !settingsBlockAdsEnabled()}, click: toggleBlockAds">
+                            <span class="toggle-text" data-bind="text: settingsBlockAdsText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockFlash"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleFlash">
+                            <input class="toggle" type="checkbox" name="toggleFlash" id="toggleFlash" data-bind="checked: settingsFlashEnabled" enabled="false">
+                            <label for="toggleFlash"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsFlashEnabled(), 'toggle-box-unchecked': !settingsFlashEnabled()}, click: toggleFlash">
+                            <span class="toggle-text" data-bind="text: settingsFlashText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockBrowserFingerprinting"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBrowserFingerprinting">
+                            <input class="toggle" type="checkbox" name="toggleBrowserFingerprinting" id="toggleBrowserFingerprinting" data-bind="checked: settingsBrowserFingerprintingEnabled"
+                            enabled="false">
+                            <label for="toggleBrowserFingerprinting"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBrowserFingerprintingEnabled(), 'toggle-box-unchecked': !settingsBrowserFingerprintingEnabled()}, click: toggleBrowserFingerprinting">
+                            <span class="toggle-text" data-bind="text: settingsBrowserFingerprintingText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockEmail"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockEmail">
+                            <input class="toggle" type="checkbox" name="toggleBlockEmail" id="toggleBlockEmail" data-bind="checked: settingsBlockEmailEnabled"
+                            enabled="false">
+                            <label for="toggleBrowserFingerprinting"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockEmailEnabled(), 'toggle-box-unchecked': !settingsBlockEmailEnabled()}, click: toggleBlockEmail">
+                            <span class="toggle-text" data-bind="text: settingsBlockEmailText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockMicrophone"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockMicrophone">
+                            <input class="toggle" type="checkbox" name="toggleBlockMicrophone" id="toggleBlockMicrophone" data-bind="checked: settingsBlockMicrophoneEnabled"
+                            enabled="false">
+                            <label for="toggleBrowserFingerprinting"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockMicrophoneEnabled(), 'toggle-box-unchecked': !settingsBlockMicrophoneEnabled()}, click: toggleBlockMicrophone">
+                            <span class="toggle-text" data-bind="text: settingsBlockMicrophoneText"></span>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockKeyboard"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockKeyboard">
+                            <input class="toggle" type="checkbox" name="toggleBlockKeyboard" id="toggleBlockKeyboard" data-bind="checked: settingsBlockKeyboardEnabled"
+                            enabled="false">
+                            <label for="toggleBlockKeyboard"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockKeyboardEnabled(), 'toggle-box-unchecked': !settingsBlockKeyboardEnabled()}, click: toggleBlockKeyboard">
+                            <span class="toggle-text" data-bind="text: settingsBlockKeyboardText"></span>
+                        </div>
+                    </div>
+                </div>-->
+                <!--<div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockMouse"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockMouse">
+                            <input class="toggle" type="checkbox" name="toggleBlockMouse" id="toggleBlockMouse" data-bind="checked: settingsBlockMouseEnabled"
+                            enabled="false">
+                            <label for="toggleBlockMouse"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockMouseEnabled(), 'toggle-box-unchecked': !settingsBlockMouseEnabled()}, click: toggleBlockMouse">
+                            <span class="toggle-text" data-bind="text: settingsBlockMouseText"></span>
+                        </div>
+                    </div>
+                </div>-->
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockSocial"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleSocial">
+                            <input class="toggle" type="checkbox" name="toggleSocial" id="toggleSocial" data-bind="checked: settingsSocialEnabled" enabled="false">
+                            <label for="toggleSocial"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsSocialEnabled(), 'toggle-box-unchecked': !settingsSocialEnabled()}, click: toggleSocial">
+                            <span class="toggle-text" data-bind="text: settingsSocialText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockWebRTC"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockWebRTC">
+                            <input class="toggle" type="checkbox" name="toggleBlockWebRTC" id="toggleBlockWebRTC" data-bind="checked: settingsBlockWebRTCEnabled"
+                            enabled="false">
+                            <label for="toggleBrowserFingerprinting"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockWebRTCEnabled(), 'toggle-box-unchecked': !settingsBlockWebRTCEnabled()}, click: toggleBlockWebRTC">
+                            <span class="toggle-text" data-bind="text: settingsBlockWebRTCText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border section-tail">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockerBadgeAnimation"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockerBadgeAnimation">
+                            <input class="toggle" type="checkbox" name="toggleBlockerBadgeAnimation" id="toggleBlockerBadgeAnimation" data-bind="checked: settingsBlockerBadgeAnimationEnabled"
+                            enabled="false">
+                            <label for="toggleBlockerBadgeAnimation"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockerBadgeAnimationEnabled(), 'toggle-box-unchecked': !settingsBlockerBadgeAnimationEnabled()}, click: toggleBlockerBadgeAnimation">
+                            <span class="toggle-text" data-bind="text: settingsBlockerBadgeAnimationText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border section-header">
+                    <div class="table-cell status-cell">
+                        <div class="settings-category-label">
+                            <span data-i18n="settingsAdditionalList"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell"></div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockPrivacy"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: togglePrivacy">
+                            <input class="toggle" type="checkbox" name="togglePrivacy" id="togglePrivacy" data-bind="checked: settingsPrivacyEnabled" enabled="false">
+                            <label for="togglePrivacy"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsPrivacyEnabled(), 'toggle-box-unchecked': !settingsPrivacyEnabled()}, click: togglePrivacy">
+                            <span class="toggle-text" data-bind="text: settingsPrivacyText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border section-tail">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockMalware"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleMalware">
+                            <input class="toggle" type="checkbox" name="toggleMalware" id="toggleMalware" data-bind="checked: settingsMalwareEnabled" enabled="false">
+                            <label for="toggleMalware"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsMalwareEnabled(), 'toggle-box-unchecked': !settingsMalwareEnabled()}, click: toggleMalware">
+                            <span class="toggle-text" data-bind="text: settingsMalwareText"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="lib/punycode.js"></script>
+    <script src="js/tko.js"></script>
+    <script src="js/vapi.js"></script>
+    <script src="js/vapi-common.js"></script>
+    <script src="js/vapi-client.js"></script>
+    <script src="js/udom.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/blockbear-utils.js"></script>
+    <script src="js/blockbear-settings.js"></script>
+</body>
+
+</html>

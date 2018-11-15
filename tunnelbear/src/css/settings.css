@@ -1,0 +1,118 @@
+/* Settings */
+
+body#global-settings {
+  overflow: visible;
+  overflow-x: visible;
+}
+
+#settings-top-banner {
+  height: 70px;
+  background-color: #EBEAE8;
+  background-image: url('../img/logo_page.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 207px 56px;
+}
+
+#settings-div {
+  max-width: 580px;
+  margin-top: 60px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 200px;
+}
+
+#settings-title {
+  text-align: center;
+}
+
+#settings-title h1 {
+  font-family: Rokkitt, Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 32px;
+  letter-spacing: -0.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#settings-title p {
+  margin: 10px 0;
+  cursor: default;
+  font-family: OpenSans;
+  font-weight: normal;
+  color: #55534e;
+  letter-spacing: -0.6px;
+  font-size: 15px;
+}
+
+#settings-title a {
+  color: #dcb150;
+}
+
+.section-header {
+  border-top: none;
+}
+
+.section-tail {
+  border-bottom: 1px solid #E5E2DC;
+}
+
+.section-header > .table-cell {
+  padding-top: 50px;
+  padding-bottom: 10px;
+}
+
+#settings-back-btn {
+  cursor: pointer;
+  color: #E58D2F;
+  left: 12px;
+  position: absolute;
+  top: 12px;
+}
+
+#shortcuts-back-btn{
+  cursor: pointer;
+  color: #E58D2F;
+  left: 12px;
+  position: absolute;
+  top: 12px;
+}
+
+.menu li {
+  border-top: 1px solid #EEE3CE;
+  position: relative;
+  cursor: pointer;
+}
+
+.menu li.has_submenu:after {
+  background: url(../img/nav_arrow.png) no-repeat;
+  background-size: 9px 14px;
+  content: "";
+  display: inline-block;
+  height: 14px;
+  position: absolute;
+  right: 12px;
+  top: 13px;
+  width: 9px;
+}
+
+.menu a {
+  color: #55534e;
+  display: block;
+  padding: 12px;
+}
+
+.menu strong {
+  display: inline-block;
+  padding: 12px 0 12px 12px;
+}
+
+.container .status-cell {
+  width: auto;
+}
+
+.container .status-label {
+  width: auto;
+  margin-left: 0;
+}
+/* End of Settings */

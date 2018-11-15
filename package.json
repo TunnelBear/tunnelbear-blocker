@@ -1,0 +1,11 @@
+{
+  "name": "com.tunnelbear.blocker",
+  "description": "TunnelBear Blocker",
+  "author": "TunnelBear",
+  "version": "0.9.8",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "tko": "^4.0.0-alpha5h"
+  },
+  "private": true
+}
