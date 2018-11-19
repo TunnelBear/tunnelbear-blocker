@@ -34,13 +34,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleBlockAds">
-                            <input class="toggle" type="checkbox" name="toggleBlockAds" id="toggleBlockAds" data-bind="checked: settingsBlockAdsEnabled"
-                            enabled="false">
-                            <label for="toggleBlockAds"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsBlockAdsEnabled(), 'toggle-box-unchecked': !settingsBlockAdsEnabled()}, click: toggleBlockAds">
-                            <span class="toggle-text" data-bind="text: settingsBlockAdsText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockAdsEnabled() }, click: toggleBlockAds">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockAdsText"></div>
                         </div>
                     </div>
                 </div>
@@ -51,12 +47,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleFlash">
-                            <input class="toggle" type="checkbox" name="toggleFlash" id="toggleFlash" data-bind="checked: settingsFlashEnabled" enabled="false">
-                            <label for="toggleFlash"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsFlashEnabled(), 'toggle-box-unchecked': !settingsFlashEnabled()}, click: toggleFlash">
-                            <span class="toggle-text" data-bind="text: settingsFlashText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsFlashEnabled() }, click: toggleFlash">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsFlashText"></div>
                         </div>
                     </div>
                 </div>
@@ -67,13 +60,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleBrowserFingerprinting">
-                            <input class="toggle" type="checkbox" name="toggleBrowserFingerprinting" id="toggleBrowserFingerprinting" data-bind="checked: settingsBrowserFingerprintingEnabled"
-                            enabled="false">
-                            <label for="toggleBrowserFingerprinting"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsBrowserFingerprintingEnabled(), 'toggle-box-unchecked': !settingsBrowserFingerprintingEnabled()}, click: toggleBrowserFingerprinting">
-                            <span class="toggle-text" data-bind="text: settingsBrowserFingerprintingText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBrowserFingerprintingEnabled() }, click: toggleBrowserFingerprinting">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBrowserFingerprintingText"></div>
                         </div>
                     </div>
                 </div>
@@ -84,13 +73,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleBlockEmail">
-                            <input class="toggle" type="checkbox" name="toggleBlockEmail" id="toggleBlockEmail" data-bind="checked: settingsBlockEmailEnabled"
-                            enabled="false">
-                            <label for="toggleBrowserFingerprinting"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsBlockEmailEnabled(), 'toggle-box-unchecked': !settingsBlockEmailEnabled()}, click: toggleBlockEmail">
-                            <span class="toggle-text" data-bind="text: settingsBlockEmailText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockEmailEnabled() }, click: toggleBlockEmail">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockEmailText"></div>
                         </div>
                     </div>
                 </div>
@@ -101,13 +86,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleBlockMicrophone">
-                            <input class="toggle" type="checkbox" name="toggleBlockMicrophone" id="toggleBlockMicrophone" data-bind="checked: settingsBlockMicrophoneEnabled"
-                            enabled="false">
-                            <label for="toggleBrowserFingerprinting"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsBlockMicrophoneEnabled(), 'toggle-box-unchecked': !settingsBlockMicrophoneEnabled()}, click: toggleBlockMicrophone">
-                            <span class="toggle-text" data-bind="text: settingsBlockMicrophoneText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockMicrophoneEnabled() }, click: toggleBlockMicrophone">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockMicrophoneText"></div>
                         </div>
                     </div>
                 </div>
@@ -152,12 +133,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleSocial">
-                            <input class="toggle" type="checkbox" name="toggleSocial" id="toggleSocial" data-bind="checked: settingsSocialEnabled" enabled="false">
-                            <label for="toggleSocial"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsSocialEnabled(), 'toggle-box-unchecked': !settingsSocialEnabled()}, click: toggleSocial">
-                            <span class="toggle-text" data-bind="text: settingsSocialText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsSocialEnabled() }, click: toggleSocial">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsSocialText"></div>
                         </div>
                     </div>
                 </div>
@@ -168,13 +146,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleBlockWebRTC">
-                            <input class="toggle" type="checkbox" name="toggleBlockWebRTC" id="toggleBlockWebRTC" data-bind="checked: settingsBlockWebRTCEnabled"
-                            enabled="false">
-                            <label for="toggleBrowserFingerprinting"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsBlockWebRTCEnabled(), 'toggle-box-unchecked': !settingsBlockWebRTCEnabled()}, click: toggleBlockWebRTC">
-                            <span class="toggle-text" data-bind="text: settingsBlockWebRTCText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockWebRTCEnabled() }, click: toggleBlockWebRTC">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockWebRTCText"></div>
                         </div>
                     </div>
                 </div>
@@ -185,13 +159,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleBlockerBadgeAnimation">
-                            <input class="toggle" type="checkbox" name="toggleBlockerBadgeAnimation" id="toggleBlockerBadgeAnimation" data-bind="checked: settingsBlockerBadgeAnimationEnabled"
-                            enabled="false">
-                            <label for="toggleBlockerBadgeAnimation"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsBlockerBadgeAnimationEnabled(), 'toggle-box-unchecked': !settingsBlockerBadgeAnimationEnabled()}, click: toggleBlockerBadgeAnimation">
-                            <span class="toggle-text" data-bind="text: settingsBlockerBadgeAnimationText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockerBadgeAnimationEnabled() }, click: toggleBlockerBadgeAnimation">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockerBadgeAnimationText"></div>
                         </div>
                     </div>
                 </div>
@@ -210,12 +180,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: togglePrivacy">
-                            <input class="toggle" type="checkbox" name="togglePrivacy" id="togglePrivacy" data-bind="checked: settingsPrivacyEnabled" enabled="false">
-                            <label for="togglePrivacy"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsPrivacyEnabled(), 'toggle-box-unchecked': !settingsPrivacyEnabled()}, click: togglePrivacy">
-                            <span class="toggle-text" data-bind="text: settingsPrivacyText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsPrivacyEnabled() }, click: togglePrivacy">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsPrivacyText"></div>
                         </div>
                     </div>
                 </div>
@@ -226,12 +193,9 @@
                         </div>
                     </div>
                     <div class="table-cell">
-                        <div data-bind="click: toggleMalware">
-                            <input class="toggle" type="checkbox" name="toggleMalware" id="toggleMalware" data-bind="checked: settingsMalwareEnabled" enabled="false">
-                            <label for="toggleMalware"></label>
-                        </div>
-                        <div data-bind="css: { 'toggle-box-checked': settingsMalwareEnabled(), 'toggle-box-unchecked': !settingsMalwareEnabled()}, click: toggleMalware">
-                            <span class="toggle-text" data-bind="text: settingsMalwareText"></span>
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsMalwareEnabled() }, click: toggleMalware">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsMalwareText"></div>
                         </div>
                     </div>
                 </div>

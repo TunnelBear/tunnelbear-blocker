@@ -45,7 +45,7 @@ var onMessage = function (request, sender, callback) {
       }
       break;
     case 'blockEmailEnabled':
-      response = bb.settings.blockEmailEnabled;
+      response = bb.settings.blockEmailEnabled && bb.settings.blockBearEnabled;
       break;
     case 'pixel-tracking':
       blockedCounts.emailBlocked++

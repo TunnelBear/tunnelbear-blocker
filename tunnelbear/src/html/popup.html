@@ -25,12 +25,9 @@
                     </div>
                 </div>
                 <div class="table-cell">
-                    <div data-bind="click: toggle">
-                        <input class="toggle" type="checkbox" name="toggle" id="toggle" data-bind="checked: isToggled" enabled="false">
-                        <label for="toggle"></label>
-                    </div>
-                    <div data-bind="css: { 'toggle-box-checked': isToggled(), 'toggle-box-unchecked': !isToggled()}, click: toggle">
-                        <span class="toggle-text" data-bind="text: isToggledText"></span>
+                    <div class="toggle-background" data-bind="css: { 'enabled': isToggled() }, click: toggle">
+                        <div class="toggle-knob"></div>
+                        <div class="toggle-text" data-bind="text: isToggledText"></div>
                     </div>
                 </div>
             </div>
@@ -47,10 +44,8 @@
                     </div>
                 </div>
                 <div class="table-cell">
-                    <!--<a href="#" data-bind="text: isWhitelistedText, click: toggleWhitelist"></a>-->
-                    <div data-bind="click: toggleWhitelist">
-                        <input class="toggle mini" type="checkbox" data-bind="checked: isWhitelisted" enabled="false">
-                        <label for=""></label>
+                    <div class="toggle-background mini" data-bind="css: { 'enabled': isWhitelisted() }, click: toggleWhitelist">
+                        <div class="toggle-knob mini"></div>
                     </div>
                 </div>
             </div>
@@ -80,7 +75,7 @@
             </div>
         </div>
         <div class="table tracker-details" data-bind="foreach: sortedPageDetails" style="display: none;">
-            <div class="table-row medium-row" data-bind="css: { 'first': $index() == 0 }, attr: { 'class': barClass}">
+            <div class="table-row medium-row" data-bind="css: { 'first': $index() == 0 }, attr: { 'class': barClass }">
                 <div class="table-cell status-cell">
                     <div class="status-label">
                         <span data-bind="css: { 'disabled': !enabled() || !$parent.isWhitelisted() }, attr: { 'id': id }, click: $parent.createTab"></span>
@@ -88,16 +83,15 @@
                     </div>
                 </div>
                 <div class="table-cell">
-                    <div data-bind="click: onClick">
-                        <input class="toggle mini" type="checkbox" data-bind="checked: enabled() && $parent.isWhitelisted()" enabled="false">
-                        <label for=""></label>
+                    <div class="toggle-background mini" data-bind="css: { 'enabled': enabled() && $parent.isWhitelisted() }, click: onClick">
+                        <div class="toggle-knob mini"></div>
                     </div>
                 </div>
             </div>
             <div class="table-row medium-row progress-bar" data-bind="css: { 'last': ($index() + 1) == $parent.sortedPageDetails().length }">
                 <div class="table-cell colspan">
                     <div>
-                        <div data-bind="attr: { 'class': barClass}">
+                        <div data-bind="attr: { 'class': barClass }">
                             <span data-bind="style: { width: percentage() }"></span>
                         </div>
                     </div>
