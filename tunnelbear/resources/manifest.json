@@ -47,7 +47,6 @@
             "all_frames": false
         }
     ],
-    "incognito": "split",
     "minimum_chrome_version": "51.0",
     "optional_permissions": [ "file:///*" ],
     "options_ui": {
@@ -70,6 +69,7 @@
         "img/flash_unblock2x.png",
         "js/canvas-blocker.js",
         "js/blockbear-pixel-tracking.js",
+        "js/blockbear-contentscript-inject.js",
         "/web_accessible_resources/*"
     ],
     "short_name": "TunnelBear Blocker"

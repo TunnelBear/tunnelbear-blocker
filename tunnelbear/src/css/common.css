@@ -387,12 +387,12 @@ a {
 }
 
 .progress-bar .bar span {
-    display: block;
-    width: 0%;
-    -webkit-transition: width 1s ease-in-out;
-    -moz-transition: width 1s ease-in-out;
-    -o-transition: width 1s ease-in-out;
-    transition: width 1s ease-in-out;
+  display: block;
+  width: 0%;
+  -webkit-transition: width 1s ease-in-out;
+  -moz-transition: width 1s ease-in-out;
+  -o-transition: width 1s ease-in-out;
+  transition: width 1s ease-in-out;
 }
 
 .progress-bar .bar.blocks > span {
@@ -514,8 +514,8 @@ body.firefox .toggle-text {
 /* Twitter */
 
 .container .promo-banner {
-    height: 92px;
-    background-color: #ffffff;
+  height: 92px;
+  background-color: #ffffff;
 }
 
 #twitter-promo-graphic {

@@ -303,20 +303,22 @@ function PopupViewModel(popupData) {
       messager.send('blockbearPopup', { what: 'toggleFlash' });
       messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
     }
-  }, {
-    id: 'fingerprinting',
-    title: vAPI.i18n("fingerprinting"),
-    count: self.pageBlockedFingerprintingCount,
-    percentage: self.pageBlockedFingerprintingPercentage,
-    enabled: self.browserFingerprintingEnabled,
-    barClass: 'bar fingerprinting',
-    url: blockerBaseURL + '#fingerprinting',
-    onClick: function () {
-      self.browserFingerprintingEnabled(!self.browserFingerprintingEnabled());
-      messager.send('blockbearPopup', { what: 'toggleBrowserFingerprinting' });
-      messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
-    }
-  }, {
+  },
+  // {
+  //   id: 'fingerprinting',
+  //   title: vAPI.i18n("fingerprinting"),
+  //   count: self.pageBlockedFingerprintingCount,
+  //   percentage: self.pageBlockedFingerprintingPercentage,
+  //   enabled: self.browserFingerprintingEnabled,
+  //   barClass: 'bar fingerprinting',
+  //   url: blockerBaseURL + '#fingerprinting',
+  //   onClick: function () {
+  //     self.browserFingerprintingEnabled(!self.browserFingerprintingEnabled());
+  //     messager.send('blockbearPopup', { what: 'toggleBrowserFingerprinting' });
+  //     messager.send('popupPanel', { what: 'reloadTab', tabId: popupData.tabId });
+  //   }
+  // },
+  {
     id: 'email',
     title: vAPI.i18n("email"),
     count: self.pageBlockedEmailCount,
@@ -467,7 +469,7 @@ function PopupViewModel(popupData) {
 
       if (visible) {
         self.animateCount(0, self.pageBlockedFlashCount(), 1000, document.getElementById('flash'));
-        self.animateCount(0, self.pageBlockedFingerprintingCount(), 1000, document.getElementById('fingerprinting'));
+        //self.animateCount(0, self.pageBlockedFingerprintingCount(), 1000, document.getElementById('fingerprinting'));
         self.animateCount(0, self.pageBlockedEmailCount(), 1000, document.getElementById('email'));
         // self.animateCount(0, self.pageBlockedKeyboardCount(), 1000, document.getElementById('keyboard'));
         // self.animateCount(0, self.pageBlockedMouseCount(), 1000, document.getElementById('mouse'));
