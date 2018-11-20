@@ -52,7 +52,7 @@
 		"description": ""
 	},
     "settingsBlockwebRTC": {
-		"message": "Prevent leak webRTC",
+		"message": "Disable WebRTC",
 		"description": ""
 	},
 	"settingsBlockerBadgeAnimation": {
