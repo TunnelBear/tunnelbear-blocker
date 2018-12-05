@@ -116,7 +116,11 @@ window.addEventListener('message', function (event) {
       btn.style["background"] = getBlockBackground();
     });
     element.appendChild(btn);
-    messager.send('blockbear-contentscript-end.js', { what: 'incrementFlashCount' });
+    // Delay sending message because of count synchronization issues
+    // see https://tbears.atlassian.net/browse/TB-12402
+    setTimeout(function () {
+      messager.send('blockbear-contentscript-end.js', { what: 'incrementFlashCount' });
+    }, 1000);
   }
 
   var unblockFlash = function () {

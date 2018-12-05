@@ -61,9 +61,9 @@ TunnelBear Blocker was developed with love in Toronto, Canada, by [a group of pr
 ## Developers
 To compile TunnelBear Blocker from source:
 
-1. Install `npm` if you don't have it yet.
+1. Install `npm` if you don't have it yet
 1. Run `npm install`
-1. `bash tools/make-chromium.sh`
+1. Run `bash tunnelbear/tools/make-chromium.sh` or `bash tunnelbear/tools/make-firefox.sh` for the platform that you want to build for
 
 ***
 
