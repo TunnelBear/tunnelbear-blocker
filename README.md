@@ -63,6 +63,7 @@ To compile TunnelBear Blocker from source:
 
 1. Install `npm` if you don't have it yet
 1. Run `npm install`
+1. Run `git submodule init && git submodule update`
 1. Run `bash tunnelbear/tools/make-chromium.sh` or `bash tunnelbear/tools/make-firefox.sh` for the platform that you want to build for
 
 ***
