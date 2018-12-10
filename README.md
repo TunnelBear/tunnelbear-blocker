@@ -2,10 +2,6 @@
 
 **Simple and handsome. TunnelBear Blocker sinks its teeth into online tracking to keep your browsing habits a little more private.**
 
-![alt text][logo]
-
-[logo]: https://www.tunnelbear.com/images/apps/apps_1_blocker.png "Blocker for Chrome image"
-
 **TunnelBear Blocker for Chrome is:**
 
 ✔ Handsome - Powerful online privacy protection wrapped in a simple, handsome bear design
