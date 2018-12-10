@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=470">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <link rel="stylesheet" href="css/settings.css" type="text/css">
+    <title>TunnelBear Blocker</title>
+</head>
+
+<body id="global-settings">
+    <div id="app" class="container" data-bind="css: {'loaded' : isLoaded}">
+        <header id="settings-top-banner"></header>
+        <div id="settings-div" class="table">
+            <div id="settings-title">
+              <h1>Blocker Global Settings</h1>
+              <p>Settings below apply to all websites. If you want to change settings for just one website, then just do that from within the extension.</p>
+              <p>To enhance your privacy, install <a href="https://jspenguin2017.github.io/uBlockProtector/">uBlock Protector</a> and help protect Blocker from anti-adblock scripts.</p>
+            </div>
+            <div class="table">
+                <div class="table-row medium-row section-border section-header">
+                    <div class="table-cell status-cell">
+                        <div class="settings-category-label">
+                            <span data-i18n="settingsTitle"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell"></div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockAds"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockAdsEnabled() }, click: toggleBlockAds">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockAdsText"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockFlash"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsFlashEnabled() }, click: toggleFlash">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsFlashText"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockBrowserFingerprinting"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBrowserFingerprintingEnabled() }, click: toggleBrowserFingerprinting">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBrowserFingerprintingText"></div>
+                        </div>
+                    </div>
+                </div>-->
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockEmail"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockEmailEnabled() }, click: toggleBlockEmail">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockEmailText"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockMicrophone"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockMicrophoneEnabled() }, click: toggleBlockMicrophone">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockMicrophoneText"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockKeyboard"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockKeyboard">
+                            <input class="toggle" type="checkbox" name="toggleBlockKeyboard" id="toggleBlockKeyboard" data-bind="checked: settingsBlockKeyboardEnabled"
+                            enabled="false">
+                            <label for="toggleBlockKeyboard"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockKeyboardEnabled(), 'toggle-box-unchecked': !settingsBlockKeyboardEnabled()}, click: toggleBlockKeyboard">
+                            <span class="toggle-text" data-bind="text: settingsBlockKeyboardText"></span>
+                        </div>
+                    </div>
+                </div>-->
+                <!--<div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockMouse"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div data-bind="click: toggleBlockMouse">
+                            <input class="toggle" type="checkbox" name="toggleBlockMouse" id="toggleBlockMouse" data-bind="checked: settingsBlockMouseEnabled"
+                            enabled="false">
+                            <label for="toggleBlockMouse"></label>
+                        </div>
+                        <div data-bind="css: { 'toggle-box-checked': settingsBlockMouseEnabled(), 'toggle-box-unchecked': !settingsBlockMouseEnabled()}, click: toggleBlockMouse">
+                            <span class="toggle-text" data-bind="text: settingsBlockMouseText"></span>
+                        </div>
+                    </div>
+                </div>-->
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockSocial"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsSocialEnabled() }, click: toggleSocial">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsSocialText"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockWebRTC"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockWebRTCEnabled() }, click: toggleBlockWebRTC">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockWebRTCText"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border section-tail">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockerBadgeAnimation"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsBlockerBadgeAnimationEnabled() }, click: toggleBlockerBadgeAnimation">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsBlockerBadgeAnimationText"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border section-header">
+                    <div class="table-cell status-cell">
+                        <div class="settings-category-label">
+                            <span data-i18n="settingsAdditionalList"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell"></div>
+                </div>
+                <div class="table-row medium-row section-border">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockPrivacy"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsPrivacyEnabled() }, click: togglePrivacy">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsPrivacyText"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-row medium-row section-border section-tail">
+                    <div class="table-cell status-cell">
+                        <div class="status-label">
+                            <span data-i18n="settingsBlockMalware"></span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="toggle-background" data-bind="css: { 'enabled': settingsMalwareEnabled() }, click: toggleMalware">
+                            <div class="toggle-knob"></div>
+                            <div class="toggle-text" data-bind="text: settingsMalwareText"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="lib/punycode.js"></script>
+    <script src="js/tko.js"></script>
+    <script src="js/vapi.js"></script>
+    <script src="js/vapi-common.js"></script>
+    <script src="js/vapi-client.js"></script>
+    <script src="js/udom.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/blockbear-utils.js"></script>
+    <script src="js/blockbear-settings.js"></script>
+</body>
+
+</html>

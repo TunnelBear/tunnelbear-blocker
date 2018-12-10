@@ -1,0 +1,146 @@
+{
+	"extShortDesc": {
+		"message": "Simple and handsome. TunnelBear Blocker sinks its teeth into online tracking to keep your browsing habits a little more private.",
+		"description": ""
+	},
+	"back": {
+		"message": "Back",
+		"description": ""
+	},
+	"on": {
+		"message": "ON",
+		"description": ""
+	},
+	"off": {
+		"message": "OFF",
+		"description": ""
+	},
+	"settingsTitle": {
+		"message": "TunnelBear Blocker Settings",
+		"description": ""
+	},
+	"settingsBlockAds": {
+		"message": "Block ads",
+		"description": ""
+	},
+	"settingsBlockFlash": {
+		"message": "Flash requires my permission",
+		"description": ""
+	},
+	"settingsBlockBrowserFingerprinting": {
+		"message": "Block browser fingerprinting",
+		"description": ""
+	},
+	"settingsBlockEmail": {
+		"message": "Block pixel tracking (Gmail)",
+		"description": ""
+	},
+    "settingsBlockMicrophone": {
+		"message": "Block microphone",
+		"description": ""
+	},
+	"settingsBlockSocial": {
+		"message": "Block social buttons",
+		"description": ""
+	},
+	"settingsBlockKeyboard": {
+		"message": "Block keyboard tracking",
+		"description": ""
+	},
+	"settingsBlockMouse": {
+		"message": "Block mouse tracking",
+		"description": ""
+	},
+    "settingsBlockwebRTC": {
+		"message": "Disable WebRTC",
+		"description": ""
+	},
+	"settingsBlockerBadgeAnimation": {
+		"message": "Animate extension badge",
+		"description": ""
+	},
+	"settingsAdditionalList": {
+		"message": "Additional Block Lists",
+		"description": ""
+	},
+	"settingsBlockPrivacy": {
+		"message": "Privacy protection (recommended)",
+		"description": ""
+	},
+	"settingsBlockMalware": {
+		"message": "Malware protection",
+		"description": ""
+	},
+	"docblockedPrompt1": {
+		"message": "Blocker has prevented the following page from loading:",
+		"description": "English: Blocker has prevented the following page from loading:"
+	},
+	"docblockedPrompt2": {
+		"message": "Because of the following filter",
+		"description": "English: Because of the following filter"
+	},
+	"docblockedNoParamsPrompt": {
+		"message": "without parameters",
+		"description": "label to be used for the parameter-less URL: https://cloud.githubusercontent.com/assets/585534/9832014/bfb1b8f0-593b-11e5-8a27-fba472a5529a.png"
+	},
+	"docblockedFoundIn": {
+		"message": "Found in:",
+		"description": "English: List of filter list names follows"
+	},
+	"docblockedBack": {
+		"message": "Go back",
+		"description": "English: Go back"
+	},
+	"docblockedClose": {
+		"message": "Close",
+		"description": "English: Close"
+	},
+	"docblockedTitle": {
+		"message": "Page Blocked",
+		"description": "English: Page Blocked"
+	},
+	"whitelist": {
+		"message": "whitelist",
+		"description": ""
+	},
+	"blacklist": {
+		"message": "blacklist",
+		"description": ""
+	},
+	"popupBlocked": {
+		"message": "Blocked"
+	},
+	"ads": {
+		"message": "Ads"
+	},
+	"flash": {
+		"message": "Flash"
+	},
+	"fingerprinting": {
+		"message": "Fingerprinting"
+	},
+	"keyboard": {
+		"message": "Keyboard"
+	},
+	"mouse": {
+		"message": "Mouse"
+	},
+	"microphone": {
+		"message": "Ultrasonic"
+	},
+	"social": {
+		"message": "Social Buttons"
+	},
+	"privacy": {
+		"message": "Scripts & Trackers"
+	},
+	"malware": {
+		"message": "Malware"
+	},
+	"email": {
+		"message": "Email"
+	},
+	"tooltipReport": {
+		"message": "Report"
+	}
+}

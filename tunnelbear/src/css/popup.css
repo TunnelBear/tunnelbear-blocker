@@ -1,0 +1,212 @@
+.body-mode-normal {
+  -webkit-transition: width 0.3s, height 0.3s;
+  transition: width 0.3s, height 0.3s;
+  -webkit-transform: translateX(0);
+  transform: translateX(0);
+  width: 258px;
+  height: 100%;
+}
+
+.table-row.progress-bar.hidden {
+  background: #f2f1f0;
+}
+
+.report {
+  background: url('../img/report_icon_normal2x.png');
+  background-size: 18px 18px;
+  background-repeat: no-repeat;
+  height: 18px;
+  width: 18px;
+  float: left;
+  margin-left: 5px;
+}
+
+.report:hover {
+  background: url('../img/report_icon_hover2x.png');
+  background-size: 18px 18px;
+  background-repeat: no-repeat;
+}
+
+.container .caption {
+  background: #faf9f7;
+  padding-top: 14px;
+  box-sizing: border-box;
+}
+
+.container .blocker-toggle {
+  background: #faf9f7;
+}
+
+.count-tracker {
+  border-top-color: transparent;
+  background: #f2f1f0;
+  border-bottom-color: #e5e2dc;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  cursor: pointer;
+}
+
+.tracker-details {
+  border-top-color: transparent;
+  background: #faf9f7;
+  padding-top: 5px;
+}
+
+.tracker-details .toggle-background.mini {
+  background: #C6C4BF;
+}
+
+.tracker-details .toggle-background.mini.enabled {
+  background: #AF9E93;
+}
+
+.tracker-details .progress-bar .bar {
+  width: 238px;
+  padding: 0 10px;
+}
+
+.tracker-details .progress-bar .bar span {
+  border-radius: 4px;
+}
+
+.tracker-details .progress-bar {
+  background: transparent;
+}
+
+.tracker-details .medium-row {
+  height: auto;
+}
+
+.tracker-details .table-cell {
+  vertical-align: top;
+  padding-top: 2px;
+}
+
+.tracker-details .table-row.first .table-cell {
+  padding-top: 10px;
+}
+
+.tracker-details .progress-bar .table-cell {
+  padding-bottom: 5px;
+}
+
+.tracker-details .progress-bar.last .table-cell {
+  padding-bottom: 5px;
+}
+
+.tracker-details .bar span:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tracker-details .bar span.disabled{
+  color: #d2d0cb!important;
+}
+
+.tracker-details .bar.blocks span {
+  color: #72c4d2;
+}
+
+.tracker-details .bar.privacy span {
+  color: #a5ce4e;
+}
+
+.tracker-details .bar.fingerprinting span {
+  color: #b979fb;
+}
+
+.tracker-details .bar.email span {
+  color: #6473e5;
+}
+
+.tracker-details .bar.keyboard span {
+  color: #de7045;
+}
+
+.tracker-details .bar.mouse span {
+  color: #c2b523;
+}
+
+.tracker-details .bar.microphone span {
+  color: #5fe197;
+}
+
+.tracker-details .bar.social span {
+  color: #70db5c;
+}
+
+.tracker-details .bar.ads span {
+  color: #65ade9;
+}
+
+.tracker-details .bar.flash span {
+  color: #e9658d;
+}
+
+.tracker-details .bar.malware span {
+  color: #ebaf38;
+}
+
+.tracker-details span {
+  font-size: 14px;
+}
+
+.tracker-details .bar.blocks .toggle-background.mini.enabled {
+  background: #72c4d2;
+}
+
+.tracker-details .bar.privacy .toggle-background.mini.enabled {
+  background: #a5ce4e;
+}
+
+.tracker-details .bar.fingerprinting .toggle-background.mini.enabled {
+  background: #b979fb;
+}
+
+.tracker-details .bar.email .toggle-background.mini.enabled {
+  background: #6473e5;
+}
+
+.tracker-details .bar.keyboard .toggle-background.mini.enabled {
+  background: #de7045;
+}
+
+.tracker-details .bar.mouse .toggle-background.mini.enabled {
+  background: #c2b523;
+}
+
+.tracker-details .bar.microphone .toggle-background.mini.enabled {
+  background: #5fe197;
+}
+
+.tracker-details .bar.social .toggle-background.mini.enabled {
+  background: #70db5c;
+}
+
+.tracker-details .bar.ads .toggle-background.mini.enabled {
+  background: #65ade9;
+}
+
+.tracker-details .bar.flash .toggle-background.mini.enabled {
+  background: #e9658d;
+}
+
+.tracker-details .bar.malware .toggle-background.mini.enabled {
+  background: #ebaf38;
+}
+
+/* Whitelist */
+
+.container .whitelist {
+  background: #f2f1f0;
+}
+
+.container .whitelist .toggle-background.enabled {
+  background: #dcb150;
+}
+
+.container .whitelist .toggle-background {
+  background: #C6C4BF;
+}
+
+/* End of Whitelist */

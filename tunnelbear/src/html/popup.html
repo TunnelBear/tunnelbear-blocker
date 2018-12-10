@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=470">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <link rel="stylesheet" href="css/popup.css" type="text/css">
+    <title>TunnelBear Blocker</title>
+</head>
+
+<body class="body-mode-normal">
+    <div id="app" class="container" data-bind="css: {'loaded' : isLoaded}">
+        <div id="popup-div" class="table">
+            <div class="caption medium-row">
+                <img src="img/logo2x.png" class="img-top-logo">
+                <div data-bind="click: openSettings" id="settings-gear">
+                    <img src="img/icon_gear.png" class="img-top-settings">
+                </div>
+            </div>
+            <div class="table-row medium-row section-border blocker-toggle">
+                <div class="table-cell status-cell">
+                    <div class="status-label">
+                        <span>Blocker</span>
+                    </div>
+                </div>
+                <div class="table-cell">
+                    <div class="toggle-background" data-bind="css: { 'enabled': isToggled() }, click: toggle">
+                        <div class="toggle-knob"></div>
+                        <div class="toggle-text" data-bind="text: isToggledText"></div>
+                    </div>
+                </div>
+            </div>
+            <!--ko if: isLoaded() -->
+                <div data-bind="template: {name: (reviewPromoEnabled() ? 'review-stg1-template' :
+                 (reviewPromoStg2Enabled() ? 'review-stg2-template' :
+                 (tb4cPromoEnabled() ? 'tb4c-promo-template' :
+                 (twitterPromoEnabled() ? 'twitter-promo-template' : 'empty-template'))))}"></div>
+            <!-- /ko -->
+            <div class="table-row medium-row section-border whitelist">
+                <div class="table-cell status-cell">
+                    <div class="status-label">
+                        <span data-bind="text: domain"></span>
+                    </div>
+                </div>
+                <div class="table-cell">
+                    <div class="toggle-background mini" data-bind="css: { 'enabled': isWhitelisted() }, click: toggleWhitelist">
+                        <div class="toggle-knob mini"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-row medium-row progress-bar" data-bind="css: { 'hidden': isToggleShowDetails() }">
+                <div class="table-cell colspan">
+                    <div>
+                        <div class="bar blocks">
+                            <span data-bind="style: { width: pageBlockedPercentage() }"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-cell"></div>
+            </div>
+            <div class="table-row medium-row section-border count-tracker">
+                <div class="table-cell status-cell" data-bind="click: toggleShowDetails">
+                    <div class="status-label">
+                        <span id="pageBlockedCount"></span>
+                        <span data-bind="text: pageBlockedText"></span>
+                    </div>
+                </div>
+                <div class="table-cell">
+                    <div class="report tooltip" data-bind="click: showReport">
+                        <span class="tooltiptext" data-i18n="tooltipReport"></span>
+                    </div>
+                    <div class="arrow" data-bind="css: { 'close': isToggleShowDetails(), 'open': !isToggleShowDetails()}, click: toggleShowDetails"></div>
+                </div>
+            </div>
+        </div>
+        <div class="table tracker-details" data-bind="foreach: sortedPageDetails" style="display: none;">
+            <div class="table-row medium-row" data-bind="css: { 'first': $index() == 0 }, attr: { 'class': barClass }">
+                <div class="table-cell status-cell">
+                    <div class="status-label">
+                        <span data-bind="css: { 'disabled': !enabled() || !$parent.isWhitelisted() }, attr: { 'id': id }, click: $parent.createTab"></span>
+                        <span data-bind="css: { 'disabled': !enabled() || !$parent.isWhitelisted() }, text: title, click: $parent.createTab"></span>
+                    </div>
+                </div>
+                <div class="table-cell">
+                    <div class="toggle-background mini" data-bind="css: { 'enabled': enabled() && $parent.isWhitelisted() }, click: onClick">
+                        <div class="toggle-knob mini"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-row medium-row progress-bar" data-bind="css: { 'last': ($index() + 1) == $parent.sortedPageDetails().length }">
+                <div class="table-cell colspan">
+                    <div>
+                        <div data-bind="attr: { 'class': barClass }">
+                            <span data-bind="style: { width: percentage() }"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-cell"></div>
+            </div>
+        </div>
+
+        <script type="text/html" id="empty-template"></script>
+
+        <script type="text/html" id="twitter-promo-template">
+            <div class="table-row promo-banner medium-row">
+                <div id="twitter-promo-graphic"></div>
+                <div data-bind="click: dismissTwitterPromo" class="banner-close"></div>
+                <p class="banner-text">Rawwrrrr! Spread the love on Twitter!</p>
+                <div id="twitter-tweet" data-bind="click: tweetNow">
+                    <p id="twitter-tweet-text">Tweet Now!</p></div>
+            </div>
+        </script>
+
+        <script type="text/html" id="tb4c-promo-template">
+            <div class="table-row promo-banner medium-row">
+                <div id="tb4c-promo-graphic"></div>
+                <div data-bind="click: dismissTB4CPromo" class="banner-close"></div>
+                <p id="tb4c-banner-text">Want to keep your browsing private from your ISP?</p>
+                <div id="tb4c-store" data-bind="click: chromeStoreTB4C">
+                    <p id="tb4c-text">Get TunnelBear VPN</p></div>
+            </div>
+        </script>
+
+        <script type="text/html" id="review-stg1-template">
+            <div class="table-row promo-banner medium-row">
+                <div id="review-promo-graphic"></div>
+                <div data-bind="click: dismissReviewPromo" class="banner-close"></div>
+                <p id="review-banner-text">Rawwrrrr! Is Blocker doing a good job keeping you private?</p>
+                <div class="review" data-bind="click: reviewStg1Yes">
+                    <p class="review-text">Yes</p></div>
+                <div class="review" data-bind="click: reviewStg1No">
+                    <p class="review-text">No</p></div>
+            </div>
+        </script>
+
+        <script type="text/html" id="review-stg2-template">
+            <div class="table-row promo-banner medium-row">
+                <div id="review-promo-graphic"></div>
+                <div data-bind="click: dismissReviewPromo" class="banner-close"></div>
+                <p id="review-banner-text">How about a quick rating on the Chrome Store?</p>
+                <div class="review" data-bind="click: reviewStg2Yes">
+                    <p class="review-text">Yes</p></div>
+                <div class="review" data-bind="click: reviewStg2No">
+                    <p class="review-text">No</p></div>
+            </div>
+        </script>
+
+    <script src="lib/punycode.js"></script>
+    <script src="js/tko.js"></script>
+    <script src="js/vapi.js"></script>
+    <script src="js/vapi-common.js"></script>
+    <script src="js/vapi-background.js"></script>
+    <script src="js/vapi-client.js"></script>
+    <script src="js/udom.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/blockbear-utils.js"></script>
+    <script src="js/blockbear-popup.js"></script>
+</body>
+
+</html>

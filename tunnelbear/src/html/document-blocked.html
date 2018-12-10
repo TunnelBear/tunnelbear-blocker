@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TunnelBear Blocker - Page Blocked</title>
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <style>
+        html {
+            background-color: #faf9f7;
+        }
+
+        body {
+            font-size: large;
+            text-align: center;
+            overflow: auto;
+        }
+
+        body>div>p:first-child {
+            margin: 1.5em 0 0 0;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button {
+            cursor: pointer;
+            margin: 0 1em 0.25em 1em;
+            padding: 0.25em 0.5em;
+            font-size: inherit;
+        }
+
+        select {
+            font: inherit;
+            padding: 2px;
+        }
+
+        .code {
+            line-height: 1;
+            padding: 4px;
+            word-break: break-all;
+            font-family: OpenSans;
+            font-size: 16px;
+            letter-spacing: -0.7px;
+            color: #55534e;
+        }
+
+        #warningSign {
+            background: url(../img/page_blocked.png);
+            background-size: 173px 193px;
+            width: 173px;
+            height: 193px;
+            display: inline-block;
+        }
+
+        #theURL {
+            background-color: rgba(200, 200, 200, 0.23);
+            margin-top: 21px;
+            padding: 5px 0;
+        }
+
+        #theURL>* {
+            margin: 0;
+        }
+
+        #theURL>p {
+            position: relative;
+            z-index: 10;
+        }
+
+        #theURL>p>span {
+            background-color: transparent;
+            top: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+            opacity: 0.5;
+            padding: 0.2em;
+            position: absolute;
+            transform: translate(0, -50%);
+        }
+
+        body[dir="ltr"] #theURL>p>span {
+            right: 0;
+        }
+
+        body[dir="rtl"] #theURL>p>span {
+            left: 0;
+        }
+
+        #theURL>p:hover>span {
+            opacity: 1;
+        }
+
+        #parsed {
+            background-color: #f8f8f8;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-top: none;
+            color: gray;
+            font-size: small;
+            overflow-x: hidden;
+            padding: 4px;
+            text-align: initial;
+            text-overflow: ellipsis;
+        }
+
+        #theURL.collapsed>#parsed {
+            display: none;
+        }
+
+        #parsed ul,
+        #parsed li {
+            list-style-type: none;
+        }
+
+        #parsed li {
+            white-space: nowrap;
+        }
+
+        #parsed span {
+            display: inline-block;
+        }
+
+        #parsed span:first-of-type {
+            font-weight: bold;
+        }
+
+        #whyex {
+            font-size: smaller;
+        }
+
+        #whyex a {
+            white-space: nowrap;
+        }
+
+        .proceedChoice {
+            text-align: left;
+        }
+
+        .button {
+            display: inline-block;
+            width: 207px;
+            height: 60px;
+            border-radius: 3px;
+            background-color: #55534e;
+        }
+
+        .button-text {
+            font-family: OpenSans;
+            font-size: 22px;
+            letter-spacing: -0.9px;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 60px;
+            color: #faf9f7;
+            cursor: pointer;
+        }
+
+        .found-in {
+            font-family: OpenSans;
+            font-size: 18px;
+            letter-spacing: -0.8px;
+            text-align: center;
+            color: #55534e;
+        }
+
+        .found-in:after {
+            content: "\a0"
+        }
+
+        #found-in-filter-name {
+            font-weight: 600;
+        }
+
+        #found-in-filter-name span:after {
+            content: ",\a0";
+        }
+
+        #found-in-filter-name span:last-child:after {
+            content: "";
+        }
+
+        .filterListSource {
+            pointer-events: none;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        #blocker-prompt {
+            font-family: Rokkitt;
+            font-size: 24px;
+            letter-spacing: -1px;
+            color: #55534e;
+        }
+
+        #blocker-title {
+            font-family: Rokkitt;
+            font-size: 32px;
+            letter-spacing: -1.4px;
+            text-align: center;
+            color: #55534e;
+        }
+
+        .blocker-nav {
+            box-sizing: border-box;
+            width: 100%;
+            height: 90px;
+            padding: 17px 0;
+            background-color: #ebeae8;
+        }
+
+        #blocker-logo {
+            background: url(../img/logo_page.png);
+            background-size: 207px 56px;
+            width: 207px;
+            height: 56px;
+            display: inline-block;
+        }
+
+        .blocker-header {
+            box-sizing: border-box;
+            width: 100%;
+            height: 285px;
+            padding-top: 27px;
+            background-color: #f2f1f0;
+        }
+
+        .blocker-body {
+            background-color: #faf9f7;
+        }
+
+        .blocker-body>div {
+            padding: 30px 0;
+        }
+
+        .blocker-header>div {
+            margin-bottom: 52px;
+        }
+
+        #blocker-page-link {
+            padding-top: 74px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="blocker-nav">
+        <div>
+            <a id="blocker-logo" title="TunnelBear Blocker"></a>
+        </div>
+    </header>
+
+    <div class="blocker-header">
+        <div>
+            <p id="blocker-title" data-i18n="docblockedTitle"></p>
+        </div>
+        <span id="warningSign"></span>
+    </div>
+
+    <div class="blocker-body">
+        <div id="blocker-page-link">
+            <p id="blocker-prompt" data-i18n="docblockedPrompt1"></p>
+            <div id="theURL" class="collapsed">
+                <p class="code"></p>
+                <ul id="parsed"></ul>
+            </div>
+        </div>
+
+        <p id="why" class="code" style="display: none;"></p>
+        <span id="whyex" style="display: none;">
+            <span class="found-in" data-i18n="docblockedFoundIn"></span>
+            <span id="found-in-filter-name" class="found-in"></span>
+        </span>
+
+        <div id="templates" style="display: none;">
+            <span class="filterList">
+                <a class="filterListSource"></a>
+                <a class="filterListSupport" style="display: none;"></a>
+            </span>
+        </div>
+
+        <div>
+            <div class="button" id="back">
+                <p class="button-text" data-i18n="docblockedBack"></p>
+            </div>
+            <div class="button" id="bye">
+                <p class="button-text" data-i18n="docblockedClose"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/vapi.js"></script>
+    <script src="js/vapi-common.js"></script>
+    <script src="js/vapi-client.js"></script>
+    <script src="js/udom.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/document-blocked.js"></script>
+</body>
+
+</html>

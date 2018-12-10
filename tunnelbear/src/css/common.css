@@ -1,0 +1,722 @@
+a,article,aside,body,caption,dd,dfn,div,div.hgroup,dl,dt,em,embed,fieldset,footer,form,h1,h2,h3,h4,h5,h6,header,html,iframe,img,label,legend,li,nav,object,ol,p,section,small,span,strong,sub,sup,table,tbody,td,tfoot,th,thead,tr,ul {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+strong {
+    font-weight: 700;
+}
+
+article,aside,div.hgroup,footer,header,nav,section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol {
+    list-style: decimal;
+}
+
+ul {
+    list-style: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+:active,:focus {
+    outline: 0;
+}
+
+.android:active,.android:focus {
+    -webkit-tap-highlight-color: rgba(255,255,255,0);
+}
+
+.android select {
+    -webkit-tap-highlight-color: transparent;
+}
+
+textarea {
+    resize: none;
+}
+
+.sliding-panel {
+  min-height: 100%;
+  width : 100%;
+  transform:translateX(258px);
+  position: absolute;
+  top: 0px;
+  background-color: #fcfaf7;
+}
+
+#settings-gear {
+  margin-left: 208px;
+  margin-top: -18px;
+  cursor: pointer;
+}
+.img-top-settings {
+  width: 15px;
+  height: 15px;
+}
+#shortcuts-div {
+  transform:translateX(516px);
+}
+
+@font-face {
+  font-family: 'Rokkitt-Light';
+  src: url('fonts/Rokkitt-Light.eot');
+  src: url('fonts/Rokkitt-Light.eot?#iefix') format('embedded-opentype'),
+  url('fonts/Rokkitt-Light.woff') format('woff'),
+  url('fonts/Rokkitt-Light.ttf') format('truetype'),
+  url('fonts/Rokkitt-Light.svg#Rokkitt-Light') format('svg');
+}
+
+@font-face {
+  font-family: 'Rokkitt';
+  src: url('fonts/Rokkitt-Regular.eot');
+  src: url('fonts/Rokkitt-Regular.eot?#iefix') format('embedded-opentype'),
+  url('fonts/Rokkitt-Regular.woff') format('woff'),
+  url('fonts/Rokkitt-Regular.ttf') format('truetype'),
+  url('fonts/Rokkitt-Regular.svg#Rokkitt') format('svg');
+}
+
+@font-face {
+  font-family: 'Rokkitt-Bold';
+  src: url('fonts/Rokkitt-Bold.eot');
+  src: url('fonts/Rokkitt-Bold.eot?#iefix') format('embedded-opentype'),
+  url('fonts/Rokkitt-Bold.woff') format('woff'),
+  url('fonts/Rokkitt-Bold.ttf') format('truetype'),
+  url('fonts/Rokkitt-Bold.svg#Rokkitt-Bold') format('svg');
+}
+
+@font-face {
+  font-family: OpenSans;
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/OpenSans-Regular.ttf');
+}
+
+@font-face {
+  font-family: OpenSans;
+  font-style: normal;
+  font-weight: 600;
+  src: url('fonts/OpenSans-Semibold.ttf');
+}
+
+@font-face {
+  font-family: OpenSans;
+  font-style: normal;
+  font-weight: 700;
+  src: url('fonts/OpenSans-Bold.ttf');
+}
+
+/* General setup */
+body {
+  background-color: white;
+  overflow: hidden; /* prevent from scrolling through plugin */
+  margin:0px !important;
+
+  font: 15px Helvetica, Arial, sans-serif;
+  color: #55534e;
+
+  -webkit-font-smoothing: antialiased;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+h1 {
+    cursor: default;
+    font-weight: bold;
+    padding: 12px 0;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+.loaded {
+  width: 258px;
+  animation-delay: 0.2s;
+  -webkit-animation: fadein 1s forwards; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 1s forwards; /* Firefox < 16 */
+  animation: fadein 1s forwards;
+}
+
+@keyframes fadein {
+    to   { opacity: 1; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+    to   { opacity: 1; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+    to   { opacity: 1; }
+}
+
+.container .settings-header .title-block {
+  padding-top: 14px;
+}
+
+.container .settings-header {
+  height: 44px;
+  text-align: center;
+}
+.container .navigation-button {
+  padding-top:14px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: absolute;
+  left: 0%;
+  cursor: pointer;
+}
+
+.container button:focus {
+  outline:0;
+}
+
+.container .settings-title {
+  font-weight: bold !important;
+}
+
+.container {
+  position: relative;
+  opacity: 0;
+  width: 100%;
+}
+
+.container button{
+  background-color: transparent;
+  border: none;
+  color: #e58d2f;
+  font-family: Helvetica;
+  font-size: 15px;
+  font-weight: normal;
+}
+
+.container span{
+  cursor: default;
+  font-family: OpenSans;
+  font-weight: normal;
+  color: #55534e;
+  text-align: left;
+  letter-spacing: -0.6px;
+  font-size: 15px;
+}
+
+.container span.disabled {
+ color: #bdbbb6;
+}
+
+.container .medium-row{
+  height: 44px;
+}
+
+.alernate-row-color {
+  /* Uncomment this for orangy color background-color: #faf1e6; */
+}
+
+.left-padding {
+  padding-left: 10px;
+}
+
+.section-border {
+  border-width: 1px;
+  border-top-color: #e5e2dc;
+  border-top-style: solid;
+}
+
+/* General Setup*/
+.default-cursor {
+  cursor: default !important;
+}
+
+/* General table things */
+
+.table {
+  width: 100%;
+  display:table;
+  border-collapse: collapse;
+}
+.table > .caption{
+  display:table-caption;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.table-row {
+  display:table-row;
+}
+
+.table-cell {
+  vertical-align: middle;
+  display:table-cell;
+}
+
+.table-cell.colspan > div {
+  width: 1px;
+}
+
+.table-cell.colspan > div > div {
+    position: relative;
+    overflow: hidden;
+}
+
+.container .button {
+    padding:8px;
+    text-align: center;
+    color: #E58D2F;
+    cursor: pointer;
+    border-color: #e5e2dc;
+    border-style: solid;
+    border-width: 1px;
+}
+.container .button:hover {
+  background-color: #f8f6ef;
+}
+
+.button-left {
+  margin-left:15%;
+  width: 25%;
+  float:left;
+}
+.button-right {
+  width: 25%;
+  margin-left: 54%;
+}
+
+/* End general table things */
+
+/* Popup Header */
+.container .img-top-logo {
+  width: 84px;
+}
+/* End of Popup Header */
+
+/* Connection component */
+
+/* Status label */
+.container .status-label {
+  /* In case a margin is needed, not the case now - don't change the width of the cell, edit the margin instead
+  margin-left: -8px;*/
+  padding-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 170px;
+}
+/* Status label end */
+
+/* settings-category label */
+.container .settings-category-label span {
+  font-weight: bold;
+}
+/* settings-category label end */
+
+.container .status-cell {
+  width: 175px;
+}
+
+.container .status-cell {
+  padding-left: 10px;
+}
+
+.div-status-icon {
+  margin-top: 2px;
+  margin-left: -2px;
+}
+/* Icon */
+
+.container .img-status {
+  /* padding-top: 2px; */
+  width:13px;
+  height:13px;
+}
+
+.arrow.open {
+  background: url('../img/arrow_open2x.png');
+  background-size: 18px 17px;
+  background-repeat: no-repeat;
+  height: 17px;
+  width: 19px;
+  float: left;
+  margin: 1px 0 0 15px;
+}
+
+.arrow.close {
+  background: url('../img/arrow_close2x.png');
+  background-size: 18px 17px;
+  background-repeat: no-repeat;
+  height: 17px;
+  width: 19px;
+  float: left;
+  margin: 1px 0 0 15px;
+}
+
+/* End of Status Icon */
+
+/* ProgressBar */
+
+.progress-bar {
+  height: 5px!important;
+  background: #e5e2dc;
+}
+.table-row.progress-bar .bar {
+  width: 258px;
+}
+
+.progress-bar .bar,
+.progress-bar .bar span {
+  height: 5px;
+}
+
+.progress-bar .bar span {
+  display: block;
+  width: 0%;
+  -webkit-transition: width 1s ease-in-out;
+  -moz-transition: width 1s ease-in-out;
+  -o-transition: width 1s ease-in-out;
+  transition: width 1s ease-in-out;
+}
+
+.progress-bar .bar.blocks > span {
+  background: #72c4d2;
+}
+
+.progress-bar .bar.privacy > span {
+  background: #a5ce4e;
+}
+
+.progress-bar .bar.fingerprinting > span {
+  background: #b979fb;
+}
+
+.progress-bar .bar.email > span {
+  background: #6473e5;
+}
+
+.progress-bar .bar.keyboard > span {
+  background: #de7045;
+}
+
+.progress-bar .bar.mouse > span {
+  background: #c2b523;
+}
+
+.progress-bar .bar.microphone > span {
+  background: #5fe197;
+}
+
+.progress-bar .bar.social > span {
+  background: #70db5c;
+}
+
+.progress-bar .bar.ads > span {
+  background: #65ade9;
+}
+
+.progress-bar .bar.flash > span {
+  background: #e9658d;
+}
+
+.progress-bar .bar.malware > span {
+  background: #ebaf38;
+}
+
+/* End of ProgressBar */
+
+/* Toggle switch */
+
+.toggle-background {
+  cursor: pointer;
+  height: 29px;
+  width: 60px;
+  border-radius: 15px;
+  background: #685538;
+  transition: .25s ease-in-out;
+  -webkit-transition: .25s ease-in-out;
+}
+
+.toggle-background.enabled {
+  background: #dcb150;
+}
+
+.toggle-knob {
+  height: 25px;
+  width: 25px;
+  border-radius: 15px;
+  background: white;
+  position: absolute;
+  margin-top: 2px;
+  margin-left: 2px;
+  transition: .25s ease-in-out;
+  -webkit-transition: .25s ease-in-out;
+}
+
+.enabled > .toggle-knob {
+  margin-left: 33px;
+}
+
+.toggle-text {
+  color: #faf9f7;
+  font-size: 11px;
+  position: absolute;
+  margin-top: 9px;
+  margin-left: 31px;
+}
+
+body.firefox .toggle-text {
+  margin-top: 10px;
+}
+
+.enabled > .toggle-text {
+  margin-left: 10px;
+}
+
+.toggle-background.mini {
+  height: 12px;
+  width: 20px;
+  margin-left: 37px;
+  margin-top: 3px;
+}
+
+.toggle-knob.mini {
+  height: 10px;
+  width: 10px;
+  margin-top: 1px;
+  margin-left: 1px;
+}
+
+.enabled > .toggle-knob.mini {
+  margin-left: 9px;
+}
+
+/* End of Toggle switch */
+
+/* End of connection component */
+
+/* Twitter */
+
+.container .promo-banner {
+  height: 92px;
+  background-color: #ffffff;
+}
+
+#twitter-promo-graphic {
+  background: url(../img/graphic_twitter.png);
+  background-size: 81px 75px;
+  content: "";
+  display: block;
+  height: 75px;
+  position: absolute;
+  right: 25px;
+  margin-top: 9px;
+  width: 81px;
+}
+
+#twitter-tweet-text {
+  width: 61px;
+  height: 17px;
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #faf9f7;
+  padding: 4px 8px 4px 8px;
+}
+
+#twitter-tweet {
+  cursor: pointer;
+  width: 76.4px;
+  height: 25px;
+  border-radius: 2px;
+  background-color: #55534e;
+  margin-left: 40px;
+  margin-top: 6px;
+}
+
+.banner-text {
+  width: 136.9px;
+  height: 34px;
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #afa194;
+  margin-top: 14px;
+  margin-left: 10px;
+  cursor: default;
+}
+
+.banner-close {
+  background: url(../img/twitter_close.png);
+  background-size: 7.9px 7.9px;
+  height: 7.9px;
+  width: 7.9px;
+  position: absolute;
+  margin-top: 11.1px;
+  right: 11.1px;
+  cursor: pointer;
+}
+
+/* End Twitter */
+
+/* TB4C */
+
+#tb4c-promo-graphic {
+  background: url(../img/graphic_tb4c.png);
+  background-size: 68px 84px;
+  content: "";
+  display: block;
+  height: 84px;
+  position: absolute;
+  right: 20px;
+  margin-top: 7px;
+  width: 68px;
+}
+
+#tb4c-banner-text {
+  width: 144.9px;
+  height: 34px;
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #afa194;
+  margin-top: 8px;
+  margin-left: 6px;
+  cursor: default;
+  padding: 4px 8px 4px 8px;
+}
+
+#tb4c-store {
+  cursor: pointer;
+  width: 127px;
+  height: 25px;
+  border-radius: 2px;
+  background-color: #55534e;
+  margin-left: 25px;
+  margin-top: 4px;
+}
+
+#tb4c-text {
+  width: 110px;
+  height: 17px;
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #faf9f7;
+  padding: 4px 8px 4px 8px;
+}
+
+/* End TB4C */
+
+/* Chrome Store review */
+
+#review-banner-text {
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #afa194;
+  margin-top: 14px;
+  margin-left: 12px;
+  cursor: default;
+}
+
+#review-promo-graphic {
+  background: url(../img/graphic_blocky.png);
+  background-size: 68px 85px;
+  content: "";
+  display: block;
+  width: 68px;
+  height: 85px;
+  position: absolute;
+  right: 11px;
+  margin-top: 7px;
+}
+
+.review {
+  cursor: pointer;
+  width: 49px;
+  height: 25px;
+  border-radius: 2px;
+  background-color: #55534e;
+  margin-left: 32px;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.review-text {
+  height: 17px;
+  font-family: OpenSans;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #faf9f7;
+  padding-top: 3px;
+}
+
+/* End Chrome Store review */
+
+/* Tooltip */
+
+.tooltip {
+  display: inline-block;
+  position: relative;
+}
+
+.tooltip .tooltiptext {
+  cursor: pointer;
+  visibility: hidden;
+  width: 70px;
+  height: 21px;
+  font-size: 14px;
+  background-color: #575550;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -35px;
+  opacity: 0;
+  transition: visibility 0.5s, opacity 0.5s ease-in-out;
+}
+
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #575550 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* End of Tooltip */
