@@ -261,6 +261,7 @@ var onMessage = function (request, sender, callback) {
   switch ( request.what ) {
     case 'toggleBlockBear':
       bb.settings.blockBearEnabled = !bb.settings.blockBearEnabled;
+      bb.updateFilters();
       break;
     case 'toggleDomainWhitelist':
       let pageStore = µb.pageStoreFromTabId(request.tabId);

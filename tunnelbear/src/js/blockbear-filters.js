@@ -48,31 +48,34 @@ bb.classifyFilterList = function (list) {
 
 /******************************************************************************/
 
-let getFilterListsToSelect = function (blockAds, blockPrivacy, blockMalware, blockSocial) {
+let getFilterListsToSelect = function (globalToggle, blockAds, blockPrivacy, blockMalware, blockSocial) {
   let ret = [];
-  if (blockAds) {
-    ret = ret.concat(adsLists);
-  }
-  if (blockPrivacy) {
-    ret = ret.concat(privacyLists);
-  }
-  if (blockMalware) {
-    ret = ret.concat(malwareLists);
-  }
-  if (blockSocial) {
-    ret = ret.concat(socialLists);
+  if (globalToggle === true) {
+    if (blockAds) {
+      ret = ret.concat(adsLists);
+    }
+    if (blockPrivacy) {
+      ret = ret.concat(privacyLists);
+    }
+    if (blockMalware) {
+      ret = ret.concat(malwareLists);
+    }
+    if (blockSocial) {
+      ret = ret.concat(socialLists);
+    }
   }
   return ret;
 }
 
 bb.updateFilters = function () {
+  let globalToggle = bb.settings.blockBearEnabled;
   let blockAds = bb.settings.blockAdsEnabled;
   let blockPrivacy = bb.settings.blockPrivacyEnabled;
   let blockMalware = bb.settings.blockMalwareEnabled;
   let blockSocial = bb.settings.blockSocialEnabled;
 
   µb.applyFilterListSelection({
-    toSelect: getFilterListsToSelect(blockAds, blockPrivacy, blockMalware, blockSocial),
+    toSelect: getFilterListsToSelect(globalToggle, blockAds, blockPrivacy, blockMalware, blockSocial),
     toRemove: [],
     toImport: ""
   });
